@@ -1,4 +1,4 @@
-# Licao 1: Deployment de Agente de IA no Microsoft Foundry
+# Licao 2: Deployment de Agente de IA no Microsoft Foundry
 
 ## Objetivo
 Nesta licao, voce aprendera a criar e fazer o deployment de um agente de IA no Microsoft Foundry usando o **Microsoft Agent Framework**, focado em responder questoes sobre o mercado financeiro.
