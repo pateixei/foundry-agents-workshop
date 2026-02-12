@@ -1,4 +1,4 @@
-# Lesson 2 - Hosted Agent with LangGraph
+# Lesson 3 - Hosted Agent with LangGraph
 
 In this lesson, we create a hosted agent in Azure AI Foundry using the
 LangGraph framework. The agent specializes in financial markets and
