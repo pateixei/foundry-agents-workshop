@@ -1,49 +1,49 @@
-# Licao 1: Deployment de Agente de IA no Microsoft Foundry
+# Lesson 1: Deploying an AI Agent on Microsoft Foundry
 
-## Objetivo
-Nesta licao, voce aprendera a criar e fazer o deployment de um agente de IA no Microsoft Foundry usando o **Microsoft Agent Framework**, focado em responder questoes sobre o mercado financeiro.
+## Objective
+In this lesson, you will learn how to create and deploy an AI agent on Microsoft Foundry using the **Microsoft Agent Framework**, focused on answering questions about the financial market.
 
-## Agente
-**Financial Market Agent** - Agente Python com Microsoft Agent Framework publicado como Hosted Agent no Foundry.
+## Agent
+**Financial Market Agent** - Python agent with Microsoft Agent Framework published as a Hosted Agent in Foundry.
 
-Caracteristicas:
-- Desenvolvido em Python com Microsoft Agent Framework (`agent-framework-azure-ai`)
-- Usa o modelo gpt-4.1 provisionado via Microsoft Foundry
-- Expoe 3 tools: cotacao de acoes, taxa de cambio, resumo de mercado
-- Hosted Agent no Foundry com Managed Identity
-- OpenTelemetry integrado com Azure Monitor
+Features:
+- Developed in Python with Microsoft Agent Framework (`agent-framework-azure-ai`)
+- Uses the gpt-4.1 model provisioned via Microsoft Foundry
+- Exposes 3 tools: stock quotes, exchange rates, market summary
+- Hosted Agent in Foundry with Managed Identity
+- OpenTelemetry integrated with Azure Monitor
 - HTTP Server via `azure-ai-agentserver-agentframework`
 
-## Estrutura da Licao
+## Lesson Structure
 
 ```
 lesson-1/
   README.md
   foundry-agent/
-    agent.yaml           # Manifesto do agente
+    agent.yaml           # Agent manifest
     app.py               # HTTP server
-    # create_hosted_agent.py movido para prereq/
-    deploy.ps1           # Script de deploy automatizado
+    # create_hosted_agent.py moved to prereq/
+    deploy.ps1           # Automated deployment script
     Dockerfile           # Container image
-    test_agent.py        # Console client (testa via Foundry backend)
-    requirements.txt     # Dependencias
+    test_agent.py        # Console client (tests via Foundry backend)
+    requirements.txt     # Dependencies
     src/
       main.py            # Entrypoint run()
       agent/
-        finance_agent.py # Agente MAF
+        finance_agent.py # MAF agent
     tools/
-      finance_tools.py   # Tools do agente
+      finance_tools.py   # Agent tools
 ```
 
-## Pre-requisitos
-- Pasta `../prereq/` executada para provisionar a infraestrutura no Azure
-- Azure CLI (`az`) instalado e autenticado
-- Python 3.10+ com pip
+## Prerequisites
+- `../prereq/` folder executed to provision Azure infrastructure
+- Azure CLI (`az`) installed and authenticated
+- Python 3.10+ with pip
 
-## Como executar
+## How to Run
 
-1. Execute o deploy da infraestrutura na pasta `../prereq/` (se ainda nao fez)
-2. Execute o deploy do agente:
+1. Execute the infrastructure deployment in the `../prereq/` folder (if not done yet)
+2. Execute the agent deployment:
 
 ```powershell
 cd lesson-1/foundry-agent

@@ -1,10 +1,10 @@
-# Lesson 4 - LangGraph Agent no Azure Container Apps
+# Lesson 4 - LangGraph Agent on Azure Container Apps
 
-Nesta licao, deployamos o mesmo agente LangGraph das licoes anteriores em
-infraestrutura propria (**Azure Container Apps**) e o registramos como
-**Connected Agent** no Microsoft Foundry Control Plane.
+In this lesson, we deploy the same LangGraph agent from previous lessons on
+our own infrastructure (**Azure Container Apps**) and register it as a
+**Connected Agent** in the Microsoft Foundry Control Plane.
 
-Veja detalhes completos em [aca-agent/README.md](aca-agent/README.md).
+See complete details in [aca-agent/README.md](aca-agent/README.md).
 
 ## Quick Start
 
@@ -13,33 +13,33 @@ cd aca-agent
 .\deploy.ps1
 ```
 
-## Teste Rapido
+## Quick Test
 
 ```powershell
-# Chamada direta ao ACA (sem passar pelo Foundry)
+# Direct call to ACA (without going through Foundry)
 python ../../test/chat.py --lesson 4 --endpoint https://<aca-fqdn>
 
 # Via curl
 curl -X POST https://<aca-fqdn>/chat \
   -H "Content-Type: application/json" \
-  -d '{"message": "Qual a cotacao da PETR4?"}'
+  -d '{"message": "What is the PETR4 stock price?"}'
 ```
 
-## Conceitos Chave
+## Key Concepts
 
-- **Azure Container Apps (ACA)**: Plataforma serverless para containers com auto-scaling
-- **Connected Agent**: Agente externo registrado no Foundry Control Plane para governanca
-- **AI Gateway (APIM)**: Proxy do Foundry que roteia requisicoes e coleta telemetria
-- **FastAPI**: Framework HTTP que serve o agente (substitui o agentserver adapter dos hosted agents)
-- **Managed Identity**: O ACA usa sua propria MI (diferente da MI do projeto Foundry)
+- **Azure Container Apps (ACA)**: Serverless platform for containers with auto-scaling
+- **Connected Agent**: External agent registered in the Foundry Control Plane for governance
+- **AI Gateway (APIM)**: Foundry proxy that routes requests and collects telemetry
+- **FastAPI**: HTTP framework that serves the agent (replaces the agentserver adapter from hosted agents)
+- **Managed Identity**: ACA uses its own MI (different from the Foundry project's MI)
 
-## Diferenca das Licoes 2-3
+## Difference from Lessons 2-3
 
-| Aspecto | Licoes 2-3 (Hosted) | Licao 4 (ACA) |
+| Aspect | Lessons 2-3 (Hosted) | Lesson 4 (ACA) |
 |---|---|---|
-| Infraestrutura | Foundry (Capability Host) | Azure Container Apps (usuario) |
-| Servidor HTTP | agentserver adapter (porta 8088) | FastAPI + uvicorn (porta 8080) |
-| Registro | Hosted Agent (CLI/SDK) | Connected Agent (portal Control Plane) |
-| Scaling | Foundry gerencia | ACA gerencia (minReplicas/maxReplicas) |
-| Proxy | Responses API nativa | AI Gateway (APIM) |
-| Managed Identity | MI do projeto Foundry | MI do Container App |
+| Infrastructure | Foundry (Capability Host) | Azure Container Apps (user) |
+| HTTP Server | agentserver adapter (port 8088) | FastAPI + uvicorn (port 8080) |
+| Registration | Hosted Agent (CLI/SDK) | Connected Agent (Control Plane portal) |
+| Scaling | Foundry managed | ACA managed (minReplicas/maxReplicas) |
+| Proxy | Native Responses API | AI Gateway (APIM) |
+| Managed Identity | Foundry project MI | Container App MI |

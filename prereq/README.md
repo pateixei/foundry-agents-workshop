@@ -1,90 +1,90 @@
-# Pré-requisitos - Infraestrutura Azure
+# Prerequisites - Azure Infrastructure
 
-Esta pasta contém os scripts de infraestrutura como código (IaC) usando Bicep para provisionar todos os recursos necessários para o workshop.
+This folder contains Infrastructure as Code (IaC) scripts using Bicep to provision all required resources for the workshop.
 
-## Recursos Provisionados
+## Provisioned Resources
 
-- **Azure OpenAI Service** - Com deployment do modelo GPT-5.2
-- **Azure Container Registry** - Para armazenar as imagens Docker dos agentes
-- **Container Apps Environment** - Ambiente para executar o LangGraph Agent
-- **Container App** - Para o LangGraph Agent
-- **AI Hub** - Workspace do Microsoft Foundry
-- **AI Project** - Para hospedar o Agent Framework Agent
-- **Log Analytics Workspace** - Para logs e monitoramento
-- **Application Insights** - Para telemetria e observabilidade
-- **Storage Account** - Para o AI Hub
-- **Key Vault** - Para o AI Hub
+- **Azure OpenAI Service** - With GPT-5.2 model deployment
+- **Azure Container Registry** - To store agent Docker images
+- **Container Apps Environment** - Environment to run the LangGraph Agent
+- **Container App** - For the LangGraph Agent
+- **AI Hub** - Microsoft Foundry workspace
+- **AI Project** - To host the Agent Framework Agent
+- **Log Analytics Workspace** - For logs and monitoring
+- **Application Insights** - For telemetry and observability
+- **Storage Account** - For the AI Hub
+- **Key Vault** - For the AI Hub
 
-## 🚀 Deploy Rápido (Recomendado)
+## 🚀 Quick Deploy (Recommended)
 
-Use o script automatizado para fazer o deployment completo:
+Use the automated script for complete deployment:
 
 ```powershell
 .\deploy.ps1 -ResourceGroupName "rg-agent365-workshop" -Location "eastus"
 ```
 
-### Parâmetros do Script
+### Script Parameters
 
 ```powershell
-# Deploy básico
+# Basic deploy
 .\deploy.ps1
 
-# Deploy com subscription específica
-.\deploy.ps1 -SubscriptionId "sua-subscription-id"
+# Deploy with specific subscription
+.\deploy.ps1 -SubscriptionId "your-subscription-id"
 
-# Deploy personalizado
+# Custom deploy
 .\deploy.ps1 `
-  -ResourceGroupName "meu-rg" `
+  -ResourceGroupName "my-rg" `
   -Location "westus2" `
   -DeploymentName "workshop-deployment"
 
-# Simular deployment (WhatIf)
+# Simulate deployment (WhatIf)
 .\deploy.ps1 -WhatIf
 
-# Deploy sem validação automática
+# Deploy without automatic validation
 .\deploy.ps1 -SkipValidation
 ```
 
-O script irá:
-- ✓ Verificar pré-requisitos (Azure CLI, autenticação)
-- ✓ Instalar extensões necessárias
-- ✓ Criar o Resource Group se não existir
-- ✓ Validar o template Bicep
-- ✓ Executar o deployment
-- ✓ Exibir os outputs
-- ✓ Executar a validação automaticamente
+The script will:
+- ✓ Check prerequisites (Azure CLI, authentication)
+- ✓ Install required extensions
+- ✓ Create the Resource Group if it doesn't exist
+- ✓ Validate the Bicep template
+- ✓ Execute the deployment
+- ✓ Display the outputs
+- ✓ Execute validation automatically
 
-## 📋 Deploy Manual (Alternativo)
+## 📋 Manual Deploy (Alternative)
 
-### 1. Defina suas variáveis de ambiente
+### 1. Define your environment variables
 
 ```powershell
 $RESOURCE_GROUP = "rg-agent365-workshop"
 $LOCATION = "eastus"
-$SUBSCRIPTION_ID = "sua-subscription-id"
+$SUBSCRIPTION_ID = "your-subscription-id"
 ```
 
-### 2. Faça login no Azure
+### 2. Login to Azure
 
 ```powershell
 az login
 az account set --subscription $SUBSCRIPTION_ID
 ```
 
-### 3. Instale as extensões necessárias
+### 3. Install required extensions
 
 ```powershell
 az extension add --name containerapp
 az extension add --name ml
 ```
 
-### 4. Crie o Resource Group
+### 4. Create the Resource Group
 
 ```powershell
 az group create --name $RESOURCE_GROUP --location $LOCATION
 ```
 
-### 5. Deploy da infraestrutura
+### 5. Deploy the infrastructure
 
 ```powershell
 az deployment group create `
@@ -93,7 +93,7 @@ az deployment group create `
   --parameters main.bicepparam
 ```
 
-Ou com parâmetros inline:
+Or with inline parameters:
 
 ```powershell
 az deployment group create `
@@ -109,7 +109,7 @@ az deployment group create `
   --parameters agentFrameworkAgentName="ca-agent-framework"
 ```
 
-### 6. Capture os outputs
+### 6. Capture the outputs
 
 ```powershell
 az deployment group show `
@@ -118,51 +118,51 @@ az deployment group show `
   --query properties.outputs
 ```
 
-## ✅ Validação
+## ✅ Validation
 
-### 7. Valide o deployment
+### 7. Validate the deployment
 
-Execute o script de validação para garantir que todos os recursos foram criados corretamente:
+Execute the validation script to ensure all resources were created correctly:
 
 ```powershell
 .\validate-deployment.ps1 -ResourceGroupName $RESOURCE_GROUP -DeploymentName "main"
 ```
 
-O script irá:
-- ✓ Verificar a existência de todos os recursos
-- ✓ Validar o status de provisionamento
-- ✓ Testar configurações e connections
-- ✓ Gerar um relatório detalhado em JSON
-- ✓ Exibir informações importantes (endpoints, URLs, etc.)
+The script will:
+- ✓ Verify the existence of all resources
+- ✓ Validate provisioning status
+- ✓ Test configurations and connections
+- ✓ Generate a detailed JSON report
+- ✓ Display important information (endpoints, URLs, etc.)
 
-**Taxa de sucesso esperada:** ≥ 90%
+**Expected success rate:** ≥ 90%
 
-## ⚙️ Parâmetros Personalizáveis
+## ⚙️ Customizable Parameters
 
-Edite o arquivo `main.bicepparam` para customizar:
+Edit the `main.bicepparam` file to customize:
 
-- `location` - Região do Azure (padrão: eastus)
-- `openAIServiceName` - Nome do serviço Azure OpenAI
-- `gpt52DeploymentName` - Nome do deployment GPT-5.2
-- `acrName` - Nome do Azure Container Registry
-- `langgraphAgentName` - Nome do Container App para LangGraph
-- `agentFrameworkAgentName` - Nome do Container App para Agent Framework
-- `gpt52Capacity` - Capacidade TPM do modelo (padrão: 100)
-- `gpt52ModelVersion` - Versão do modelo GPT-5.2
-- `aiHubName` - Nome do AI Hub (Microsoft Foundry)
-- `aiProjectName` - Nome do AI Project
+- `location` - Azure region (default: eastus)
+- `openAIServiceName` - Azure OpenAI service name
+- `gpt52DeploymentName` - GPT-5.2 deployment name
+- `acrName` - Azure Container Registry name
+- `langgraphAgentName` - Container App name for LangGraph
+- `agentFrameworkAgentName` - Container App name for Agent Framework
+- `gpt52Capacity` - Model TPM capacity (default: 100)
+- `gpt52ModelVersion` - GPT-5.2 model version
+- `aiHubName` - AI Hub name (Microsoft Foundry)
+- `aiProjectName` - AI Project name
 
-## 📝 Arquivos
+## 📝 Files
 
-- **deploy.ps1** - Script automatizado de deployment
-- **validate-deployment.ps1** - Script de validação pós-deployment
-- **main.bicep** - Template principal de infraestrutura
-- **main.bicepparam** - Arquivo de parâmetros
+- **deploy.ps1** - Automated deployment script
+- **validate-deployment.ps1** - Post-deployment validation script
+- **main.bicep** - Main infrastructure template
+- **main.bicepparam** - Parameters file
 
-## 🎯 Próximos Passos
+## 🎯 Next Steps
 
-Após o deployment bem-sucedido:
-1. Anote os valores dos outputs (endpoints, chaves, URLs)
-2. Configure as variáveis de ambiente nos projetos dos agentes
-3. Build e push das imagens Docker para o ACR
-4. Update dos Container Apps com as imagens corretas
+After successful deployment:
+1. Note the output values (endpoints, keys, URLs)
+2. Configure environment variables in agent projects
+3. Build and push Docker images to ACR
+4. Update Container Apps with the correct images

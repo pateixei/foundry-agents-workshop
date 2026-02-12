@@ -1,10 +1,10 @@
-# Lesson 2 - Hosted Agent com LangGraph
+# Lesson 2 - Hosted Agent with LangGraph
 
-Nesta licao, criamos um agente hospedado no Azure AI Foundry usando o
-framework LangGraph. O agente e especializado em mercado financeiro e
-roda como container proprio dentro do Foundry.
+In this lesson, we create a hosted agent in Azure AI Foundry using the
+LangGraph framework. The agent specializes in financial markets and
+runs as its own container within Foundry.
 
-Veja detalhes completos em [langgraph-agent/README.md](langgraph-agent/README.md).
+See complete details in [langgraph-agent/README.md](langgraph-agent/README.md).
 
 ## Quick Start
 
@@ -13,17 +13,17 @@ cd langgraph-agent
 .\deploy.ps1
 ```
 
-## Teste Rapido
+## Quick Test
 
 ```powershell
 cd langgraph-agent
 python test_agent.py
 ```
 
-## Conceitos Chave
+## Key Concepts
 
-- **Hosted Agent**: Container proprio registrado no Foundry que expoe a Responses API
-- **LangGraph**: Framework de grafos para orquestracao de agentes com padrao ReAct
-- **Adapter**: `azure-ai-agentserver-langgraph` converte um grafo LangGraph em servidor HTTP
-- **Capability Host**: Recurso no nivel do Foundry account que habilita hosted agents
-- **Managed Identity**: O container roda com a identidade do projeto (precisa de roles RBAC)
+- **Hosted Agent**: Own container registered in Foundry that exposes the Responses API
+- **LangGraph**: Graph framework for agent orchestration with ReAct pattern
+- **Adapter**: `azure-ai-agentserver-langgraph` converts a LangGraph graph into an HTTP server
+- **Capability Host**: Resource at the Foundry account level that enables hosted agents
+- **Managed Identity**: The container runs with the project's identity (needs RBAC roles)

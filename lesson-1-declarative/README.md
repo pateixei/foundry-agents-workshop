@@ -1,70 +1,70 @@
-# Lesson 1 - Agente Declarativo (Prompt-Based)
+# Lesson 1 - Declarative Agent (Prompt-Based)
 
-Cria um agente financeiro **declarativo** no Azure AI Foundry usando o SDK `azure-ai-projects`.
+Creates a **declarative** financial agent in Azure AI Foundry using the `azure-ai-projects` SDK.
 
-## O que e um agente declarativo?
+## What is a declarative agent?
 
-Agentes declarativos sao definidos via `PromptAgentDefinition` e registrados diretamente no Foundry. Diferente de agentes **hosted** (lessons 2 e 3), nao requerem container Docker ou ACR.
+Declarative agents are defined via `PromptAgentDefinition` and registered directly in Foundry. Unlike **hosted** agents (lessons 2 and 3), they don't require Docker containers or ACR.
 
-**Vantagens:**
-- Instructions, model e tools editaveis no portal do Foundry
-- Sem necessidade de build/deploy de container
-- Deploy instantaneo
+**Advantages:**
+- Instructions, model, and tools editable in the Foundry portal
+- No need for container build/deploy
+- Instant deployment
 
-**Limitacoes:**
-- Sem custom tools locais (funcoes Python executadas no container)
-- Tools limitadas as disponiveis server-side (SharePoint, Bing, Azure Functions via OpenAPI, MCP)
+**Limitations:**
+- No local custom tools (Python functions executed in container)
+- Tools limited to server-side available ones (SharePoint, Bing, Azure Functions via OpenAPI, MCP)
 
-## Estrutura
+## Structure
 
 ```
 lesson-1-declarative/
-  create_agent.py      # Cria o agente no Foundry
-  test_agent.py        # Console client para testar o agente
-  requirements.txt     # Dependencias Python
-  README.md            # Este arquivo
+  create_agent.py      # Creates the agent in Foundry
+  test_agent.py        # Console client to test the agent
+  requirements.txt     # Python dependencies
+  README.md            # This file
 ```
 
-## Pre-requisitos
+## Prerequisites
 
-1. Recursos Azure provisionados (ver `prereq/`)
-2. Role "Azure AI User" no projeto do Foundry
+1. Azure resources provisioned (see `prereq/`)
+2. "Azure AI User" role on the Foundry project
 3. Python 3.10+
 
-## Uso
+## Usage
 
 ```bash
-# Instalar dependencias
+# Install dependencies
 pip install -r requirements.txt
 
-# Criar o agente
+# Create the agent
 python create_agent.py
 
-# Testar o agente
+# Test the agent
 python test_agent.py
 ```
 
-## Comparativo com Lessons 2 e 3
+## Comparison with Lessons 2 and 3
 
-| Caracteristica | Lesson 1 (Declarativo) | Lesson 2 (Hosted MAF) | Lesson 3 (Hosted LangGraph) |
+| Feature | Lesson 1 (Declarative) | Lesson 2 (Hosted MAF) | Lesson 3 (Hosted LangGraph) |
 |---|---|---|---|
-| Tipo | Prompt-based | Hosted (container) | Hosted (container) |
+| Type | Prompt-based | Hosted (container) | Hosted (container) |
 | Framework | SDK azure-ai-projects | Microsoft Agent Framework | LangGraph |
-| Container | Nao | Sim (Docker/ACR) | Sim (Docker/ACR) |
-| Custom tools | Nao (server-side only) | Sim (Python local) | Sim (Python local) |
-| Editavel no portal | Sim | Nao | Nao |
-| Deploy | Instantaneo | Build + ACR + start | Build + ACR + start |
+| Container | No | Yes (Docker/ACR) | Yes (Docker/ACR) |
+| Custom tools | No (server-side only) | Yes (local Python) | Yes (local Python) |
+| Editable in portal | Yes | No | No |
+| Deploy | Instant | Build + ACR + start | Build + ACR + start |
 
-## Usando Tools do Catalogo do Foundry via SDK
+## Using Foundry Catalog Tools via SDK
 
-Uma das maiores vantagens do agente declarativo e poder usar **tools do catalogo do Foundry** (as mesmas disponiveis no portal) diretamente via codigo SDK.
+One of the biggest advantages of the declarative agent is the ability to use **tools from the Foundry catalog** (the same ones available in the portal) directly via SDK code.
 
-### Como funciona?
+### How does it work?
 
-- **Agente Declarativo** (`PromptAgentDefinition`): roda **server-side** no Foundry. As tools (Bing, Azure AI Search, OpenAPI, Code Interpreter, etc.) sao executadas pelo proprio runtime do Foundry. Voce define as tools no SDK e elas aparecem no portal (e vice-versa).
-- **Agente Hosted** (MAF/LangGraph): roda dentro de um **container**. O container gerencia suas proprias tools via codigo Python. O runtime do Foundry apenas encaminha a request para o container — nao injeta tools do portal.
+- **Declarative Agent** (`PromptAgentDefinition`): runs **server-side** in Foundry. The tools (Bing, Azure AI Search, OpenAPI, Code Interpreter, etc.) are executed by Foundry's own runtime. You define the tools in the SDK and they appear in the portal (and vice versa).
+- **Hosted Agent** (MAF/LangGraph): runs inside a **container**. The container manages its own tools via Python code. Foundry's runtime only forwards the request to the container — it doesn't inject tools from the portal.
 
-### Exemplo: agente com Bing Grounding Search
+### Example: agent with Bing Grounding Search
 
 ```python
 import os
@@ -83,15 +83,15 @@ project_client = AIProjectClient(
     credential=credential,
 )
 
-# 1. Obter o connection ID do recurso Bing (criado no portal)
-bing_connection = project_client.connections.get("nome-da-conexao-bing")
+# 1. Get the connection ID of the Bing resource (created in the portal)
+bing_connection = project_client.connections.get("bing-connection-name")
 
-# 2. Criar agente declarativo COM a tool Bing
+# 2. Create declarative agent WITH the Bing tool
 agent = project_client.agents.create_version(
     agent_name="fin-market-with-bing",
     definition=PromptAgentDefinition(
         model="gpt-4.1",
-        instructions="Voce e um assistente de mercado financeiro. Use Bing para dados em tempo real.",
+        instructions="You are a financial market assistant. Use Bing for real-time data.",
         tools=[
             BingGroundingAgentTool(
                 bing_grounding=BingGroundingSearchToolParameters(
@@ -104,22 +104,22 @@ agent = project_client.agents.create_version(
             )
         ],
     ),
-    description="Agente com Bing Grounding",
+    description="Agent with Bing Grounding",
 )
 
-# 3. Chamar o agente via Responses API
+# 3. Call the agent via Responses API
 openai_client = project_client.get_openai_client()
 response = openai_client.responses.create(
-    input="Qual a cotacao do dolar hoje?",
-    tool_choice="required",  # forcar uso da tool
+    input="What is the dollar exchange rate today?",
+    tool_choice="required",  # force tool use
     extra_body={"agent": {"name": agent.name, "type": "agent_reference"}},
 )
 print(response.output_text)
 ```
 
-### Tools disponiveis via SDK (mesmas do portal)
+### Tools available via SDK (same as the portal)
 
-| Tool | Classe no SDK (`azure.ai.projects.models`) |
+| Tool | SDK Class (`azure.ai.projects.models`) |
 |------|---------------------------------------------|
 | Bing Grounding | `BingGroundingAgentTool` |
 | Bing Custom Search | `BingCustomSearchAgentTool` |
@@ -130,17 +130,17 @@ print(response.output_text)
 | MCP (preview) | `McpAgentTool` |
 | Azure Functions | `AzureFunctionAgentTool` |
 
-### Comparativo: Tools declarativas vs hosted
+### Comparison: Declarative tools vs hosted
 
-| | Declarativo (SDK/Portal) | Hosted (MAF/LangGraph) |
+| | Declarative (SDK/Portal) | Hosted (MAF/LangGraph) |
 |---|---|---|
-| Usar tools do catalogo Foundry | **Sim** — via `tools=[]` no `PromptAgentDefinition` | **Nao** — container gerencia suas proprias tools |
-| Editavel no portal | **Sim** | **Nao** |
-| Tools customizadas Python | **Nao** (so Function Calling com schema) | **Sim** — codigo Python livre |
+| Use tools from Foundry catalog | **Yes** — via `tools=[]` in `PromptAgentDefinition` | **No** — container manages its own tools |
+| Editable in portal | **Yes** | **No** |
+| Custom Python tools | **No** (only Function Calling with schema) | **Yes** — free Python code |
 
-> **Resumo**: se o objetivo e usar tools do catalogo do Foundry (Bing, AI Search, etc.), o caminho e o **agente declarativo**. Basta adicionar as tools no array `tools` do `PromptAgentDefinition`.
+> **Summary**: if the goal is to use tools from the Foundry catalog (Bing, AI Search, etc.), the path is the **declarative agent**. Just add the tools to the `tools` array in `PromptAgentDefinition`.
 
-## Referencia
+## Reference
 
 - [Microsoft Foundry quickstart](https://learn.microsoft.com/azure/ai-foundry/quickstarts/get-started-code)
 - [Foundry Agent Service overview](https://learn.microsoft.com/azure/ai-foundry/agents/overview)

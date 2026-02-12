@@ -1,16 +1,16 @@
-# Lesson 2 - Hosted Agent com LangGraph no Azure AI Foundry
+# Lesson 2 - Hosted Agent with LangGraph in Azure AI Foundry
 
-Nesta licao, criamos um **agente hospedado (hosted agent)** no Azure AI Foundry
-usando o framework **LangGraph** do LangChain.
+In this lesson, we create a **hosted agent** in Azure AI Foundry
+using the **LangGraph** framework from LangChain.
 
-## Arquitetura
+## Architecture
 
-O agente segue o padrao **ReAct** (Reason + Act):
+The agent follows the **ReAct** pattern (Reason + Act):
 
-1. O LLM recebe a mensagem do usuario
-2. Decide se precisa chamar uma ferramenta (tool) ou responder diretamente
-3. Se chamou uma tool, executa e retorna o resultado ao LLM
-4. O ciclo repete ate o LLM produzir uma resposta final
+1. The LLM receives the user's message
+2. Decides if it needs to call a tool or respond directly
+3. If it called a tool, executes and returns the result to the LLM
+4. The cycle repeats until the LLM produces a final response
 
 ```
 START -> llm_call -> [tool_calls?] -> environment -> llm_call -> ... -> END
