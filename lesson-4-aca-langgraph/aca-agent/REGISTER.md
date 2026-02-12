@@ -1,161 +1,161 @@
-# Registrar Agente ACA no Microsoft Foundry Control Plane
+# Register ACA Agent in Microsoft Foundry Control Plane
 
-Este guia detalha o passo a passo para registrar o agente LangGraph (rodando no Azure Container Apps) como **Custom Agent** no Microsoft Foundry Control Plane.
+This guide details the step-by-step process to register the LangGraph agent (running on Azure Container Apps) as a **Custom Agent** in Microsoft Foundry Control Plane.
 
-## Pre-requisitos
+## Prerequisites
 
-Antes de iniciar o registro, certifique-se de que:
+Before starting registration, ensure that:
 
-1. **O agente esta rodando no ACA** e respondendo no endpoint `/health`
+1. **The agent is running on ACA** and responding at the `/health` endpoint
    ```powershell
-   # Verificar health
+   # Check health
    $FQDN = az containerapp show --name aca-lg-agent --resource-group rg-ag365sdk --query "properties.configuration.ingress.fqdn" -o tsv
    Invoke-RestMethod -Uri "https://$FQDN/health"
-   # Esperado: { "status": "ok" }
+   # Expected: { "status": "ok" }
    ```
 
-2. **RBAC configurado** — a Managed Identity do ACA tem a role `Cognitive Services OpenAI User` no Foundry account
+2. **RBAC configured** — the ACA Managed Identity has the `Cognitive Services OpenAI User` role on the Foundry account
 
-3. **AI Gateway configurado** no recurso Foundry (veja Passo 2 abaixo)
-
----
-
-## Passo 1 — Acessar o portal do Microsoft Foundry
-
-1. Acesse [https://ai.azure.com](https://ai.azure.com)
-2. Faca login com sua conta Azure
-3. **Importante**: Certifique-se de que o toggle **Foundry (new)** esta ativado no banner superior
-
-   > O registro de custom agents so esta disponivel no portal Foundry (new).
-   > Se voce estiver no portal classico, ative o toggle.
+3. **AI Gateway configured** on the Foundry resource (see Step 2 below)
 
 ---
 
-## Passo 2 — Verificar o AI Gateway
+## Step 1 — Access the Microsoft Foundry portal
 
-O Foundry usa o Azure API Management (APIM) como proxy para custom agents. E necessario ter um AI Gateway configurado.
+1. Go to [https://ai.azure.com](https://ai.azure.com)
+2. Sign in with your Azure account
+3. **Important**: Ensure the **Foundry (new)** toggle is enabled in the top banner
 
-1. No portal, clique em **Operate** (canto superior direito)
-2. Selecione **Admin console** no menu lateral
-3. Abra a aba **AI Gateway**
-4. Verifique se o recurso Foundry (`ai-foundry001`) tem um AI Gateway associado
-5. Se nao houver, clique em **Add AI Gateway** para criar um
-
-   > O AI Gateway e gratuito para configurar e habilita governanca, seguranca, telemetria e rate limits.
+   > Custom agent registration is only available in the Foundry (new) portal.
+   > If you're in the classic portal, enable the toggle.
 
 ---
 
-## Passo 3 — Verificar observabilidade (opcional, recomendado)
+## Step 2 — Verify the AI Gateway
 
-Para que o Foundry exiba traces e metricas do agente:
+Foundry uses Azure API Management (APIM) as a proxy for custom agents. You need to have an AI Gateway configured.
 
-1. Em **Operate > Admin console**, localize o projeto `ag365-prj001`
-2. Clique no projeto e abra a aba **Connected resources**
-3. Verifique se ha um recurso **Application Insights** associado
-4. Se nao houver, clique em **Add connection > Application Insights** e selecione o recurso `appi-ai001`
+1. In the portal, click **Operate** (top right corner)
+2. Select **Admin console** in the side menu
+3. Open the **AI Gateway** tab
+4. Verify that the Foundry resource (`ai-foundry001`) has an associated AI Gateway
+5. If not, click **Add AI Gateway** to create one
+
+   > The AI Gateway is free to configure and enables governance, security, telemetry, and rate limits.
 
 ---
 
-## Passo 4 — Registrar o agente
+## Step 3 — Verify observability (optional, recommended)
 
-1. No portal, clique em **Operate** (canto superior direito)
-2. Selecione **Overview** no menu lateral
-3. Clique no botao **Register agent**
-4. O wizard de registro sera aberto. Preencha os campos:
+For Foundry to display agent traces and metrics:
 
-### Dados do agente (como ele roda)
+1. In **Operate > Admin console**, locate the project `ag365-prj001`
+2. Click on the project and open the **Connected resources** tab
+3. Check if there's an associated **Application Insights** resource
+4. If not, click **Add connection > Application Insights** and select the `appi-ai001` resource
 
-| Campo | Valor | Obrigatorio |
+---
+
+## Step 4 — Register the agent
+
+1. In the portal, click **Operate** (top right corner)
+2. Select **Overview** in the side menu
+3. Click the **Register agent** button
+4. The registration wizard will open. Fill in the fields:
+
+### Agent data (how it runs)
+
+| Field | Value | Required |
 |-------|-------|:-----------:|
-| **Agent URL** | `https://aca-lg-agent.<region>.azurecontainerapps.io` | Sim |
-| **Protocol** | `HTTP` | Sim |
-| **OpenTelemetry Agent ID** | *(deixe vazio — usara o Agent name)* | Nao |
-| **Admin portal URL** | *(deixe vazio)* | Nao |
+| **Agent URL** | `https://aca-lg-agent.<region>.azurecontainerapps.io` | Yes |
+| **Protocol** | `HTTP` | Yes |
+| **OpenTelemetry Agent ID** | *(leave empty — will use Agent name)* | No |
+| **Admin portal URL** | *(leave empty)* | No |
 
-> **Dica**: Para obter a URL do agente, execute:
+> **Tip**: To get the agent URL, run:
 > ```powershell
 > az containerapp show --name aca-lg-agent --resource-group rg-ag365sdk --query "properties.configuration.ingress.fqdn" -o tsv
 > ```
-> Adicione `https://` antes do FQDN retornado.
+> Add `https://` before the returned FQDN.
 
-### Dados de exibicao no Control Plane
+### Display data in Control Plane
 
-| Campo | Valor | Obrigatorio |
+| Field | Value | Required |
 |-------|-------|:-----------:|
-| **Project** | `ag365-prj001` | Sim |
-| **Agent name** | `aca-lg-agent` | Sim |
-| **Description** | `Agente de mercado financeiro (LangGraph no ACA)` | Nao |
+| **Project** | `ag365-prj001` | Yes |
+| **Agent name** | `aca-lg-agent` | Yes |
+| **Description** | `Financial market agent (LangGraph on ACA)` | No |
 
-5. Clique em **Save** para concluir o registro
+5. Click **Save** to complete registration
 
 ---
 
-## Passo 5 — Obter a URL proxy
+## Step 5 — Get the proxy URL
 
-Apos o registro, o Foundry gera uma nova URL (proxy via AI Gateway/APIM) para o agente:
+After registration, Foundry generates a new URL (proxy via AI Gateway/APIM) for the agent:
 
-1. No menu lateral, clique em **Assets**
-2. Use o filtro **Source > Custom** para ver apenas custom agents
-3. Selecione o agente `aca-lg-agent`
-4. No painel de detalhes (lado direito), localize **Agent URL**
-5. Clique no icone de copia para copiar a URL proxy
+1. In the side menu, click **Assets**
+2. Use the **Source > Custom** filter to see only custom agents
+3. Select the `aca-lg-agent` agent
+4. In the details panel (right side), locate **Agent URL**
+5. Click the copy icon to copy the proxy URL
 
-A URL proxy tera o formato:
+The proxy URL will have the format:
 ```
 https://apim-<foundry-id>.azure-api.net/aca-lg-agent/
 ```
 
-> **Nota**: O Foundry atua como proxy. A autenticacao original do endpoint continua valendo.
-> Ao consumir a URL proxy, forneca o mesmo mecanismo de autenticacao que usaria no endpoint original.
+> **Note**: Foundry acts as a proxy. The original endpoint authentication still applies.
+> When consuming the proxy URL, provide the same authentication mechanism you would use on the original endpoint.
 
 ---
 
-## Passo 6 — Testar via URL proxy (opcional)
+## Step 6 — Test via proxy URL (optional)
 
-Apos obter a URL proxy, voce pode testar:
+After obtaining the proxy URL, you can test:
 
 ```powershell
-# Usando a URL proxy do Foundry
+# Using the Foundry proxy URL
 $PROXY_URL = "https://apim-<foundry-id>.azure-api.net/aca-lg-agent"
-$body = @{ message = "Qual a cotacao da PETR4?" } | ConvertTo-Json -Compress
+$body = @{ message = "What is the PETR4 quote?" } | ConvertTo-Json -Compress
 Invoke-RestMethod -Uri "$PROXY_URL/chat" -Method POST -ContentType "application/json" -Body $body
 ```
 
-Ou diretamente pelo ACA (sem proxy):
+Or directly through ACA (without proxy):
 ```powershell
-python ../../../test/chat.py --lesson 4 --once "Qual a cotacao da PETR4?"
+python ../../../test/chat.py --lesson 4 --once "What is the PETR4 quote?"
 ```
 
 ---
 
-## Verificar traces e metricas
+## Verify traces and metrics
 
-Apos o registro e algumas chamadas ao agente:
+After registration and some calls to the agent:
 
-1. **Operate > Assets** > selecione `aca-lg-agent`
-2. A secao **Traces** mostra cada chamada HTTP feita ao endpoint do agente
-3. Clique em uma entrada para ver detalhes (request/response, latencia, headers)
+1. **Operate > Assets** > select `aca-lg-agent`
+2. The **Traces** section shows each HTTP call made to the agent endpoint
+3. Click on an entry to see details (request/response, latency, headers)
 
-> Para traces mais detalhados (tool calls, LLM calls), instrumente o codigo do agente com OpenTelemetry seguindo as [convencoes semanticas para GenAI](https://opentelemetry.io/docs/specs/semconv/gen-ai/).
+> For more detailed traces (tool calls, LLM calls), instrument the agent code with OpenTelemetry following the [semantic conventions for GenAI](https://opentelemetry.io/docs/specs/semconv/gen-ai/).
 
 ---
 
 ## Troubleshooting
 
-| Problema | Causa provavel | Solucao |
+| Problem | Probable Cause | Solution |
 |----------|---------------|---------|
-| Nao aparece opcao "Register agent" | Portal classico ativo | Ative o toggle **Foundry (new)** |
-| Nao mostra projetos no wizard | AI Gateway nao configurado | Operate > Admin console > AI Gateway > Add |
-| Agente registrado mas sem traces | App Insights nao conectado | Conecte App Insights ao projeto |
-| Erro 401 via URL proxy | Auth nao fornecida na chamada | Inclua headers de auth do endpoint original |
-| Erro de rede no registro | ACA nao acessivel publicamente | Verifique ingress externo no ACA |
+| "Register agent" option doesn't appear | Classic portal active | Enable the **Foundry (new)** toggle |
+| No projects shown in wizard | AI Gateway not configured | Operate > Admin console > AI Gateway > Add |
+| Agent registered but no traces | App Insights not connected | Connect App Insights to the project |
+| 401 error via proxy URL | Auth not provided in call | Include auth headers from original endpoint |
+| Network error during registration | ACA not publicly accessible | Check external ingress on ACA |
 
 ---
 
-## Arquitetura do registro
+## Registration architecture
 
 ```
-Cliente ──► AI Gateway (APIM) ──► Azure Container Apps
+Client ──► AI Gateway (APIM) ──► Azure Container Apps
                │                      │
                │ Proxy + Governance    │ aca-lg-agent
                │ Rate Limiting         │ FastAPI + LangGraph
@@ -166,4 +166,4 @@ Cliente ──► AI Gateway (APIM) ──► Azure Container Apps
            Agent Inventory)         OpenAI User)
 ```
 
-O Foundry **nao modifica** as requests — apenas as roteia pelo APIM para ganhar visibilidade e controle.
+Foundry **does not modify** requests — it only routes them through APIM to gain visibility and control.

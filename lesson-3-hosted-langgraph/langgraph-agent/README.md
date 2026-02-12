@@ -16,60 +16,60 @@ The agent follows the **ReAct** pattern (Reason + Act):
 START -> llm_call -> [tool_calls?] -> environment -> llm_call -> ... -> END
 ```
 
-## Ferramentas Disponiveis
+## Available Tools
 
-| Ferramenta | Descricao |
+| Tool | Description |
 |---|---|
-| `get_stock_price` | Consulta preco de acoes (PETR4, VALE3, AAPL, etc.) |
-| `get_market_summary` | Resumo dos principais indices (Ibovespa, S&P 500, etc.) |
-| `get_exchange_rate` | Taxa de cambio (USD/BRL, EUR/BRL, BTC/USD, etc.) |
+| `get_stock_price` | Query stock prices (PETR4, VALE3, AAPL, etc.) |
+| `get_market_summary` | Summary of major indices (Ibovespa, S&P 500, etc.) |
+| `get_exchange_rate` | Exchange rate (USD/BRL, EUR/BRL, BTC/USD, etc.) |
 
-> **Nota:** As ferramentas usam dados simulados para fins didaticos.
+> **Note:** The tools use simulated data for educational purposes.
 
-## Estrutura de Arquivos
+## File Structure
 
 ```
 lesson-2/langgraph-agent/
-  main.py                  # Agente LangGraph + servidor hosted agent
-  # create_hosted_agent.py movido para prereq/
-  test_agent.py            # Script de teste do agente em execucao
-  deploy.ps1               # Script de deploy completo (CLI)
-  requirements.txt         # Dependencias Python
-  Dockerfile               # Container para hosted agent
-  README.md                # Este arquivo
+  main.py                  # LangGraph agent + hosted agent server
+  # create_hosted_agent.py moved to prereq/
+  test_agent.py            # Test script for running agent
+  deploy.ps1               # Complete deployment script (CLI)
+  requirements.txt         # Python dependencies
+  Dockerfile               # Container for hosted agent
+  README.md                # This file
 ```
 
-## Como Funciona o Hosted Agent
+## How the Hosted Agent Works
 
-O pacote `azure-ai-agentserver-langgraph` fornece o adapter que:
+The `azure-ai-agentserver-langgraph` package provides the adapter that:
 
-1. Recebe um grafo LangGraph compilado
-2. Expoe a **Responses API** na porta 8088
-3. O Foundry roteia chamadas dos clientes para o container
+1. Receives a compiled LangGraph graph
+2. Exposes the **Responses API** on port 8088
+3. Foundry routes client calls to the container
 
 ```python
 from azure.ai.agentserver.langgraph import from_langgraph
-agent = build_agent()          # StateGraph compilado
+agent = build_agent()          # Compiled StateGraph
 adapter = from_langgraph(agent)
-adapter.run()                  # Inicia servidor na porta 8088
+adapter.run()                  # Starts server on port 8088
 ```
 
-## Pre-requisitos
+## Prerequisites
 
-- Infraestrutura da pasta `prereq/` ja deployada
-- Azure CLI com extensao `cognitiveservices` (`az extension add --name cognitiveservices --upgrade`)
+- Infrastructure from the `prereq/` folder already deployed
+- Azure CLI with `cognitiveservices` extension (`az extension add --name cognitiveservices --upgrade`)
 - Python 3.12+
-- `az login` realizado
+- `az login` completed
 
-## Deploy Passo a Passo
+## Step-by-Step Deployment
 
-O script `deploy.ps1` automatiza os passos abaixo, mas caso precise fazer
-manualmente ou entender o que acontece, siga a sequencia:
+The `deploy.ps1` script automates the steps below, but if you need to do it
+manually or understand what happens, follow the sequence:
 
-### 1. Capability Host (uma unica vez por account)
+### 1. Capability Host (once per account)
 
-Hosted agents exigem um **Capability Host** no nivel do account.
-Se ainda nao foi criado, execute:
+Hosted agents require a **Capability Host** at the account level.
+If not yet created, run:
 
 ```powershell
 az rest --method put `
@@ -77,47 +77,47 @@ az rest --method put `
     --body '{\"properties\":{\"capabilityHostKind\":\"Agents\",\"enablePublicHostingEnvironment\":true}}'
 ```
 
-### 2. Build da Imagem no ACR
+### 2. Build Image in ACR
 
 ```powershell
 cd lesson-2/langgraph-agent
 az acr build --registry <ACR_NAME> --image lg-market-agent:v1 --file Dockerfile . --no-logs
 ```
 
-> **Nota Windows:** Use `--no-logs` para evitar `UnicodeEncodeError` causado pelo
-> colorama/cp1252 ao exibir logs do ACR build no PowerShell 5.1.
+> **Windows Note:** Use `--no-logs` to avoid `UnicodeEncodeError` caused by
+> colorama/cp1252 when displaying ACR build logs in PowerShell 5.1.
 
-### 3. Permissoes RBAC (managed identity do projeto)
+### 3. RBAC Permissions (project managed identity)
 
-O projeto do Foundry tem uma managed identity que precisa de duas roles:
+The Foundry project has a managed identity that needs two roles:
 
-| Role | Scope | Motivo |
+| Role | Scope | Reason |
 |---|---|---|
-| **AcrPull** | Container Registry | Para baixar a imagem do container |
-| **Cognitive Services OpenAI User** | AI Foundry Account | Para o container chamar o modelo GPT |
+| **AcrPull** | Container Registry | To pull the container image |
+| **Cognitive Services OpenAI User** | AI Foundry Account | For the container to call the GPT model |
 
 ```powershell
-# Obter o principal ID do projeto
+# Get the project principal ID
 $PRINCIPAL = az resource show `
     --ids "/subscriptions/<SUB>/resourceGroups/<RG>/providers/Microsoft.CognitiveServices/accounts/<FOUNDRY>/projects/<PROJECT>" `
     --query "identity.principalId" -o tsv
 
-# AcrPull no ACR
+# AcrPull on ACR
 az role assignment create --assignee $PRINCIPAL --role "AcrPull" `
     --scope $(az acr show --name <ACR> --query id -o tsv)
 
-# OpenAI User no Foundry account
+# OpenAI User on Foundry account
 az role assignment create --assignee $PRINCIPAL --role "Cognitive Services OpenAI User" `
     --scope "/subscriptions/<SUB>/resourceGroups/<RG>/providers/Microsoft.CognitiveServices/accounts/<FOUNDRY>"
 ```
 
-> **Importante:** O resource type do projeto Foundry e
-> `Microsoft.CognitiveServices/accounts/projects` (NAO `MachineLearningServices`).
+> **Important:** The Foundry project resource type is
+> `Microsoft.CognitiveServices/accounts/projects` (NOT `MachineLearningServices`).
 
-### 4. Criar e iniciar o agente
+### 4. Create and start the agent
 
 ```powershell
-# Criar versao (sem iniciar)
+# Create version (without starting)
 az cognitiveservices agent create `
     --account-name <FOUNDRY> --project-name <PROJECT> `
     --name lg-market-agent `
@@ -129,34 +129,34 @@ az cognitiveservices agent create `
          AZURE_OPENAI_ENDPOINT=https://<FOUNDRY>.openai.azure.com/ `
     --no-start
 
-# Iniciar o agente
+# Start the agent
 az cognitiveservices agent start `
     --account-name <FOUNDRY> --project-name <PROJECT> `
     --name lg-market-agent --agent-version 1
 ```
 
-O ciclo de vida do agente e: `Stopped -> Starting -> Started (Running)`.
-Aguarde ~2 minutos ate o status mudar para Running.
+The agent lifecycle is: `Stopped -> Starting -> Started (Running)`.
+Wait ~2 minutes for the status to change to Running.
 
-### 5. Testar o agente
+### 5. Test the agent
 
 ```powershell
 python test_agent.py
 ```
 
-## Deploy Automatizado
+## Automated Deployment
 
 ```powershell
 cd lesson-2/langgraph-agent
 .\deploy.ps1
 ```
 
-## Invocacao do Agente (Detalhes Tecnicos)
+## Agent Invocation (Technical Details)
 
-Hosted agents sao invocados via **Responses API** com um campo `agent`
-no body que identifica o agente e a versao.
+Hosted agents are invoked via **Responses API** with an `agent` field
+in the body that identifies the agent and version.
 
-### Usando o SDK `azure-ai-projects`
+### Using the `azure-ai-projects` SDK
 
 ```python
 from azure.identity import DefaultAzureCredential
@@ -170,7 +170,7 @@ with (
     client.get_openai_client() as oai,
 ):
     response = oai.responses.create(
-        input=[{"role": "user", "content": "Qual o preco da PETR4?"}],
+        input=[{"role": "user", "content": "What's the price of PETR4?"}],
         extra_body={
             "agent": {
                 "id": "lg-market-agent",
@@ -183,7 +183,7 @@ with (
     print(response.output_text)
 ```
 
-### Usando REST direto
+### Using REST directly
 
 ```python
 import requests
@@ -194,7 +194,7 @@ token = credential.get_token("https://ai.azure.com/.default").token
 
 url = "https://<foundry>.services.ai.azure.com/api/projects/<project>/openai/responses?api-version=2025-11-15-preview"
 body = {
-    "input": [{"role": "user", "content": "Qual o preco da PETR4?"}],
+    "input": [{"role": "user", "content": "What's the price of PETR4?"}],
     "agent": {
         "id": "lg-market-agent",
         "name": "lg-market-agent",
@@ -205,7 +205,7 @@ body = {
 headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
 
 r = requests.post(url, headers=headers, json=body, timeout=120)
-# Extrair texto da resposta
+# Extract response text
 for item in r.json().get("output", []):
     if item.get("type") == "message":
         for c in item.get("content", []):
@@ -213,60 +213,60 @@ for item in r.json().get("output", []):
                 print(c["text"])
 ```
 
-## Workarounds e Bugs Conhecidos
+## Known Workarounds and Bugs
 
-### 1. AgentReference sem campo `id` (SDK)
+### 1. AgentReference without `id` field (SDK)
 
-O `AgentReference` do SDK `azure-ai-projects==2.0.0b3` nao inclui o campo `id`,
-mas o servico Foundry exige esse campo. Workaround: montar o dict manualmente
-com `id`, `name`, `version` e `type` (veja exemplos acima).
+The `azure-ai-projects==2.0.0b3` SDK's `AgentReference` doesn't include the `id` field,
+but the Foundry service requires this field. Workaround: manually build the dict
+with `id`, `name`, `version`, and `type` (see examples above).
 
-### 2. AgentReference no container (agentserver-core)
+### 2. AgentReference in container (agentserver-core)
 
-O servico Foundry envia um campo `id` ao rotear requests para o container, mas
-`azure-ai-agentserver-core==1.0.0b10` rejeita campos desconhecidos em
-`AgentReference`. O `main.py` inclui um monkey-patch em
-`_patch_agent_reference()` para lidar com isso.
+The Foundry service sends an `id` field when routing requests to the container, but
+`azure-ai-agentserver-core==1.0.0b10` rejects unknown fields in
+`AgentReference`. The `main.py` includes a monkey-patch in
+`_patch_agent_reference()` to handle this.
 
-### 3. `init_chat_model` requer `azure_endpoint` e `api_version`
+### 3. `init_chat_model` requires `azure_endpoint` and `api_version`
 
-Ao usar `init_chat_model("azure_openai:...")` com LangChain, os parametros
-`azure_endpoint` e `api_version` sao obrigatorios. O container recebe o
-endpoint via variavel de ambiente `AZURE_OPENAI_ENDPOINT`.
+When using `init_chat_model("azure_openai:...")` with LangChain, the
+`azure_endpoint` and `api_version` parameters are mandatory. The container receives the
+endpoint via the `AZURE_OPENAI_ENDPOINT` environment variable.
 
-### 4. `az acr build` UnicodeEncodeError no Windows
+### 4. `az acr build` UnicodeEncodeError on Windows
 
-O `az acr build` falha com `UnicodeEncodeError: 'charmap' codec` no
-PowerShell 5.1 devido ao colorama. Use `--no-logs` para contornar:
+`az acr build` fails with `UnicodeEncodeError: 'charmap' codec` in
+PowerShell 5.1 due to colorama. Use `--no-logs` to work around:
 
 ```powershell
 az acr build --registry <ACR> --image <TAG> --file Dockerfile . --no-logs
 ```
 
-### 5. Audience do token para invocacao
+### 5. Token audience for invocation
 
-- Endpoint `*.services.ai.azure.com` (projeto): audience `https://ai.azure.com/.default`
+- Endpoint `*.services.ai.azure.com` (project): audience `https://ai.azure.com/.default`
 - Endpoint `*.openai.azure.com` (OpenAI): audience `https://cognitiveservices.azure.com/.default`
 
-O `client.get_openai_client()` do SDK `AIProjectClient` ja configura isso
-automaticamente (api-version `2025-11-15-preview`).
+The `AIProjectClient` SDK's `client.get_openai_client()` already configures this
+automatically (api-version `2025-11-15-preview`).
 
-## Diferenca da Lesson 1
+## Difference from Lesson 1
 
-| Aspecto | Lesson 1 | Lesson 2 |
+| Aspect | Lesson 1 | Lesson 2 |
 |---|---|---|
-| Tipo | Prompt-based agent | Hosted agent (container) |
-| Framework | SDK direto (`azure-ai-agents`) | LangGraph + adapter |
-| Execucao | Serverless no Foundry | Container proprio no Foundry |
+| Type | Prompt-based agent | Hosted agent (container) |
+| Framework | Direct SDK (`azure-ai-agents`) | LangGraph + adapter |
+| Execution | Serverless in Foundry | Own container in Foundry |
 | Tools | Code Interpreter (built-in) | Custom tools (Python) |
-| Complexidade | Simples | Media |
+| Complexity | Simple | Medium |
 
-## Versoes de SDK Utilizadas
+## SDK Versions Used
 
-| Pacote | Versao |
+| Package | Version |
 |---|---|
 | `azure-ai-agentserver-langgraph` | 1.0.0b10 |
-| `azure-ai-agentserver-core` | 1.0.0b10 (dependencia) |
-| `azure-ai-projects` | 2.0.0b3 (cliente local) |
-| `azure-ai-agents` | 1.2.0b5 (dependencia) |
-| `langchain` / `langgraph` | Instalados pelo agentserver |
+| `azure-ai-agentserver-core` | 1.0.0b10 (dependency) |
+| `azure-ai-projects` | 2.0.0b3 (local client) |
+| `azure-ai-agents` | 1.2.0b5 (dependency) |
+| `langchain` / `langgraph` | Installed by agentserver |

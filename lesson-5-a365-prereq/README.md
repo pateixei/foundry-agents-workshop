@@ -1,179 +1,179 @@
-# Licao 5 - Pre-requisitos para Microsoft Agent 365
+# Lesson 5 - Prerequisites for Microsoft Agent 365
 
-Esta licao prepara o ambiente para integrar os agentes do workshop com o **Microsoft Agent 365** (A365). Nao criaremos agentes aqui - apenas configuraremos os pre-requisitos do ciclo de desenvolvimento A365.
+This lesson prepares the environment to integrate the workshop agents with **Microsoft Agent 365** (A365). We won't create agents here - only configure the prerequisites for the A365 development cycle.
 
-> **IMPORTANTE**: O Agent 365 requer participacao no [Frontier preview program](https://adoption.microsoft.com/copilot/frontier-program/).
+> **IMPORTANT**: Agent 365 requires participation in the [Frontier preview program](https://adoption.microsoft.com/copilot/frontier-program/).
 
 ---
 
-## Contexto: Cenario Cross-Tenant
+## Context: Cross-Tenant Scenario
 
-Neste workshop, temos um cenario especifico:
+In this workshop, we have a specific scenario:
 
-| Recurso | Tenant | Descricao |
+| Resource | Tenant | Description |
 |---------|--------|-----------|
-| **Azure** (Foundry, ACA, ACR) | Tenant A (Azure) | Onde os agentes estao implantados |
-| **Microsoft 365** (Teams, Outlook) | Tenant B (M365) | Onde os usuarios finais interagem com os agentes |
+| **Azure** (Foundry, ACA, ACR) | Tenant A (Azure) | Where the agents are deployed |
+| **Microsoft 365** (Teams, Outlook) | Tenant B (M365) | Where end users interact with the agents |
 
-O Agent 365 CLI usa **um unico `tenantId`** no `a365.config.json`. Esse tenant e o **tenant do Microsoft 365** (Tenant B), pois e la que:
-- O Agent Blueprint e registrado no Entra ID
-- O Agent User (service principal) e criado
-- O agente aparece no Teams e Outlook dos usuarios
-- As permissoes do Microsoft Graph sao concedidas
+The Agent 365 CLI uses **a single `tenantId`** in the `a365.config.json`. This tenant is the **Microsoft 365 tenant** (Tenant B), because that's where:
+- The Agent Blueprint is registered in Entra ID
+- The Agent User (service principal) is created
+- The agent appears in users' Teams and Outlook
+- Microsoft Graph permissions are granted
 
-A subscription Azure (no Tenant A) e referenciada separadamente no campo `subscriptionId` do config. No entanto, o `a365 setup` cria recursos Azure (Resource Group, App Service Plan, Web App) **na subscription do tenant logado**.
+The Azure subscription (in Tenant A) is referenced separately in the config's `subscriptionId` field. However, `a365 setup` creates Azure resources (Resource Group, App Service Plan, Web App) **in the logged-in tenant's subscription**.
 
-### Abordagem: `needDeployment: false`
+### Approach: `needDeployment: false`
 
-Como o agente ja esta implantado no ACA (Tenant A, licao 4), nao precisamos que o A365 CLI crie infraestrutura Azure. Usaremos `needDeployment: false` para que o CLI apenas:
+Since the agent is already deployed in ACA (Tenant A, lesson 4), we don't need the A365 CLI to create Azure infrastructure. We'll use `needDeployment: false` so the CLI only:
 
-1. **Registre o Agent Blueprint** no Entra ID do Tenant M365 (Tenant B)
-2. **Configure o messaging endpoint** apontando para o ACA no Tenant A
-3. **Crie a identidade do agente** (service principal) no Tenant M365
+1. **Registers the Agent Blueprint** in M365 Tenant's Entra ID (Tenant B)
+2. **Configures the messaging endpoint** pointing to ACA in Tenant A
+3. **Creates the agent identity** (service principal) in M365 Tenant
 
-Isso significa:
+This means:
 
-- O `az login` deve autenticar no **Tenant M365** (Tenant B)
-- O Custom Client App Registration deve ser feito no **Tenant B** (M365)
-- O usuario do CLI precisa de roles no **Tenant B**: Global Administrator, Agent ID Administrator, ou Agent ID Developer
-- **NAO e necessaria** uma subscription Azure no Tenant M365 para criar infra (nao criaremos nenhum recurso Azure via CLI)
-- Os campos de infra Azure no `a365.config.json` (`resourceGroup`, `appServicePlanName`, etc.) podem conter valores placeholder - nao serao usados
+- `az login` must authenticate to **M365 Tenant** (Tenant B)
+- Custom Client App Registration must be done in **Tenant B** (M365)
+- CLI user needs roles in **Tenant B**: Global Administrator, Agent ID Administrator, or Agent ID Developer
+- **No Azure subscription is needed** in M365 Tenant for creating infra (we won't create any Azure resources via CLI)
+- Azure infra fields in `a365.config.json` (`resourceGroup`, `appServicePlanName`, etc.) can contain placeholder values - they won't be used
 
 ---
 
-## Ciclo de Desenvolvimento Agent 365
+## Agent 365 Development Cycle
 
-O ciclo completo possui 6 etapas. **Nesta licao cobrimos as etapas 2-3 (config + blueprint)**:
+The complete cycle has 6 steps. **In this lesson we cover steps 2-3 (config + blueprint)**:
 
 ```
-1. Build and run agent          <-- ja feito (licao 4, ACA no Tenant A)
-2. Setup Agent 365 config       <-- ESTA LICAO
-3. Setup agent blueprint        <-- ESTA LICAO
-4. Deploy                       <-- ja feito (licao 4, needDeployment: false)
-5. Publish to M365 admin center <-- licao futura
-6. Create agent instances       <-- licao futura
+1. Build and run agent          <-- already done (lesson 4, ACA in Tenant A)
+2. Setup Agent 365 config       <-- THIS LESSON
+3. Setup agent blueprint        <-- THIS LESSON
+4. Deploy                       <-- already done (lesson 4, needDeployment: false)
+5. Publish to M365 admin center <-- future lesson
+6. Create agent instances       <-- future lesson
 ```
 
-Referencia: [Agent 365 Development Lifecycle](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/a365-dev-lifecycle)
+Reference: [Agent 365 Development Lifecycle](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/a365-dev-lifecycle)
 
 ---
 
-## Pre-requisito 0 - Frontier Preview Program
+## Prerequisite 0 - Frontier Preview Program
 
-O Agent 365 requer acesso ao Frontier preview program:
+Agent 365 requires access to the Frontier preview program:
 
-1. Acesse [https://adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/)
-2. Faca login com sua conta do **Tenant M365** (Tenant B)
-3. Solicite acesso ao programa
-4. Aguarde a aprovacao (pode levar alguns dias)
+1. Go to [https://adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/)
+2. Sign in with your **M365 Tenant** account (Tenant B)
+3. Request access to the program
+4. Wait for approval (may take a few days)
 
 ---
 
-## Pre-requisito 1 - Instalar o .NET SDK
+## Prerequisite 1 - Install .NET SDK
 
-O Agent 365 CLI e distribuido como ferramenta .NET:
+The Agent 365 CLI is distributed as a .NET tool:
 
 ```powershell
-# Verificar se o .NET esta instalado
+# Check if .NET is installed
 dotnet --version
-# Recomendado: .NET 8.0+
+# Recommended: .NET 8.0+
 
-# Se nao estiver instalado, baixe de:
+# If not installed, download from:
 # https://dotnet.microsoft.com/download
 ```
 
 ---
 
-## Pre-requisito 2 - Instalar o Agent 365 CLI
+## Prerequisite 2 - Install Agent 365 CLI
 
 ```powershell
-# Instalar o CLI (preview)
+# Install the CLI (preview)
 dotnet tool install --global Microsoft.Agents.A365.DevTools.Cli --prerelease
 
-# Verificar instalacao
+# Verify installation
 a365 -h
 
-# Para atualizar futuramente:
+# To update in the future:
 dotnet tool update --global Microsoft.Agents.A365.DevTools.Cli --prerelease
 ```
 
-> **Nota**: Sempre use `--prerelease` enquanto o CLI estiver em preview.
+> **Note**: Always use `--prerelease` while the CLI is in preview.
 > NuGet: [Microsoft.Agents.A365.DevTools.Cli](https://www.nuget.org/packages/Microsoft.Agents.A365.DevTools.Cli)
 
 ---
 
-## Pre-requisito 3 - Custom Client App Registration (no Tenant M365)
+## Prerequisite 3 - Custom Client App Registration (in M365 Tenant)
 
-O CLI precisa de um app registration no Entra ID do **Tenant M365** para autenticar.
+The CLI needs an app registration in **M365 Tenant's** Entra ID to authenticate.
 
-### 3.1 - Registrar o aplicativo
+### 3.1 - Register the application
 
-1. Acesse o [Microsoft Entra admin center](https://entra.microsoft.com/) do **Tenant B (M365)**
-2. Navegue para **App registrations > New registration**
-3. Preencha:
+1. Go to the [Microsoft Entra admin center](https://entra.microsoft.com/) of **Tenant B (M365)**
+2. Navigate to **App registrations > New registration**
+3. Fill in:
    - **Name**: `a365-workshop-cli`
    - **Supported account types**: `Accounts in this organizational directory only (Single tenant)`
-   - **Redirect URI**: Selecione `Public client/native (mobile & desktop)` e insira `http://localhost:8400/`
-4. Clique em **Register**
+   - **Redirect URI**: Select `Public client/native (mobile & desktop)` and enter `http://localhost:8400/`
+4. Click **Register**
 
-### 3.2 - Configurar Redirect URI adicional
+### 3.2 - Configure additional Redirect URI
 
-1. Na pagina **Overview** do app, copie o **Application (client) ID** (formato GUID)
-2. Va para **Authentication (preview)** > **Add Redirect URI**
-3. Selecione **Mobile and desktop applications** e adicione:
+1. On the app's **Overview** page, copy the **Application (client) ID** (GUID format)
+2. Go to **Authentication (preview)** > **Add Redirect URI**
+3. Select **Mobile and desktop applications** and add:
    ```
-   ms-appx-web://Microsoft.AAD.BrokerPlugin/{SEU-CLIENT-ID}
+   ms-appx-web://Microsoft.AAD.BrokerPlugin/{YOUR-CLIENT-ID}
    ```
-   (substitua `{SEU-CLIENT-ID}` pelo Application (client) ID copiado)
-4. Clique em **Configure**
+   (replace `{YOUR-CLIENT-ID}` with the copied Application (client) ID)
+4. Click **Configure**
 
-### 3.3 - Configurar API Permissions
+### 3.3 - Configure API Permissions
 
-> **IMPORTANTE**: Use **Delegated permissions** (NAO Application permissions).
+> **IMPORTANT**: Use **Delegated permissions** (NOT Application permissions).
 
-#### Opcao A - Via Entra admin center (se permissoes beta estiverem visiveis)
+#### Option A - Via Entra admin center (if beta permissions are visible)
 
-1. No app registration, va para **API permissions > Add a permission**
-2. Selecione **Microsoft Graph > Delegated permissions**
-3. Adicione as 5 permissoes:
+1. In the app registration, go to **API permissions > Add a permission**
+2. Select **Microsoft Graph > Delegated permissions**
+3. Add the 5 permissions:
 
-| Permissao | Descricao |
+| Permission | Description |
 |-----------|-----------|
-| `AgentIdentityBlueprint.ReadWrite.All` | Gerenciar Agent Blueprints (beta) |
-| `AgentIdentityBlueprint.UpdateAuthProperties.All` | Atualizar permissoes hereditarias do Blueprint (beta) |
-| `Application.ReadWrite.All` | Criar e gerenciar aplicacoes |
-| `DelegatedPermissionGrant.ReadWrite.All` | Conceder permissoes para blueprints |
-| `Directory.Read.All` | Ler dados do diretorio |
+| `AgentIdentityBlueprint.ReadWrite.All` | Manage Agent Blueprints (beta) |
+| `AgentIdentityBlueprint.UpdateAuthProperties.All` | Update Blueprint's inherited permissions (beta) |
+| `Application.ReadWrite.All` | Create and manage applications |
+| `DelegatedPermissionGrant.ReadWrite.All` | Grant permissions for blueprints |
+| `Directory.Read.All` | Read directory data |
 
-4. Clique em **Grant admin consent for [Seu Tenant]**
-5. Verifique que todas mostram checks verdes
+4. Click **Grant admin consent for [Your Tenant]**
+5. Verify that all show green checkmarks
 
-#### Opcao B - Via Microsoft Graph API (se permissoes beta NAO estiverem visiveis)
+#### Option B - Via Microsoft Graph API (if beta permissions are NOT visible)
 
-Se as permissoes `AgentIdentityBlueprint.*` nao aparecerem no portal, use o Graph Explorer:
+If `AgentIdentityBlueprint.*` permissions don't appear in the portal, use Graph Explorer:
 
-1. Acesse [Graph Explorer](https://developer.microsoft.com/graph/graph-explorer)
-2. Faca login com conta admin do Tenant M365
+1. Go to [Graph Explorer](https://developer.microsoft.com/graph/graph-explorer)
+2. Sign in with M365 Tenant admin account
 
-**Obter o Service Principal ID do app:**
+**Get the app's Service Principal ID:**
 ```http
-GET https://graph.microsoft.com/v1.0/servicePrincipals?$filter=appId eq '{SEU-CLIENT-ID}'&$select=id
+GET https://graph.microsoft.com/v1.0/servicePrincipals?$filter=appId eq '{YOUR-CLIENT-ID}'&$select=id
 ```
-O `id` retornado e o `SP_OBJECT_ID`.
+The returned `id` is the `SP_OBJECT_ID`.
 
-Se retornar vazio, crie o service principal:
+If it returns empty, create the service principal:
 ```http
 POST https://graph.microsoft.com/v1.0/servicePrincipals
-Body: { "appId": "{SEU-CLIENT-ID}" }
+Body: { "appId": "{YOUR-CLIENT-ID}" }
 ```
 
-**Obter o Graph Resource ID:**
+**Get the Graph Resource ID:**
 ```http
 GET https://graph.microsoft.com/v1.0/servicePrincipals?$filter=appId eq '00000003-0000-0000-c000-000000000000'&$select=id
 ```
-O `id` retornado e o `GRAPH_RESOURCE_ID`.
+The returned `id` is the `GRAPH_RESOURCE_ID`.
 
-**Criar as permissoes delegadas (com admin consent automatico):**
+**Create the delegated permissions (with automatic admin consent):**
 ```http
 POST https://graph.microsoft.com/v1.0/oauth2PermissionGrants
 Body:
@@ -186,11 +186,11 @@ Body:
 }
 ```
 
-> **ATENCAO**: Se usou a Opcao B, **NAO** clique em "Grant admin consent" no portal Entra depois. O portal nao ve permissoes beta e sobrescreve as que voce criou via API.
+> **WARNING**: If you used Option B, **DO NOT** click "Grant admin consent" in the Entra portal afterwards. The portal doesn't see beta permissions and will overwrite what you created via API.
 
-### 3.4 - Anotar o Client ID
+### 3.4 - Note the Client ID
 
-Guarde o **Application (client) ID** - voce vai precisar dele no proximo passo.
+Save the **Application (client) ID** - you'll need it in the next step.
 
 ```
 Application (client) ID: ________-____-____-____-____________
@@ -198,125 +198,125 @@ Application (client) ID: ________-____-____-____-____________
 
 ---
 
-## Etapa 2 - Setup Agent 365 Config
+## Step 2 - Setup Agent 365 Config
 
-Como usamos `needDeployment: false`, **nao** executaremos o wizard interativo `a365 config init` (ele tenta listar subscriptions Azure e pode falhar sem subscription no Tenant M365). Em vez disso, criaremos o `a365.config.json` manualmente.
+Since we use `needDeployment: false`, we will **not** run the interactive wizard `a365 config init` (it tries to list Azure subscriptions and may fail without a subscription in M365 Tenant). Instead, we'll create the `a365.config.json` manually.
 
-### 4.1 - Autenticar no Tenant M365
+### 4.1 - Authenticate to M365 Tenant
 
 ```powershell
-# Login no Tenant M365 (Tenant B)
+# Login to M365 Tenant (Tenant B)
 az login --tenant <TENANT-M365-ID>
 
-# Verificar que estamos no tenant correto
+# Verify we're in the correct tenant
 az account show --query "{tenant:tenantId, user:user.name}" -o table
 ```
 
-> O `az login` e necessario para que o CLI autentique no Entra ID do Tenant M365. NAO precisamos de uma subscription Azure aqui.
+> `az login` is necessary for the CLI to authenticate to M365 Tenant's Entra ID. We DO NOT need an Azure subscription here.
 
-### 4.2 - Criar o a365.config.json manualmente
+### 4.2 - Create a365.config.json manually
 
-Navegue para o diretorio da licao 5 e crie o arquivo:
+Navigate to lesson 5 directory and create the file:
 
 ```powershell
 cd lesson-5-a365-prereq
 ```
 
-Crie o arquivo `a365.config.json` com o seguinte conteudo:
+Create the `a365.config.json` file with the following content:
 
 ```json
 {
   "$schema": "./a365.config.schema.json",
   "tenantId": "<TENANT-M365-ID>",
-  "clientAppId": "<CLIENT-APP-ID-DO-PASSO-3>",
+  "clientAppId": "<CLIENT-APP-ID-FROM-STEP-3>",
   "agentBlueprintDisplayName": "Financial Market Agent Blueprint",
   "agentIdentityDisplayName": "Financial Market Agent Identity",
   "agentUserPrincipalName": "fin-market-agent@<tenant-m365>.onmicrosoft.com",
   "agentUserDisplayName": "Financial Market Agent",
-  "managerEmail": "seu-email@<tenant-m365>.com",
+  "managerEmail": "your-email@<tenant-m365>.com",
   "agentUserUsageLocation": "BR",
   "deploymentProjectPath": ".",
   "needDeployment": false,
   "messagingEndpoint": "https://<your-aca-app>.<aca-env-hash>.<region>.azurecontainerapps.io/api/messages",
-  "agentDescription": "Agente de mercado financeiro (LangGraph no ACA) - Workshop A365"
+  "agentDescription": "Financial market agent (LangGraph on ACA) - A365 Workshop"
 }
 ```
 
-**Campos importantes:**
+**Important fields:**
 
-| Campo | Valor | Explicacao |
+| Field | Value | Explanation |
 |-------|-------|------------|
-| `tenantId` | GUID do Tenant M365 | Onde o blueprint e registrado no Entra ID |
-| `clientAppId` | GUID do passo 3.4 | App registration para autenticacao do CLI |
-| `needDeployment` | `false` | **Nao cria infra Azure** - agente ja roda no ACA |
-| `messagingEndpoint` | URL do ACA + `/api/messages` | Endpoint que o A365 usa para enviar mensagens ao agente |
-| `agentUserPrincipalName` | `nome@tenant.onmicrosoft.com` | UPN do agente no Entra (dominio do Tenant M365) |
-| `managerEmail` | Email no Tenant M365 | Gerente responsavel pelo agente |
+| `tenantId` | M365 Tenant GUID | Where the blueprint is registered in Entra ID |
+| `clientAppId` | GUID from step 3.4 | App registration for CLI authentication |
+| `needDeployment` | `false` | **Does not create Azure infra** - agent already runs in ACA |
+| `messagingEndpoint` | ACA URL + `/api/messages` | Endpoint that A365 uses to send messages to the agent |
+| `agentUserPrincipalName` | `name@tenant.onmicrosoft.com` | Agent's UPN in Entra (M365 Tenant domain) |
+| `managerEmail` | Email in M365 Tenant | Manager responsible for the agent |
 
-> **Nota**: Campos de infra Azure (`subscriptionId`, `resourceGroup`, `appServicePlanName`, `webAppName`) foram **omitidos** pois `needDeployment: false`. Se o CLI exigir esses campos, adicione valores placeholder.
+> **Note**: Azure infra fields (`subscriptionId`, `resourceGroup`, `appServicePlanName`, `webAppName`) were **omitted** because `needDeployment: false`. If the CLI requires these fields, add placeholder values.
 
-### 4.3 - Verificar a configuracao
+### 4.3 - Verify the configuration
 
 ```powershell
-# Verificar que o arquivo existe
+# Verify the file exists
 Test-Path a365.config.json
-# Esperado: True
+# Expected: True
 
-# Exibir a configuracao
+# Display the configuration
 a365 config display
 ```
 
-**Checklist de verificacao:**
-- [ ] `tenantId` e o GUID do Tenant M365 (NAO do Azure)
-- [ ] `clientAppId` e o App Registration do passo 3
-- [ ] `needDeployment` esta como `false`
-- [ ] `messagingEndpoint` aponta para o ACA da licao 4
-- [ ] `agentUserPrincipalName` usa o dominio `@<tenant-m365>.onmicrosoft.com`
-- [ ] `managerEmail` usa o dominio do Tenant M365
+**Verification checklist:**
+- [ ] `tenantId` is the M365 Tenant GUID (NOT Azure)
+- [ ] `clientAppId` is the App Registration from step 3
+- [ ] `needDeployment` is `false`
+- [ ] `messagingEndpoint` points to ACA from lesson 4
+- [ ] `agentUserPrincipalName` uses the domain `@<tenant-m365>.onmicrosoft.com`
+- [ ] `managerEmail` uses the M365 Tenant domain
 
 ---
 
-## Etapa 3 - Setup Agent Blueprint
+## Step 3 - Setup Agent Blueprint
 
-O blueprint define a identidade e permissoes do agente no Entra ID. Com `needDeployment: false`, o CLI **pula a criacao de infra Azure** e foca apenas no registro da identidade.
+The blueprint defines the agent's identity and permissions in Entra ID. With `needDeployment: false`, the CLI **skips Azure infra creation** and focuses only on identity registration.
 
-### 5.1 - Executar o setup
+### 5.1 - Execute the setup
 
 ```powershell
-# Executar o setup completo (dentro de lesson-5-a365-prereq/)
+# Execute the complete setup (inside lesson-5-a365-prereq/)
 a365 setup all
 ```
 
-Com `needDeployment: false`, o comando realiza **apenas**:
+With `needDeployment: false`, the command performs **only**:
 
-1. **Registra o Agent Blueprint** no Entra ID do Tenant M365:
-   - Cria o Agent Identity Blueprint (app registration)
-   - Cria o service principal associado
-   - Configura a identidade do agente (`agentUserPrincipalName`)
+1. **Registers the Agent Blueprint** in M365 Tenant's Entra ID:
+   - Creates the Agent Identity Blueprint (app registration)
+   - Creates the associated service principal
+   - Configures the agent identity (`agentUserPrincipalName`)
 
-2. **Configura API Permissions**:
+2. **Configures API Permissions**:
    - Microsoft Graph API scopes
    - Messaging Bot API permissions
-   - Permissoes hereditarias para instancias futuras
+   - Inherited permissions for future instances
 
-3. **Registra o messaging endpoint**:
-   - Associa o `messagingEndpoint` (ACA da licao 4) ao blueprint
+3. **Registers the messaging endpoint**:
+   - Associates the `messagingEndpoint` (ACA from lesson 4) to the blueprint
 
-4. **Gera `a365.generated.config.json`**:
-   - IDs do blueprint, service principal, client secret, endpoint
+4. **Generates `a365.generated.config.json`**:
+   - Blueprint IDs, service principal, client secret, endpoint
 
-> **Nota**: O CLI abre janelas do browser para admin consent. Complete todos os fluxos. Leva 3-5 minutos.
+> **Note**: The CLI opens browser windows for admin consent. Complete all flows. Takes 3-5 minutes.
 >
-> **NAO sera criada** nenhuma infra Azure (Resource Group, App Service Plan, Web App). O agente ja roda no ACA do Tenant A.
+> **No Azure infra will be created** (Resource Group, App Service Plan, Web App). The agent already runs in ACA of Tenant A.
 
-### 5.2 - Verificar o setup
+### 5.2 - Verify the setup
 
 ```powershell
-# Exibir configuracao gerada
+# Display generated configuration
 a365 config display -g
 ```
 
-Saida esperada (campos-chave):
+Expected output (key fields):
 ```json
 {
   "agentBlueprintId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
@@ -329,63 +329,63 @@ Saida esperada (campos-chave):
 ```
 
 ```powershell
-# Verificar que o arquivo gerado existe
+# Verify the generated file exists
 Test-Path a365.generated.config.json
-# Esperado: True
+# Expected: True
 ```
 
-**Verificacoes no Entra admin center** (Tenant M365):
-- [ ] App Registration existe (buscar pelo `agentBlueprintId`)
-- [ ] Enterprise Application correspondente existe
-- [ ] API permissions mostram checks verdes ("Granted for [Seu Tenant]")
-- [ ] Permissoes incluem Microsoft Graph e Messaging Bot API
-- [ ] Agent Identity visivel em [Entra Agent Registry](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/AgentIdentitiesListBlade)
+**Verifications in Entra admin center** (M365 Tenant):
+- [ ] App Registration exists (search by `agentBlueprintId`)
+- [ ] Corresponding Enterprise Application exists
+- [ ] API permissions show green checkmarks ("Granted for [Your Tenant]")
+- [ ] Permissions include Microsoft Graph and Messaging Bot API
+- [ ] Agent Identity visible in [Entra Agent Registry](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/AgentIdentitiesListBlade)
 
 ---
 
-## Resumo dos artefatos gerados
+## Summary of artifacts generated
 
-Ao final desta licao, voce tera:
+At the end of this lesson, you will have:
 
-| Artefato | Localizacao | Descricao |
+| Artifact | Location | Description |
 |----------|-------------|-----------|
-| `a365.config.json` | `lesson-5-a365-prereq/` | Configuracao manual (criada a mao, sem wizard) |
-| `a365.generated.config.json` | `lesson-5-a365-prereq/` | Configuracao gerada pelo CLI (IDs, secrets) |
-| Custom Client App | Entra ID (Tenant M365) | App registration para autenticacao do CLI |
-| Agent Blueprint | Entra ID (Tenant M365) | Identidade + permissoes do agente |
-| Service Principal | Entra ID (Tenant M365) | Identidade do agente para autenticacao |
+| `a365.config.json` | `lesson-5-a365-prereq/` | Manual configuration (created by hand, no wizard) |
+| `a365.generated.config.json` | `lesson-5-a365-prereq/` | Configuration generated by CLI (IDs, secrets) |
+| Custom Client App | Entra ID (M365 Tenant) | App registration for CLI authentication |
+| Agent Blueprint | Entra ID (M365 Tenant) | Agent identity + permissions |
+| Service Principal | Entra ID (M365 Tenant) | Agent identity for authentication |
 
-> **O que NAO foi criado**: Nenhum recurso Azure (Resource Group, App Service Plan, Web App). O agente continua rodando no ACA do Tenant A (licao 4) e o A365 apenas aponta para ele via `messagingEndpoint`.
+> **What was NOT created**: No Azure resources (Resource Group, App Service Plan, Web App). The agent continues running in ACA of Tenant A (lesson 4) and A365 only points to it via `messagingEndpoint`.
 
 ---
 
 ## Troubleshooting
 
-| Problema | Causa provavel | Solucao |
+| Problem | Probable Cause | Solution |
 |----------|---------------|---------|
-| `az login` nao mostra subscription | Tenant errado | Use `az login --tenant <TENANT-M365-ID>` |
-| `a365 config init` falha ao listar subscriptions | Sem subscription no Tenant M365 | Nao use o wizard. Crie o `a365.config.json` manualmente (secao 4.2) |
-| CLI exige campos de infra Azure | Schema validation | Adicione campos placeholder: `"subscriptionId": "00000000-0000-0000-0000-000000000000"` |
-| Client App ID invalido | App ID vs Object ID | Verifique se usou Application (client) ID, nao Object ID |
-| Permissoes beta nao visiveis | AgentIdentityBlueprint.* em beta | Use a Opcao B (Graph API) para adicionar permissoes |
-| Admin consent falha | Sem role de admin | Peca ao admin do Tenant M365 para completar o passo 3.3 |
-| `a365 setup` falha com permissoes | Role insuficiente | Precisa de Global Admin, Agent ID Admin ou Agent ID Developer |
-| Blueprint nao aparece no Entra | Setup incompleto | Execute `a365 setup all` novamente |
-| Endpoint nao registrado | needDeployment=false sem messagingEndpoint | Execute `a365 setup blueprint --endpoint-only` |
+| `az login` doesn't show subscription | Wrong tenant | Use `az login --tenant <TENANT-M365-ID>` |
+| `a365 config init` fails listing subscriptions | No subscription in M365 Tenant | Don't use the wizard. Create `a365.config.json` manually (section 4.2) |
+| CLI requires Azure infra fields | Schema validation | Add placeholder fields: `"subscriptionId": "00000000-0000-0000-0000-000000000000"` |
+| Invalid Client App ID | App ID vs Object ID | Verify you used Application (client) ID, not Object ID |
+| Beta permissions not visible | AgentIdentityBlueprint.* in beta | Use Option B (Graph API) to add permissions |
+| Admin consent fails | No admin role | Ask M365 Tenant admin to complete step 3.3 |
+| `a365 setup` fails with permissions | Insufficient role | Need Global Admin, Agent ID Admin, or Agent ID Developer |
+| Blueprint doesn't appear in Entra | Incomplete setup | Run `a365 setup all` again |
+| Endpoint not registered | needDeployment=false without messagingEndpoint | Run `a365 setup blueprint --endpoint-only` |
 
 ---
 
-## Proximos passos
+## Next steps
 
-Com os pre-requisitos configurados, as proximas etapas do ciclo A365 sao:
+With the prerequisites configured, the next steps in the A365 cycle are:
 
-- **Licao 6 (futura)**: Adaptar o codigo do agente com o A365 SDK (observabilidade, tooling, notificacoes)
-- **Licao 7 (futura)**: Publicar o agente no M365 admin center (`a365 publish`)
-- **Licao 8 (futura)**: Criar instancias do agente no Teams (`a365 create-instance` ou via Teams Apps)
+- **Lesson 6 (future)**: Adapt agent code with A365 SDK (observability, tooling, notifications)
+- **Lesson 7 (future)**: Publish agent to M365 admin center (`a365 publish`)
+- **Lesson 8 (future)**: Create agent instances in Teams (`a365 create-instance` or via Teams Apps)
 
 ---
 
-## Referencias
+## References
 
 - [Agent 365 Development Lifecycle](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/a365-dev-lifecycle)
 - [Agent 365 CLI](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/agent-365-cli)

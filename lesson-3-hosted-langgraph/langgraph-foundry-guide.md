@@ -1,48 +1,48 @@
-## Como hospedar um agente LangGraph no Azure AI Foundry
+## How to Host a LangGraph Agent on Azure AI Foundry
 
-### Pré-requisitos na infraestrutura Azure
+### Prerequisites in Azure Infrastructure
 
-1. **Azure AI Foundry (account + project)** — o Foundry fornece o gateway de API (Responses API), o Capability Host que gerencia o container, e o acesso ao modelo.
+1. **Azure AI Foundry (account + project)** — Foundry provides the API gateway (Responses API), the Capability Host that manages the container, and model access.
 
-2. **Azure Container Registry (ACR)** — para armazenar a imagem Docker do seu agente.
+2. **Azure Container Registry (ACR)** — to store your agent's Docker image.
 
-3. **Modelo deployado** — um deployment de modelo (ex: `gpt-4.1`) no Foundry, acessível via Azure OpenAI.
+3. **Deployed model** — a model deployment (e.g., `gpt-4.1`) in Foundry, accessible via Azure OpenAI.
 
-4. **Managed Identity com RBAC** — a identidade do projeto precisa de:
-   - **AcrPull** no Container Registry (para puxar a imagem)
-   - **Cognitive Services OpenAI User** no Foundry account (para o container chamar o modelo)
+4. **Managed Identity with RBAC** — the project identity needs:
+   - **AcrPull** on the Container Registry (to pull the image)
+   - **Cognitive Services OpenAI User** on the Foundry account (for the container to call the model)
 
-5. **Capability Host** — recurso do Foundry que gerencia o ciclo de vida do container (start/stop/routing). Criado automaticamente ao registrar o agente.
+5. **Capability Host** — Foundry resource that manages the container lifecycle (start/stop/routing). Automatically created when registering the agent.
 
-### O que muda no código LangGraph
+### What Changes in LangGraph Code
 
-Seu código LangGraph em si (grafo, tools, nodes) **não muda**. As adaptações são apenas na camada de integração:
+Your LangGraph code itself (graph, tools, nodes) **does not change**. The adaptations are only in the integration layer:
 
-#### 1. Dependência única: `azure-ai-agentserver-langgraph`
+#### 1. Single dependency: `azure-ai-agentserver-langgraph`
 
 ```
 azure-ai-agentserver-langgraph==1.0.0b10
 ```
 
-Este pacote traz tudo: o adapter que expõe o grafo como Responses API, mais as dependências do LangGraph/LangChain.
+This package brings everything: the adapter that exposes the graph as a Responses API, plus LangGraph/LangChain dependencies.
 
-#### 2. Adapter `from_langgraph` no entry point
+#### 2. `from_langgraph` adapter at entry point
 
-Em vez de rodar o grafo manualmente, você o expõe via adapter:
+Instead of running the graph manually, you expose it via adapter:
 
 ```python
 from azure.ai.agentserver.langgraph import from_langgraph
 
-agent = build_agent()       # seu StateGraph compilado
+agent = build_agent()       # your compiled StateGraph
 adapter = from_langgraph(agent)
-adapter.run()                # abre servidor HTTP na porta 8088
+adapter.run()                # opens HTTP server on port 8088
 ```
 
-Isso transforma o grafo LangGraph num servidor Responses API que o Foundry sabe chamar.
+This transforms the LangGraph graph into a Responses API server that Foundry knows how to call.
 
-#### 3. LLM via `init_chat_model` com credencial Azure
+#### 3. LLM via `init_chat_model` with Azure credential
 
-O container usa `DefaultAzureCredential` (managed identity) para autenticar no Azure OpenAI:
+The container uses `DefaultAzureCredential` (managed identity) to authenticate to Azure OpenAI:
 
 ```python
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
@@ -59,20 +59,20 @@ llm = init_chat_model(
 )
 ```
 
-#### 4. Variáveis de ambiente consumidas pelo container
+#### 4. Environment variables consumed by the container
 
-O Foundry injeta estas env vars ao iniciar o container:
+Foundry injects these env vars when starting the container:
 
-| Variável | Descrição |
+| Variable | Description |
 |---|---|
-| `AZURE_AI_PROJECT_ENDPOINT` | Endpoint do projeto Foundry |
-| `AZURE_AI_MODEL_DEPLOYMENT_NAME` | Nome do deployment do modelo |
-| `AZURE_OPENAI_ENDPOINT` | Endpoint OpenAI do Foundry (`https://<account>.openai.azure.com/`) |
-| `AZURE_CLIENT_ID` | Client ID da managed identity |
+| `AZURE_AI_PROJECT_ENDPOINT` | Foundry project endpoint |
+| `AZURE_AI_MODEL_DEPLOYMENT_NAME` | Model deployment name |
+| `AZURE_OPENAI_ENDPOINT` | Foundry OpenAI endpoint (`https://<account>.openai.azure.com/`) |
+| `AZURE_CLIENT_ID` | Managed identity client ID |
 
-#### 5. Monkey-patch obrigatório (bug conhecida)
+#### 5. Required monkey-patch (known bug)
 
-O pacote `azure-ai-agentserver-core` v1.0.0b10 não aceita o campo `id` que o Foundry envia no `AgentReference`. É necessário fazer patch no `_deserialize_agent_reference` para ignorar campos extras — conforme implementado em [main.py](lesson-3-hosted-langgraph/langgraph-agent/main.py#L211-L245).
+The `azure-ai-agentserver-core` package v1.0.0b10 does not accept the `id` field that Foundry sends in `AgentReference`. You need to patch `_deserialize_agent_reference` to ignore extra fields — as implemented in [main.py](lesson-3-hosted-langgraph/langgraph-agent/main.py#L211-L245).
 
 #### 6. Dockerfile
 
@@ -86,22 +86,22 @@ EXPOSE 8088
 CMD ["python", "user_agent/main.py"]
 ```
 
-A porta **8088** é a esperada pelo Foundry para agentes LangGraph.
+Port **8088** is expected by Foundry for LangGraph agents.
 
-### Fluxo de deploy
+### Deployment Flow
 
-1. **Build da imagem** no ACR: `az acr build --registry <acr> --image lg-market-agent:v1 .`
-2. **Registrar o agente** via SDK (`create_hosted_agent.py`) ou CLI (`az cognitiveservices agent create`), passando a imagem ACR e as env vars.
-3. **Iniciar o agente**: `az cognitiveservices agent start --name <name> --agent-version 1`
-4. **Testar** via Foundry portal (playground) ou via cliente programático usando a Responses API.
+1. **Build the image** in ACR: `az acr build --registry <acr> --image lg-market-agent:v1 .`
+2. **Register the agent** via SDK (`create_hosted_agent.py`) or CLI (`az cognitiveservices agent create`), passing the ACR image and env vars.
+3. **Start the agent**: `az cognitiveservices agent start --name <name> --agent-version 1`
+4. **Test** via Foundry portal (playground) or programmatic client using the Responses API.
 
-### Resumo das diferenças vs. LangGraph standalone
+### Summary of Differences vs. Standalone LangGraph
 
-| Aspecto | LangGraph standalone | LangGraph no Foundry |
+| Aspect | Standalone LangGraph | LangGraph on Foundry |
 |---|---|---|
-| Execução | Você roda `graph.invoke()` | Adapter `from_langgraph(graph).run()` expõe HTTP |
-| Autenticação LLM | API key ou qualquer método | Managed Identity via `DefaultAzureCredential` |
-| System prompt | Passado no código | Passado no código (portal não permite editar) |
-| Porta | Qualquer | **8088** (convenção Foundry) |
-| Dependência extra | Nenhuma | `azure-ai-agentserver-langgraph` |
-| Deploy | Onde quiser | Imagem Docker no ACR → Foundry hosted agent |
+| Execution | You run `graph.invoke()` | Adapter `from_langgraph(graph).run()` exposes HTTP |
+| LLM Authentication | API key or any method | Managed Identity via `DefaultAzureCredential` |
+| System prompt | Passed in code | Passed in code (portal does not allow editing) |
+| Port | Any | **8088** (Foundry convention) |
+| Extra dependency | None | `azure-ai-agentserver-langgraph` |
+| Deploy | Wherever you want | Docker image in ACR → Foundry hosted agent |
