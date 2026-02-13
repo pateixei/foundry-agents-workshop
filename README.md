@@ -1,59 +1,59 @@
 # Microsoft Foundry Agents Workshop
 
-Workshop pratico para construir, implantar e gerenciar agentes de IA usando o **Microsoft Foundry** com diferentes abordagens: agentes declarativos, hosted agents (MAF e LangGraph), agentes em Azure Container Apps e integracao com Microsoft Agent 365.
+Practical workshop to build, deploy, and manage AI agents using **Microsoft Foundry** with different approaches: declarative agents, hosted agents (MAF and LangGraph), agents on Azure Container Apps, and integration with Microsoft Agent 365.
 
 ![Architecture Overview](slides/architecture-diagram.png)
 
-## Conteudo
+## Contents
 
-| Licao | Titulo | Abordagem | Descricao |
+| Lesson | Title | Approach | Description |
 |:-----:|--------|-----------|-----------|
-| [Prereq](prereq/) | Infraestrutura Azure | Bicep + az CLI | Provisiona Foundry, ACR, ACA Environment, App Insights |
-| [1](lesson-1-declarative/) | Agente Declarativo | `PromptAgentDefinition` | Agente criado via SDK sem container, editavel no portal |
-| [2](lesson-2-hosted-maf/) | Hosted Agent (MAF) | Microsoft Agent Framework | Container com MAF hospedado no Foundry |
-| [3](lesson-3-hosted-langgraph/) | Hosted Agent (LangGraph) | LangGraph + adapter | Container LangGraph hospedado no Foundry |
-| [4](lesson-4-aca-langgraph/) | Connected Agent (ACA) | FastAPI + LangGraph | Container proprio no ACA, registrado no Foundry Control Plane |
-| [5](lesson-5-a365-prereq/) | Agent 365 (Prereqs) | A365 CLI | Preparacao para publicar agentes no Microsoft 365 |
+| [Prereq](prereq/) | Azure Infrastructure | Bicep + az CLI | Provisions Foundry, ACR, ACA Environment, App Insights |
+| [1](lesson-1-declarative/) | Declarative Agent | `PromptAgentDefinition` | Agent created via SDK without container, editable in portal |
+| [2](lesson-2-hosted-maf/) | Hosted Agent (MAF) | Microsoft Agent Framework | Container with MAF hosted in Foundry |
+| [3](lesson-3-hosted-langgraph/) | Hosted Agent (LangGraph) | LangGraph + adapter | LangGraph container hosted in Foundry |
+| [4](lesson-4-aca-langgraph/) | Connected Agent (ACA) | FastAPI + LangGraph | Own container in ACA, registered in Foundry Control Plane |
+| [5](lesson-5-a365-prereq/) | Agent 365 (Prereqs) | A365 CLI | Preparation to publish agents in Microsoft 365 |
 
-## Pre-requisitos
+## Prerequisites
 
-- Azure CLI (`az`) instalado e autenticado
+- Azure CLI (`az`) installed and authenticated
 - Python 3.11+
-- Docker (opcional, builds sao feitos no ACR)
-- Subscription Azure com permissoes de Contributor
+- Docker (optional, builds are done in ACR)
+- Azure Subscription with Contributor permissions
 
 ## Quick Start
 
 ```powershell
-# 1. Provisionar infraestrutura
+# 1. Provision infrastructure
 cd prereq
 .\deploy.ps1
 
-# 2. Deploy do agente declarativo (licao 1)
+# 2. Deploy declarative agent (lesson 1)
 cd ../lesson-1-declarative
 python create_agent.py
 
-# 3. Deploy do hosted agent MAF (licao 2)
+# 3. Deploy hosted agent MAF (lesson 2)
 cd ../lesson-2-hosted-maf/foundry-agent
 .\deploy.ps1
 
-# 4. Deploy do hosted agent LangGraph (licao 3)
+# 4. Deploy hosted agent LangGraph (lesson 3)
 cd ../../lesson-3-hosted-langgraph/langgraph-agent
 .\deploy.ps1
 
-# 5. Deploy do agente no ACA (licao 4)
+# 5. Deploy agent on ACA (lesson 4)
 cd ../../lesson-4-aca-langgraph/aca-agent
 .\deploy.ps1
 ```
 
-## Testar os agentes
+## Test the agents
 
-O script `test/chat.py` oferece uma interface unificada para conversar com qualquer agente:
+The `test/chat.py` script offers a unified interface to chat with any agent:
 
 ```powershell
 pip install azure-identity requests python-dotenv
 
-# Declarativo
+# Declarative
 python test/chat.py --lesson 1 --endpoint https://<foundry>.services.ai.azure.com/api/projects/<project>
 
 # Hosted MAF
@@ -65,99 +65,99 @@ python test/chat.py --lesson 3 --endpoint https://<foundry>.services.ai.azure.co
 # ACA Connected (auto-resolve via az CLI)
 python test/chat.py --lesson 4
 
-# Query unica
-python test/chat.py --lesson 1 --once "Qual a cotacao da PETR4?"
+# Single query
+python test/chat.py --lesson 1 --once "What is the PETR4 stock price?"
 ```
 
-## Arquitetura
+## Architecture
 
-### Licao 1 - Agente Declarativo
+### Lesson 1 - Declarative Agent
 
-Agente definido via `PromptAgentDefinition` e registrado no Foundry. Sem container, sem deploy. Instructions, model e tools sao editaveis diretamente no portal.
+Agent defined via `PromptAgentDefinition` and registered in Foundry. No container, no deployment. Instructions, model, and tools are editable directly in the portal.
 
 ![Lesson 1 Architecture](slides/lesson-1-architecture.png)
 
-### Licao 2 - Hosted Agent (Microsoft Agent Framework)
+### Lesson 2 - Hosted Agent (Microsoft Agent Framework)
 
-Container Python com o Microsoft Agent Framework rodando dentro do Foundry como Hosted Agent. Usa o adapter `azure-ai-agentserver-agentframework` para expor a Responses API.
+Python container with Microsoft Agent Framework running inside Foundry as a Hosted Agent. Uses the `azure-ai-agentserver-agentframework` adapter to expose the Responses API.
 
 ![Lesson 2 Architecture](slides/lesson-2-architecture.png)
 
 <details>
-<summary>Fluxo de deploy</summary>
+<summary>Deployment flow</summary>
 
 ![Lesson 2 Deployment](slides/lesson-2-deployment.png)
 </details>
 
-### Licao 3 - Hosted Agent (LangGraph)
+### Lesson 3 - Hosted Agent (LangGraph)
 
-Mesmo conceito do lesson 2, mas usando LangGraph como framework de orquestracao. O adapter `azure-ai-agentserver-langgraph` converte o grafo LangGraph em servidor HTTP compativel com a Responses API do Foundry.
+Same concept as lesson 2, but using LangGraph as the orchestration framework. The `azure-ai-agentserver-langgraph` adapter converts the LangGraph graph into an HTTP server compatible with Foundry's Responses API.
 
 ![Lesson 3 Architecture](slides/lesson-3-architecture.png)
 
 <details>
-<summary>Fluxo de deploy</summary>
+<summary>Deployment flow</summary>
 
 ![Lesson 3 Deployment](slides/lesson-3-deployment.png)
 </details>
 
-### Licao 4 - Connected Agent (Azure Container Apps)
+### Lesson 4 - Connected Agent (Azure Container Apps)
 
-O agente LangGraph roda em infraestrutura propria (ACA) e e registrado como Connected Agent no Foundry Control Plane. O Foundry roteia requests via AI Gateway (APIM) para ganhar observabilidade e governanca.
+The LangGraph agent runs on its own infrastructure (ACA) and is registered as a Connected Agent in the Foundry Control Plane. Foundry routes requests via AI Gateway (APIM) to gain observability and governance.
 
 ![Lesson 4 Architecture](slides/lesson-4-architecture.png)
 
 <details>
-<summary>Fluxo de deploy</summary>
+<summary>Deployment flow</summary>
 
 ![Lesson 4 Deployment](slides/lesson-4-deployment.png)
 </details>
 
-### Licao 5 - Microsoft Agent 365 (Pre-requisitos)
+### Lesson 5 - Microsoft Agent 365 (Prerequisites)
 
-Configuracao do A365 CLI, app registration no Entra ID e setup do Agent Blueprint para publicar agentes no Microsoft 365 (Teams, Outlook). Aborda o cenario cross-tenant (Azure != M365).
+A365 CLI configuration, app registration in Entra ID, and Agent Blueprint setup to publish agents in Microsoft 365 (Teams, Outlook). Covers the cross-tenant scenario (Azure != M365).
 
-## Comparacao das abordagens
+## Approach comparison
 
-| Aspecto | Declarativo (L1) | Hosted MAF (L2) | Hosted LangGraph (L3) | ACA Connected (L4) |
+| Aspect | Declarative (L1) | Hosted MAF (L2) | Hosted LangGraph (L3) | ACA Connected (L4) |
 |---------|:-:|:-:|:-:|:-:|
-| Container Docker | Nao | Sim | Sim | Sim |
-| Infra gerenciada pelo Foundry | Sim | Sim | Sim | Nao |
-| Custom tools (Python) | Nao | Sim | Sim | Sim |
-| Editavel no portal | Sim | Nao | Nao | Nao |
-| Managed Identity | Projeto | Projeto | Projeto | ACA (propria) |
-| Auto-scaling | N/A | Foundry | Foundry | ACA (configuravel) |
-| Observabilidade via Foundry | Nativa | Nativa | Nativa | Via AI Gateway |
+| Docker Container | No | Yes | Yes | Yes |
+| Infrastructure managed by Foundry | Yes | Yes | Yes | No |
+| Custom tools (Python) | No | Yes | Yes | Yes |
+| Editable in portal | Yes | No | No | No |
+| Managed Identity | Project | Project | Project | ACA (own) |
+| Auto-scaling | N/A | Foundry | Foundry | ACA (configurable) |
+| Observability via Foundry | Native | Native | Native | Via AI Gateway |
 | Framework | SDK only | MAF | LangGraph | FastAPI + LangGraph |
 
-## Estrutura do repositorio
+## Repository structure
 
 ```
 foundry-agents-workshop/
-  prereq/                          # IaC (Bicep) + scripts de infra
-  lesson-1-declarative/            # Agente declarativo (SDK)
+  prereq/                          # IaC (Bicep) + infrastructure scripts
+  lesson-1-declarative/            # Declarative agent (SDK)
   lesson-2-hosted-maf/             # Hosted agent (Microsoft Agent Framework)
   lesson-3-hosted-langgraph/       # Hosted agent (LangGraph)
   lesson-4-aca-langgraph/          # Connected agent (ACA + FastAPI)
-  lesson-5-a365-prereq/            # Pre-requisitos Agent 365
+  lesson-5-a365-prereq/            # Agent 365 prerequisites
   test/
-    chat.py                        # Cliente unificado para todos os agentes
+    chat.py                        # Unified client for all agents
   slides/
-    *.drawio                       # Diagramas editaveis (draw.io)
-    *.png                          # Diagramas exportados
-  context.md                       # Diretrizes do workshop
+    *.drawio                       # Editable diagrams (draw.io)
+    *.png                          # Exported diagrams
+  context.md                       # Workshop guidelines
 ```
 
-## Tecnologias
+## Technologies
 
-- **Azure AI Foundry** - Plataforma de agentes (Responses API, Hosted Agents, Control Plane)
-- **Microsoft Agent Framework** - Framework oficial para agentes no Foundry
-- **LangGraph** - Framework de grafos para orquestracao de agentes (ReAct pattern)
-- **Azure Container Apps** - Plataforma serverless para containers
-- **Bicep** - Infrastructure as Code para Azure
-- **Azure API Management** - AI Gateway para governanca e observabilidade
-- **Microsoft Agent 365** - Publicacao de agentes no Microsoft 365
+- **Azure AI Foundry** - Agent platform (Responses API, Hosted Agents, Control Plane)
+- **Microsoft Agent Framework** - Official framework for agents in Foundry
+- **LangGraph** - Graph framework for agent orchestration (ReAct pattern)
+- **Azure Container Apps** - Serverless platform for containers
+- **Bicep** - Infrastructure as Code for Azure
+- **Azure API Management** - AI Gateway for governance and observability
+- **Microsoft Agent 365** - Publishing agents in Microsoft 365
 
-## Licenca
+## License
 
-Este workshop e disponibilizado para fins educacionais.
+This workshop is provided for educational purposes.
