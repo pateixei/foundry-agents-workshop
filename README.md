@@ -1,5 +1,7 @@
 # Microsoft Foundry Agents Workshop
 
+> 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
+
 Practical workshop to build, deploy, and manage AI agents using **Microsoft Foundry** with different approaches: declarative agents, hosted agents (MAF and LangGraph), agents on Azure Container Apps, and integration with Microsoft Agent 365.
 
 ![Architecture Overview](prereq/media/architecture-diagram.png)

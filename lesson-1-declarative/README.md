@@ -1,5 +1,7 @@
 # Lesson 1 - Declarative Agent (Prompt-Based)
 
+> 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
+
 Creates a **declarative** financial agent in Azure AI Foundry using the `azure-ai-agents` SDK.
 
 ## What is a declarative agent?

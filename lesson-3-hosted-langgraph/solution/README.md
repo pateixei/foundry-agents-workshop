@@ -1,5 +1,7 @@
 # Lesson 2 - Hosted Agent with LangGraph in Azure AI Foundry
 
+> 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
+
 In this lesson, we create a **hosted agent** in Azure AI Foundry
 using the **LangGraph** framework from LangChain.
 

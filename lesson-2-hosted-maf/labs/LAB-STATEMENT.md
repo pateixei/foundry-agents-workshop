@@ -1,5 +1,7 @@
 # Lab 2: Build Custom Tools with Microsoft Agent Framework
 
+> 🇧🇷 **[Leia em Português (pt-BR)](LAB-STATEMENT.pt-BR.md)**
+
 ## Objective
 
 Implement custom Python tools for a hosted agent using Microsoft Agent Framework (MAF). The agent will execute real business logic: call external APIs, process data, and perform calculations—capabilities not possible with declarative agents.

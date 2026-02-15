@@ -1,5 +1,7 @@
 # Prerequisites - Azure Infrastructure
 
+> 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
+
 This folder contains Infrastructure as Code (IaC) scripts using Bicep to provision all required resources for the workshop.
 
 ## Provisioned Resources

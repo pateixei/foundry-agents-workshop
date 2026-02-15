@@ -1,5 +1,7 @@
 # Lesson 8: Creating Agent Instances in Microsoft Teams
 
+> 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
+
 ## Overview
 
 After publishing your agent to the M365 Admin Center (Lesson 7), users can create **instances** of your agent in Microsoft Teams. An agent instance is a dedicated deployment of your agent that users interact with through the Teams interface.

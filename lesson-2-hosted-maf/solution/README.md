@@ -1,5 +1,7 @@
 # Lesson 1: Financial Market Agent with Microsoft Agent Framework
 
+> 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
+
 ## Objective
 
 In this lesson, you will create and deploy an AI agent using the **Microsoft Agent Framework** (MAF) in Microsoft Foundry. The agent specializes in financial markets and exposes Python tools to query quotes, exchange rates, and market summaries.

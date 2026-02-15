@@ -1,5 +1,7 @@
 # Student Environment Setup Guide
 
+> 🇧🇷 **[Leia em Português (pt-BR)](SETUP-GUIDE.pt-BR.md)**
+
 **Workshop**: Microsoft Foundry AI Agents Workshop — 5-Day Intensive  
 **Version**: 1.0  
 **Estimated Time**: 30–45 minutes  

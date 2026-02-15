@@ -1,5 +1,7 @@
 # Lab 5: Microsoft Agent 365 Integration and M365 Deployment
 
+> 🇧🇷 **[Leia em Português (pt-BR)](LAB-STATEMENT.pt-BR.md)**
+
 ## Objective
 
 Enhance your agent with **Microsoft Agent 365 (A365) SDK**, register Agent Blueprint in Microsoft 365, and deploy to Teams for end-user access. This lab completes the full enterprise deployment cycle.

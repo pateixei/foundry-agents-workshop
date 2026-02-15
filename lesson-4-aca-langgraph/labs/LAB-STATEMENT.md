@@ -1,5 +1,7 @@
 # Lab 4: Deploy Agent to Azure Container Apps (ACA) with Bicep
 
+> 🇧🇷 **[Leia em Português (pt-BR)](LAB-STATEMENT.pt-BR.md)**
+
 ## Objective
 
 Deploy infrastructure using **Bicep IaC** and register agent as a **Connected Agent** in Foundry, giving you full infrastructure control while maintaining Foundry governance integration.

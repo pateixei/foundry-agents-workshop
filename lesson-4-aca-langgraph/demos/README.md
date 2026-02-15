@@ -1,5 +1,7 @@
 # Demo 4: Azure Container Apps (ACA) Deployment
 
+> 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
+
 > **Demo Type**: Instructor-led walkthrough. This demo references source code in `lesson-4-aca-langgraph/solution/`. The instructor walks through the code and Bicep template live on screen.
 
 ## Overview

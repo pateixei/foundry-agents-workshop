@@ -1,5 +1,7 @@
 # Capability Host in Microsoft Foundry
 
+> 🇧🇷 **[Leia em Português (pt-BR)](capability-host.pt-BR.md)**
+
 The **Capability Host** is an infrastructure resource of Microsoft Foundry that enables the execution of **Hosted Agents** (containerized agents) within a Foundry project.
 
 ## What it does

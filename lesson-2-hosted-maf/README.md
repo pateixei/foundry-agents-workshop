@@ -1,5 +1,7 @@
 # Lesson 2: Deploying an AI Agent on Microsoft Foundry
 
+> 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
+
 ## Objective
 In this lesson, you will learn how to create and deploy an AI agent on Microsoft Foundry using the **Microsoft Agent Framework**, focused on answering questions about the financial market.
 

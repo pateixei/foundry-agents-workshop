@@ -1,5 +1,7 @@
 # Lab 1: Create a Declarative Financial Advisor Agent
 
+> 🇧🇷 **[Leia em Português (pt-BR)](LAB-STATEMENT.pt-BR.md)**
+
 ## Objective
 
 Build a declarative agent in Azure AI Foundry using the `azure-ai-agents` SDK. The agent will answer questions about Brazilian and international financial markets without requiring custom code or containers.

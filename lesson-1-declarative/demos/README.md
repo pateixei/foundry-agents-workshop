@@ -1,5 +1,7 @@
 # Demo 1: Declarative Agent Pattern
 
+> 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
+
 ## Overview
 
 This demo showcases creating a **declarative (prompt-based) financial advisor agent** in Azure AI Foundry using the `azure-ai-agents` SDK. Declarative agents are the simplest pattern—they run server-side in Foundry without requiring custom containers.

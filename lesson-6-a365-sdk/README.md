@@ -1,5 +1,7 @@
 # Lesson 6: Microsoft Agent 365 SDK Integration
 
+> 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
+
 ## Overview
 
 This lesson enhances the LangGraph agent from Lesson 4 with Microsoft Agent 365 SDK features for observability, adaptive cards, and native M365 integration.

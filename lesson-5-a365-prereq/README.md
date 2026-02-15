@@ -1,5 +1,7 @@
 # Lesson 5 - Microsoft Agent 365 Complete Setup
 
+> 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
+
 This lesson covers the complete setup and deployment of agents to **Microsoft Agent 365** (A365), from configuration to publishing and creating agent instances in Microsoft 365.
 
 > **IMPORTANT**: Agent 365 requires participation in the [Frontier preview program](https://adoption.microsoft.com/copilot/frontier-program/).

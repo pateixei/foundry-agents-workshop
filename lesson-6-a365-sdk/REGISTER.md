@@ -1,5 +1,7 @@
 # Register ACA Agent in Microsoft Foundry Control Plane
 
+> 🇧🇷 **[Leia em Português (pt-BR)](REGISTER.pt-BR.md)**
+
 This guide details the step-by-step process to register the LangGraph agent (running on Azure Container Apps) as a **Custom Agent** in Microsoft Foundry Control Plane.
 
 ## Prerequisites

@@ -1,5 +1,7 @@
 # Lesson 7: Publishing Agent to Microsoft 365 Admin Center
 
+> 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
+
 ## Overview
 
 This lesson guides you through publishing your registered Agent Blueprint to the Microsoft 365 Admin Center, making it available for deployment to users and groups in your organization.
