@@ -1,10 +1,10 @@
-# Demo 3: Hosted LangGraph Agent (AWS Migration)
+# Demo 3: Hosted LangGraph Agent on Azure Foundry
 
 > **Demo Type**: Instructor-led walkthrough. This demo references source code in `lesson-3-hosted-langgraph/solution/`. The instructor walks through the code live on screen.
 
 ## Overview
 
-Demonstrates migrating an existing **LangGraph agent from AWS Lambda/ECS** to Azure Foundry as a Hosted Agent. Shows how to adapt LangGraph code for Foundry with minimal changes.
+Demonstrates deploying a **LangGraph agent as a Hosted Agent** on Azure Foundry. Shows how teams already using LangGraph can bring their existing code to Foundry with minimal changes, leveraging Azure's managed infrastructure and enterprise governance.
 
 ## Key Concepts
 
@@ -12,13 +12,12 @@ Demonstrates migrating an existing **LangGraph agent from AWS Lambda/ECS** to Az
 - ✅ Azure OpenAI integration with `AzureChatOpenAI`  
 - ✅ Foundry adapter pattern (`caphost.json`)
 - ✅ Container deployment to Foundry
-- ✅ Migration path from AWS to Azure
+- ✅ Multi-platform deployment flexibility
 
 ## Architecture
 
 ```
-AWS Lambda/ECS → Azure Foundry Hosted Agent
-LangGraph Code (95% unchanged) + Adapter Config
+LangGraph Code (portable) + Adapter Config → Azure Foundry Hosted Agent
 ```
 
 ## Prerequisites
@@ -26,7 +25,7 @@ LangGraph Code (95% unchanged) + Adapter Config
 - Azure Foundry project with model
 - ACR for container storage
 - Docker Desktop
-- Existing LangGraph knowledge (recommended)
+- LangGraph knowledge (recommended)
 
 ## Quick Start
 
@@ -98,18 +97,18 @@ app = workflow.compile()
 | **Orchestration** | Manual (edges, nodes) | Automatic (ReAct) |
 | **State Management** | TypedDict | Built-in context |
 | **Best For** | Complex workflows | Single agent + tools |
-| **AWS Migration** | Easier (code similar) | Requires refactor |
+| **Portability** | High (graph-based) | Azure-native |
 
 ## When to Use LangGraph vs MAF
 
 **Use LangGraph when:**
-- Migrating from AWS Lambda with existing LangGraph code
+- Team already has LangGraph expertise or existing code
 - Need explicit control over agent flow
 - Building multi-agent workflows
 - Complex state management required
 
 **Use MAF when:**
-- Starting new agent from scratch
+- Starting new agent from scratch on Azure
 - Simple tool-calling patterns
 - Want Foundry-native integration
 - Prefer simplicity over control
@@ -125,24 +124,24 @@ app = workflow.compile()
 **Issue: "Graph compilation error"**  
 **Fix**: Check all nodes have defined edges; entry point must be set
 
-## Migration Checklist (AWS → Azure)
+## Deployment Checklist (LangGraph → Foundry)
 
-- [x] Replace Bedrock with `AzureChatOpenAI`
-- [x] Update environment variables (API keys → Managed Identity)
+- [x] Configure `AzureChatOpenAI` as the model provider
+- [x] Set up Managed Identity for secure authentication
 - [x] Add `caphost.json` for Foundry adapter
-- [x] Change container port (Lambda default → 8080)
-- [x] Update IAM roles → RBAC roles
-- [x] CloudWatch → Application Insights
-- [x] ECR → ACR
+- [x] Configure container to expose port 8080
+- [x] Set up RBAC roles for Azure OpenAI access
+- [x] Enable Application Insights for observability
+- [x] Push container image to ACR
 
 ## Resources
 
 - [LangGraph Documentation](https://langchain-ai.github.io/langgraph/)
 - [AzureChatOpenAI Reference](https://python.langchain.com/docs/integrations/chat/azure_chat_openai)
-- [AWS to Azure Migration Guide](https://learn.microsoft.com/azure/architecture/aws-professional/)
+- [Azure AI Foundry Hosted Agents](https://learn.microsoft.com/azure/ai-foundry/concepts/hosted-agents)
 
 ---
 
 **Demo Level**: Intermediate-Advanced  
 **Estimated Time**: 25-30 minutes  
-**Best For**: Teams migrating from AWS with existing LangGraph agents
+**Best For**: Teams with LangGraph experience deploying to Azure Foundry

@@ -1,23 +1,23 @@
-# Lab 3: Migrate LangGraph Agent from AWS to Azure
+# Lab 3: Deploy LangGraph Agent as Hosted Agent on Azure Foundry
 
 ## Objective
 
-Migrate an existing **LangGraph agent from AWS Lambda/ECS** to Azure Foundry as a Hosted Agent, demonstrating the AWS-to-Azure migration path with minimal code changes.
+Deploy a **LangGraph agent as a Hosted Agent** on Azure Foundry, demonstrating how teams with LangGraph expertise can leverage Azure's managed infrastructure with minimal code changes.
 
 ## Scenario
 
-Your team has a LangGraph-based financial agent running in AWS Lambda. The business wants to:
-- Consolidate infrastructure in Azure
-- Leverage Microsoft Foundry for unified agent management
+Your team has a LangGraph-based financial agent. The business wants to:
+- Deploy to Azure Foundry for enterprise-grade management
+- Leverage Managed Identity for secure authentication
 - Integrate with M365 ecosystem (Teams, Outlook)
 - Maintain existing LangGraph code patterns
 
-Your task: Lift-and-shift the agent to Azure with minimal refactoring.
+Your task: Package the LangGraph agent for Foundry's Hosted Agent platform.
 
 ## Learning Outcomes
 
-- Migrate LangGraph agents from AWS to Azure
-- Adapt AWS model APIs (Bedrock) to Azure OpenAI
+- Deploy LangGraph agents as Hosted Agents on Azure Foundry
+- Configure Azure OpenAI as the model provider
 - Configure Foundry adapter for LangGraph (`caphost.json`)
 - Deploy LangGraph agents as Foundry Hosted Agents
 - Compare LangGraph vs MAF architectures
@@ -27,40 +27,40 @@ Your task: Lift-and-shift the agent to Azure with minimal refactoring.
 
 - [x] Lab 2 completed (MAF understanding)
 - [x] LangGraph knowledge (recommended but not required)
-- [x] Understanding of AWS Lambda or ECS containers
+- [x] Understanding of container-based deployments
 - [x] Docker and ACR access
 - [x] Azure OpenAI resource deployed
 
 ## Tasks
 
-### Task 1: Review AWS Agent Architecture (10 minutes)
+### Task 1: Review LangGraph Agent Architecture (10 minutes)
 
-**Study the provided AWS Lambda LangGraph agent**:
+**Study the provided LangGraph agent structure**:
 
 ```
-starter/aws-agent/
-├── lambda_function.py      # AWS Lambda handler
+starter/langgraph-agent/
+├── main.py                 # FastAPI + LangGraph entry point
 ├── financial_graph.py      # LangGraph StateGraph definition
 ├── tools.py                # Tool functions (same as MAF)
-└── requirements.txt        # AWS dependencies
+└── requirements.txt        # Python dependencies
 ```
 
-**Key AWS components to identify**:
-- Lambda handler function signature
-- Bedrock API client usage
-- Event-driven invocation model
-- IAM role-based authentication
+**Key components to identify**:
+- LangGraph StateGraph definition and node routing
+- Tool function registration pattern
+- Model provider configuration
+- HTTP server entry point
 
 **Questions to answer**:
-1. How is the agent invoked in AWS?
-2. Where does authentication happen?
+1. How is the agent graph structured (nodes and edges)?
+2. Where does model authentication happen?
 3. How are tools registered in LangGraph?
 4. What's the execution model (synchronous vs async)?
 
 **Success Criteria**:
-- ✅ Understand Lambda handler pattern
-- ✅ Identify Bedrock API usage
-- ✅ Recognize differences from always-on container model
+- ✅ Understand LangGraph StateGraph pattern
+- ✅ Identify model configuration
+- ✅ Recognize the container-based deployment model
 
 ### Task 2: Create Azure LangGraph Agent (30 minutes)
 
@@ -121,18 +121,8 @@ def create_financial_graph() -> StateGraph:
     return workflow.compile()
 ```
 
-**2.5 - Replace Bedrock with Azure OpenAI**
+**2.5 - Configure Azure OpenAI as Model Provider**
 
-**BEFORE (AWS Bedrock)**:
-```python
-from langchain_community.chat_models import BedrockChat
-model = BedrockChat(
-    model_id="anthropic.claude-3-sonnet",
-    region_name="us-east-1",
-)
-```
-
-**AFTER (Azure OpenAI)**:
 ```python
 from langchain_openai import AzureChatOpenAI
 model = AzureChatOpenAI(
@@ -148,7 +138,7 @@ model = AzureChatOpenAI(
 - ✅ Tool node executes tools based on state
 - ✅ Agent node processes LLM responses
 - ✅ Graph compiled without errors
-- ✅ Azure OpenAI replaces Bedrock successfully
+- ✅ Azure OpenAI configured as model provider
 
 ### Task 3: Configure Foundry Adapter (15 minutes)
 
@@ -210,21 +200,10 @@ async def health():
 - ✅ HTTP endpoints implemented (FastAPI)
 - ✅ Graph invocation works asynchronously
 
-### Task 4: Update Dockerfile (10 minutes)
+### Task 4: Create Dockerfile (10 minutes)
 
-Adapt Dockerfile from AWS to Azure:
+Create the Dockerfile for Azure Foundry deployment:
 
-**BEFORE (AWS ECS)**:
-```dockerfile
-FROM public.ecr.aws/lambda/python:3.11
-WORKDIR /var/task
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-CMD ["lambda_function.handler"]
-```
-
-**AFTER (Azure Foundry)**:
 ```dockerfile
 FROM python:3.11-slim
 WORKDIR /app
@@ -235,11 +214,11 @@ EXPOSE 8080
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
 ```
 
-**Key Changes**:
-- Base image: Lambda runtime → Python slim
-- Port: Expose 8080 for HTTP server
-- CMD: Lambda handler → uvicorn web server
-- Working directory: `/var/task` → `/app`
+**Key Points**:
+- Base image: Python slim (lightweight)
+- Port: 8080 for Foundry compatibility
+- CMD: uvicorn web server for FastAPI
+- Working directory: `/app`
 
 **Success Criteria**:
 - ✅ Dockerfile builds successfully
@@ -307,18 +286,18 @@ Test same questions as in AWS:
 | **Control** | Full control over flow | Framework-managed |
 | **State Management** | Manual (TypedDict) | Built-in |
 | **Tool Calling** | Manual node routing | Automatic ReAct pattern |
-| **Migration Ease** | Easier (from LangGraph) | Requires refactor |
+| **Portability** | High (platform-agnostic graph) | Azure-native |
 
 **6.3 - Decision Matrix**
 
 When would you choose LangGraph over MAF?
-- [x] Migrating existing LangGraph code from AWS
+- [x] Team has existing LangGraph expertise or code
 - [x] Need explicit control over agent flow
 - [x] Complex multi-step workflows
 - [x] Custom state management requirements
 
 When would you choose MAF over LangGraph?
-- [x] New agent development from scratch
+- [x] New agent development from scratch on Azure
 - [x] Simple tool-calling patterns
 - [x] Want faster development (less boilerplate)
 - [x] Prefer framework conventions over control
@@ -330,20 +309,20 @@ When would you choose MAF over LangGraph?
 
 ## Deliverables
 
-- [x] Migrated LangGraph agent (Azure OpenAI)
+- [x] LangGraph agent configured with Azure OpenAI
 - [x] `caphost.json` configured
-- [x] Dockerfile adapted for Azure
+- [x] Dockerfile for Azure deployment
 - [x] Agent deployed and running in Foundry
 - [x] Comparison document: LangGraph vs MAF
-- [x] Migration checklist completed
+- [x] Deployment checklist completed
 
 ## Evaluation Criteria
 
 | Criterion | Points | Description |
 |-----------|--------|-------------|
-| **Migration Strategy** | 15 pts | Identified AWS components to change |
+| **Deployment Strategy** | 15 pts | Identified components and configuration needs |
 | **LangGraph Implementation** | 30 pts | State, nodes, edges correctly configured |
-| **Azure OpenAI Integration** | 20 pts | Bedrock replaced with Azure OpenAI |
+| **Azure OpenAI Integration** | 20 pts | Azure OpenAI configured as model provider |
 | **Deployment** | 20 pts | Container built and agent running |
 | **Testing** | 10 pts | Agent produces correct answers |
 | **Comparison Analysis** | 5 pts | Thoughtful LangGraph vs MAF evaluation |
@@ -387,5 +366,5 @@ When would you choose MAF over LangGraph?
 ---
 
 **Difficulty**: Intermediate-Advanced  
-**Prerequisites**: Labs 1-2, basic LangGraph/AWS knowledge  
+**Prerequisites**: Labs 1-2, basic LangGraph knowledge  
 **Estimated Time**: 100 minutes

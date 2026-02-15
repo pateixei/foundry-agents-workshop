@@ -1,41 +1,41 @@
-# Lab 5: Microsoft Agent 365 Integration and M365 Deployment
+# Lab 5: Integração Microsoft Agent 365 e Implantação no M365
 
-## Objective
+## Objetivo
 
-Enhance your agent with **Microsoft Agent 365 (A365) SDK**, register Agent Blueprint in Microsoft 365, and deploy to Teams for end-user access. This lab completes the full enterprise deployment cycle.
+Aprimorar seu agente com o **Microsoft Agent 365 (A365) SDK**, registrar Agent Blueprint no Microsoft 365 e implantar no Teams para acesso dos usuários finais. Este laboratório completa o ciclo completo de implantação corporativa.
 
-## Scenario
+## Cenário
 
-Your financial advisor agent (from Lab 4) is ready for production. The business requires:
-- Deployment to Microsoft Teams for employees
-- Bot Framework integration for rich conversations
-- Adaptive Cards for financial data visualization
-- Cross-tenant support (Azure infra in Tenant A, M365 in Tenant B)
-- Admin-approved publication process
+Seu agente de consultoria financeira (do Lab 4) está pronto para produção. O negócio requer:
+- Implantação no Microsoft Teams para funcionários
+- Integração com Bot Framework para conversas ricas
+- Adaptive Cards para visualização de dados financeiros
+- Suporte cross-tenant (infraestrutura Azure no Tenant A, M365 no Tenant B)
+- Processo de publicação com aprovação do admin
 
-## Learning Outcomes
+## Objetivos de Aprendizagem
 
-- Configure A365 CLI for cross-tenant scenarios
-- Register Agent Blueprints in Microsoft Entra ID
-- Implement Bot Framework `/api/messages` endpoint
-- Create Adaptive Cards for financial data
-- Publish agents to M365 Admin Center
-- Create and manage agent instances in Teams
-- Understand M365 governance model for agents
+- Configurar A365 CLI para cenários cross-tenant
+- Registrar Agent Blueprints no Microsoft Entra ID
+- Implementar endpoint Bot Framework `/api/messages`
+- Criar Adaptive Cards para dados financeiros
+- Publicar agentes no M365 Admin Center
+- Criar e gerenciar instâncias de agente no Teams
+- Entender o modelo de governança M365 para agentes
 
-## Prerequisites
+## Pré-requisitos
 
-- [x] Lab 4 completed (ACA-deployed agent)
-- [x] Frontier Program access (required for A365)
-- [x] .NET SDK 8.0+ installed
-- [x] M365 Admin permissions (or simulated for workshop)
-- [x] Understanding of cross-tenant scenarios
+- [x] Lab 4 completado (agente implantado em ACA)
+- [x] Acesso ao Frontier Program (necessário para A365)
+- [x] .NET SDK 8.0+ instalado
+- [x] Permissões de Admin M365 (ou simuladas para o workshop)
+- [x] Entendimento de cenários cross-tenant
 
-## Tasks
+## Tarefas
 
-### Task 1: Install and Configure A365 CLI (15 minutes)
+### Tarefa 1: Instalar e Configurar A365 CLI (15 minutos)
 
-**1.1 - Install .NET SDK**
+**1.1 - Instalar .NET SDK**
 
 ```powershell
 # Check version
@@ -46,7 +46,7 @@ dotnet --version
 winget install Microsoft.DotNet.SDK.8
 ```
 
-**1.2 - Install A365 CLI**
+**1.2 - Instalar A365 CLI**
 
 ```powershell
 # Install as .NET global tool
@@ -57,23 +57,23 @@ a365 --version
 # Expected: 1.0.x or higher
 ```
 
-**1.3 - Configure A365**
+**1.3 - Configurar A365**
 
 ```powershell
 cd starter/a365-config
 a365 config init
 ```
 
-**Interactive prompts**:
+**Prompts interativos**:
 ```
 ? M365 Tenant ID: <your-m365-tenant-id>
 ? Azure Subscription ID: <your-azure-subscription-id>
 ? Agent Name: financial-advisor-teams
 ? Messaging Endpoint: https://aca-financial-agent.nicebeach-abc123.eastus.azurecontainerapps.io/api/messages
-? Create Azure infrastructure (App Service)? No  ← IMPORTANT: We already have ACA!
+? Create Azure infrastructure (App Service)? No  ← IMPORTANTE: Já temos ACA!
 ```
 
-**Generated `a365.config.json`**:
+**`a365.config.json` gerado**:
 ```json
 {
   "tenantId": "<m365-tenant-id>",
@@ -84,14 +84,14 @@ a365 config init
 }
 ```
 
-**Success Criteria**:
-- ✅ A365 CLI installed and working
-- ✅ Config file created with correct values
-- ✅ `needDeployment: false` (using existing ACA)
+**Critérios de Sucesso**:
+- ✅ A365 CLI instalado e funcionando
+- ✅ Arquivo de configuração criado com valores corretos
+- ✅ `needDeployment: false` (usando ACA existente)
 
-### Task 2: Register Agent Blueprint (20 minutes)
+### Tarefa 2: Registrar Agent Blueprint (20 minutos)
 
-**2.1 - Login to M365 Tenant**
+**2.1 - Login no Tenant M365**
 
 ```powershell
 # Important: Login to M365 tenant (Tenant B), not Azure tenant (Tenant A)
@@ -102,13 +102,13 @@ az account show
 # Tenant ID should match M365 tenant
 ```
 
-**2.2 - Create Agent Blueprint**
+**2.2 - Criar Agent Blueprint**
 
 ```powershell
 a365 setup blueprint --config a365.config.json
 ```
 
-**Expected Output**:
+**Saída Esperada**:
 ```
 🔧 Creating Agent Blueprint...
 ✅ Blueprint registered in Entra ID
@@ -127,30 +127,30 @@ a365 setup blueprint --config a365.config.json
 ✅ Agent Blueprint registration complete
 ```
 
-**What just happened?**:
-- Created App Registration in M365 Tenant's Entra ID
-- Created Service Principal (Agent User identity)
-- Configured Graph API permissions
-- Linked messaging endpoint (your ACA agent in Azure Tenant)
+**O que aconteceu?**:
+- Criou App Registration no Entra ID do Tenant M365
+- Criou Service Principal (identidade Agent User)
+- Configurou permissões da Graph API
+- Vinculou o endpoint de mensagens (seu agente ACA no Azure Tenant)
 
-**2.3 - Verify in Portal**
+**2.3 - Verificar no Portal**
 
-1. Navigate to [Entra ID Portal](https://entra.microsoft.com/)
-2. Select **App registrations** → **All applications**
-3. Search for "financial-advisor-teams"
-4. Verify messaging endpoint in **Authentication** settings
+1. Navegue até o [Portal Entra ID](https://entra.microsoft.com/)
+2. Selecione **App registrations** → **All applications**
+3. Busque por "financial-advisor-teams"
+4. Verifique o endpoint de mensagens em **Authentication**
 
-**Success Criteria**:
-- ✅ Blueprint visible in Entra ID
-- ✅ Service Principal created
-- ✅ Permissions configured correctly
-- ✅ Messaging endpoint points to ACA
+**Critérios de Sucesso**:
+- ✅ Blueprint visível no Entra ID
+- ✅ Service Principal criado
+- ✅ Permissões configuradas corretamente
+- ✅ Endpoint de mensagens aponta para ACA
 
-### Task 3: Enhance Agent with Bot Framework (30 minutes)
+### Tarefa 3: Aprimorar Agente com Bot Framework (30 minutos)
 
-**3.1 - Add Bot Framework dependencies**
+**3.1 - Adicionar dependências do Bot Framework**
 
-Update `requirements.txt`:
+Atualize `requirements.txt`:
 ```txt
 # Existing dependencies...
 botbuilder-core>=4.16.0
@@ -158,9 +158,9 @@ botbuilder-schema>=4.16.0
 botframework-connector>=4.16.0
 ```
 
-**3.2 - Implement `/api/messages` endpoint**
+**3.2 - Implementar endpoint `/api/messages`**
 
-Open `starter/main.py` and add:
+Abra `starter/main.py` e adicione:
 
 ```python
 from fastapi import FastAPI, Request, Response
@@ -214,7 +214,7 @@ async def handle_messages(request: Request):
     return Response(status_code=200)
 ```
 
-**3.3 - Create Adaptive Card helper**
+**3.3 - Criar helper de Adaptive Card**
 
 ```python
 def create_financial_card(text: str, data: dict = None) -> dict:
@@ -260,7 +260,7 @@ def create_financial_card(text: str, data: dict = None) -> dict:
     }
 ```
 
-**3.4 - Redeploy to ACA**
+**3.4 - Reimplantar no ACA**
 
 ```powershell
 # Rebuild container with Bot Framework support
@@ -275,7 +275,7 @@ az containerapp update \
   --image YOUR-ACR.azurecr.io/langgraph-financial-agent:v2
 ```
 
-**3.5 - Test Bot Framework endpoint**
+**3.5 - Testar endpoint Bot Framework**
 
 ```powershell
 # Simulate Bot Framework Activity
@@ -291,17 +291,17 @@ $activity = @{
 Invoke-RestMethod -Uri "https://aca-financial-agent...azurecontainerapps.io/api/messages" -Method Post -Body $activity -ContentType "application/json"
 ```
 
-**Success Criteria**:
-- ✅ `/api/messages` endpoint implemented
-- ✅ Bot Framework activities processed
-- ✅ Adaptive Cards rendered
-- ✅ Agent redeployed successfully
+**Critérios de Sucesso**:
+- ✅ Endpoint `/api/messages` implementado
+- ✅ Activities do Bot Framework processadas
+- ✅ Adaptive Cards renderizados
+- ✅ Agente reimplantado com sucesso
 
-### Task 4: Publish to M365 Admin Center (20 minutes)
+### Tarefa 4: Publicar no M365 Admin Center (20 minutos)
 
-**4.1 - Create publication manifest**
+**4.1 - Criar manifesto de publicação**
 
-Create `publication-manifest.json`:
+Crie `publication-manifest.json`:
 ```json
 {
   "name": "Financial Advisor Agent",
@@ -326,13 +326,13 @@ Create `publication-manifest.json`:
 }
 ```
 
-**4.2 - Submit for publication**
+**4.2 - Submeter para publicação**
 
 ```powershell
 a365 publish --manifest publication-manifest.json
 ```
 
-**Expected Output**:
+**Saída Esperada**:
 ```
 📤 Submitting agent for publication...
    Blueprint: financial-advisor-teams
@@ -351,25 +351,25 @@ a365 publish --manifest publication-manifest.json
    3. After approval, agent appears in Teams app catalog
 ```
 
-**4.3 - Admin Approval (Simulated for Workshop)**
+**4.3 - Aprovação do Admin (Simulada para o Workshop)**
 
-In production:
-1. M365 Admin receives notification
+Em produção:
+1. Admin M365 recebe notificação
 2. Admin Center → **Apps** → **Manage apps** → **financial-advisor-teams**
-3. Review metadata, permissions, privacy policy
-4. Click **Approve** or **Reject**
-5. If approved, set visibility: Private org / Public / Specific users
+3. Revisa metadados, permissões, política de privacidade
+4. Clica em **Approve** ou **Reject**
+5. Se aprovado, define visibilidade: Org privada / Pública / Usuários específicos
 
-**Success Criteria**:
-- ✅ Publication manifest valid JSON
-- ✅ Successfully submitted to Admin Center
-- ✅ (In production) Admin approval obtained
+**Critérios de Sucesso**:
+- ✅ Manifesto de publicação é JSON válido
+- ✅ Submetido com sucesso ao Admin Center
+- ✅ (Em produção) Aprovação do admin obtida
 
-### Task 5: Create Agent Instance in Teams (15 minutes)
+### Tarefa 5: Criar Instância do Agente no Teams (15 minutos)
 
-**Assumptionl**: Agent is approved and published (or using pre-approved test agent)
+**Premissa**: Agente está aprovado e publicado (ou usando agente de teste pré-aprovado)
 
-**5.1 - Create personal instance**
+**5.1 - Criar instância pessoal**
 
 ```powershell
 # Personal agent (private to one user)
@@ -379,24 +379,24 @@ a365 instance create \
   --user-id <your-m365-user-id>
 ```
 
-**5.2 - Test in Teams**
+**5.2 - Testar no Teams**
 
-1. Open Microsoft Teams (desktop or web)
-2. Go to **Apps** → **Built for your org**
-3. Search for "Financial Advisor"
-4. Click **Add**
-5. Start conversation:
+1. Abra o Microsoft Teams (desktop ou web)
+2. Vá para **Apps** → **Built for your org**
+3. Busque "Financial Advisor"
+4. Clique em **Add**
+5. Inicie conversa:
    - "Qual é o preço da PETR4?"
    - "Calcule valor: 100 PETR4, 50 VALE3"
    - "Resumo do mercado brasileiro"
 
-**Expected Behavior**:
-- Agent responds with Adaptive Cards (rich UI)
-- Financial data formatted professionally
-- Disclaimers included
-- Conversation context maintained
+**Comportamento Esperado**:
+- Agente responde com Adaptive Cards (UI rica)
+- Dados financeiros formatados profissionalmente
+- Disclaimers incluídos
+- Contexto da conversa mantido
 
-**5.3 - Create shared instance (Optional)**
+**5.3 - Criar instância compartilhada (Opcional)**
 
 ```powershell
 # Shared agent for entire team
@@ -406,79 +406,79 @@ a365 instance create \
   --team-id <teams-team-id>
 ```
 
-**Success Criteria**:
-- ✅ Agent visible in Teams app catalog
-- ✅ Personal instance created
-- ✅ Conversations work in Teams
-- ✅ Adaptive Cards render correctly
+**Critérios de Sucesso**:
+- ✅ Agente visível no catálogo de apps do Teams
+- ✅ Instância pessoal criada
+- ✅ Conversas funcionam no Teams
+- ✅ Adaptive Cards renderizados corretamente
 
-## Deliverables
+## Entregáveis
 
-- [x] A365 CLI configured
-- [x] Agent Blueprint registered in Entra ID
-- [x] Bot Framework integration implemented
-- [x] Agent enhanced with Adaptive Cards
-- [x] Publication manifest created
-- [x] Agent instance working in Teams
+- [x] A365 CLI configurado
+- [x] Agent Blueprint registrado no Entra ID
+- [x] Integração Bot Framework implementada
+- [x] Agente aprimorado com Adaptive Cards
+- [x] Manifesto de publicação criado
+- [x] Instância do agente funcionando no Teams
 
-## Evaluation Criteria
+## Critérios de Avaliação
 
-| Criterion | Points | Description |
+| Critério | Pontos | Descrição |
 |-----------|--------|-------------|
-| **A365 Configuration** | 15 pts | CLI setup and config file |
-| **Blueprint Registration** | 20 pts | Successfully registered in Entra ID |
-| **Bot Framework** | 30 pts | `/api/messages` endpoint functional |
-| **Adaptive Cards** | 15 pts | Rich cards implemented and rendering |
-| **Publication** | 10 pts | Manifest valid, submitted to Admin Center |
-| **Teams Integration** | 10 pts | Agent working in Teams |
+| **Configuração A365** | 15 pts | Setup do CLI e arquivo de configuração |
+| **Registro do Blueprint** | 20 pts | Registrado com sucesso no Entra ID |
+| **Bot Framework** | 30 pts | Endpoint `/api/messages` funcional |
+| **Adaptive Cards** | 15 pts | Cards ricas implementadas e renderizando |
+| **Publicação** | 10 pts | Manifesto válido, submetido ao Admin Center |
+| **Integração Teams** | 10 pts | Agente funcionando no Teams |
 
-**Total**: 100 points
+**Total**: 100 pontos
 
-## Troubleshooting
+## Resolução de Problemas
 
 ### "A365 CLI not found"
-- .NET tools path not in PATH
-- Fix: Add `~/.dotnet/tools` to PATH, restart terminal
+- Caminho das .NET tools não está no PATH
+- Solução: Adicione `~/.dotnet/tools` ao PATH, reinicie o terminal
 
 ### "Blueprint registration failed: tenant mismatch"
-- Logged into wrong tenant
-- Fix: `az login --tenant <m365-tenant-id>` explicitly
+- Logado no tenant errado
+- Solução: `az login --tenant <m365-tenant-id>` explicitamente
 
 ### "/api/messages returns 400"
-- Activity JSON format invalid
-- Fix: Ensure Activity schema matches Bot Framework spec
+- Formato JSON da Activity inválido
+- Solução: Certifique-se de que o schema da Activity corresponde à especificação do Bot Framework
 
 ### "Adaptive Card not rendering in Teams"
-- Invalid schema or unsupported version
-- Fix: Validate at https://adaptivecards.io/designer
-- Ensure version is 1.4 or lower (Teams limit)
+- Schema inválido ou versão incompatível
+- Solução: Valide em https://adaptivecards.io/designer
+- Certifique-se de que a versão é 1.4 ou inferior (limite do Teams)
 
 ### "Frontier Program access denied"
-- Not enrolled in preview
-- Fix: Apply at https://adoption.microsoft.com/copilot/frontier-program/
+- Não inscrito no preview
+- Solução: Inscreva-se em https://adoption.microsoft.com/copilot/frontier-program/
 
-## Time Estimate
+## Estimativa de Tempo
 
-- Task 1: 15 minutes
-- Task 2: 20 minutes
-- Task 3: 30 minutes
-- Task 4: 20 minutes
-- Task 5: 15 minutes
-- **Total**: 100 minutes
+- Tarefa 1: 15 minutos
+- Tarefa 2: 20 minutos
+- Tarefa 3: 30 minutos
+- Tarefa 4: 20 minutos
+- Tarefa 5: 15 minutos
+- **Total**: 100 minutos
 
-## Congratulations! 🎉
+## Parabéns! 🎉
 
-You've completed the full enterprise agent deployment cycle:
-1. ✅ Built declarative agent (Lab 1)
-2. ✅ Implemented custom tools with MAF (Lab 2)
-3. ✅ Deployed LangGraph agent on Foundry (Lab 3)
-4. ✅ Deployed to ACA with Bicep (Lab 4)
-5. ✅ Integrated A365 and published to Teams (Lab 5)
+Você completou o ciclo completo de implantação corporativa de agentes:
+1. ✅ Construiu agente declarativo (Lab 1)
+2. ✅ Implementou tools personalizadas com MAF (Lab 2)
+3. ✅ Implantou agente LangGraph no Foundry (Lab 3)
+4. ✅ Implantou em ACA com Bicep (Lab 4)
+5. ✅ Integrou A365 e publicou no Teams (Lab 5)
 
-Your agent is now accessible to end users in Microsoft 365!
+Seu agente agora está acessível para usuários finais no Microsoft 365!
 
 ---
 
-**Difficulty**: Advanced  
-**Prerequisites**: All previous labs, Frontier Program access  
-**Estimated Time**: 100 minutes
+**Dificuldade**: Avançado  
+**Pré-requisitos**: Todos os labs anteriores, acesso ao Frontier Program  
+**Tempo Estimado**: 100 minutos
