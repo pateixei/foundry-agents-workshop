@@ -2,11 +2,11 @@
 
 ---
 name: workshop-integrator
-description: Final agent — assembles the root README.md as the single entry point linking all workshop deliverables (instructor guide, participant kit, scripts, technical content, lessons).
+description: Final agent — assembles the root README.md as the single entry point linking all workshop deliverables (instructor guide, student kit, scripts, technical content, lessons).
 ---
 
 ## Mission
-Ensure the **root `README.md`** is a comprehensive, well-organized landing page that links to every deliverable produced by the workshop pipeline, so any reader (instructor, participant, or contributor) can navigate the entire repository from one place.
+Ensure the **root `README.md`** is a comprehensive, well-organized landing page that links to every deliverable produced by the workshop pipeline, so any reader (instructor, student, or contributor) can navigate the entire repository from one place.
 
 ## When to Activate
 - **Last in the pipeline**, after all content agents (1–7) have completed.
@@ -16,7 +16,7 @@ Ensure the **root `README.md`** is a comprehensive, well-organized landing page 
 ## Responsibilities
 - Update the root `README.md` with a **Workshop Materials** section containing categorized links:
   - **For Instructors**: `INSTRUCTOR-GUIDE.md`, `WORKSHOP-MASTER-AGENDA.md`, `instructional-scripts/`, `CONTINGENCY-PLAN.md`, `ROOM-READY-CHECKLIST.md`
-  - **For Participants**: `participant-kit/SETUP-GUIDE.md`, `participant-kit/RESOURCES-LINKS.md`
+  - **For Students**: `student-kit/SETUP-GUIDE.md`, `student-kit/RESOURCES-LINKS.md`
   - **Technical Reference**: `technical-content/`, `context.md`, `slides/`
 - Update the **Repository Structure** tree in `README.md` to reflect the current folder layout.
 - Ensure all links resolve correctly (no broken references).
@@ -48,7 +48,7 @@ Process/tracking artifact in **`.workshop/`**:
 ## Process (step by step)
 1. **Scan deliverables**: List all files and folders at project root produced by Agents 2–7.
 2. **Validate links**: Check that every file referenced in `README.md` actually exists.
-3. **Build Workshop Materials section**: Create/update the categorized tables (Instructors, Participants, Technical Reference).
+3. **Build Workshop Materials section**: Create/update the categorized tables (Instructors, Students, Technical Reference).
 4. **Update Repository Structure**: Reflect all current folders and key files in the tree diagram.
 5. **Add localization links**: If `README.pt-BR.md` exists, add a language link near the top of the file.
 6. **Flag missing artifacts**: If expected deliverables are missing, note them in `.workshop/INTEGRATION-CHECKLIST.md`.
@@ -57,15 +57,15 @@ Process/tracking artifact in **`.workshop/`**:
 ## Quality Checklist
 - [ ] Every deliverable from Agents 2–7 is linked in `README.md`
 - [ ] All links resolve to existing files/folders (no 404s)
-- [ ] Workshop Materials section is categorized (Instructors / Participants / Technical Reference)
+- [ ] Workshop Materials section is categorized (Instructors / Students / Technical Reference)
 - [ ] Repository Structure tree matches actual folder layout
 - [ ] `INSTRUCTOR-GUIDE.md` is prominently linked
-- [ ] `participant-kit/` files are individually linked (not just the folder)
+- [ ] `student-kit/` files are individually linked (not just the folder)
 - [ ] Localized `README.pt-BR.md` is linked if it exists
 - [ ] No duplicate sections or broken markdown formatting
 
 ## Interfaces
 - **Agent 0 (Project Lead)**: Receives orchestration signal; reports completion as final pipeline step.
 - **Agent 2 (Learning Architect)**: Validates instructor-facing links match agenda/guide structure.
-- **Agent 6 (Content Producer)**: Validates participant-facing links match distributed kit.
+- **Agent 6 (Content Producer)**: Validates student-facing links match distributed kit.
 - **Agent 7 (Localization Specialist)**: Confirms translated README is linked.

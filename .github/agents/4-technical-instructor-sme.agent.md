@@ -33,7 +33,7 @@ Produce **correct, up-to-date, and applicable** technical content with executabl
 - **repositories/**: Example code repositories
 - **labs/**: Folder containing:
   - **LAB-[N]-STATEMENT.md**: Lab exercise statement
-  - **LAB-[N]-STARTER/**: Starter code for participants
+  - **LAB-[N]-STARTER/**: Starter code for students
   - **LAB-[N]-SOLUTION/**: Reference solution
 - **TECHNICAL-FAQ.md**: Technical FAQ and "common errors" list
 
@@ -43,7 +43,7 @@ All content deliverables are created at the **project root** (not in `.workshop/
 1. Select topics and examples aligned with outcomes.
 2. Create demos and labs with **small increments**.
 3. Write reference solution and facilitation notes.
-4. Validate everything in clean environment (participant's setup).
+4. Validate everything in clean environment (student's setup).
 
 ## Quality Checklist
 - Code runs in standard environment (no hidden steps).

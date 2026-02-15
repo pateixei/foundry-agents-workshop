@@ -19,7 +19,7 @@ This folder contains minute-by-minute instructional scripts for all 9 workshop m
 |--------|-------|----------|-------------|--------|
 | **Module 0** | Infrastructure Prerequisites | 45-60 min (async) | [`MODULE-0-INFRASTRUCTURE-SCRIPT.md`](MODULE-0-INFRASTRUCTURE-SCRIPT.md) | ✅ Ready |
 
-**Format**: Self-service guide (participants complete before Day 1)
+**Format**: Self-service guide (students complete before Day 1)
 
 ---
 
@@ -114,7 +114,7 @@ Each instructional script includes:
 
 ### 3. **Hands-On Activities**
 - Progressive checkpoints (validation gates every 10-15 min)
-- Participant tasks with explicit instructions
+- Student tasks with explicit instructions
 - Expected outputs (screenshots, CLI output)
 - Success criteria (✅ criteria for moving forward)
 
@@ -140,8 +140,8 @@ Each instructional script includes:
 
 ### 8. **Success Metrics**
 - Quantified completion indicators (e.g., "85%+ deploy successfully")
-- Observable behaviors (e.g., "Participants articulate one key difference")
-- Checkpoint tracking (number of participants passing each gate)
+- Observable behaviors (e.g., "Students articulate one key difference")
+- Checkpoint tracking (number of students passing each gate)
 
 ---
 
@@ -167,7 +167,7 @@ All scripts designed for:
 
 ### For Workshop Organizers:
 1. **Materials Prep**: Extract slide content from scripts → build PowerPoint decks
-2. **Environment Setup**: Use Module 0 script to prepare participant accounts
+2. **Environment Setup**: Use Module 0 script to prepare student accounts
 3. **Scheduling**: Use timing tables to create workshop calendar
 4. **Support Planning**: Review troubleshooting playbooks → prepare helpers/TAs
 
@@ -175,7 +175,7 @@ All scripts designed for:
 1. **Read each script**: Verify technical accuracy
 2. **Check flow**: Ensure logical progression between modules
 3. **Validate timing**: Confirm durations realistic
-4. **Test hands-on steps**: Walk through participant tasks
+4. **Test hands-on steps**: Walk through student tasks
 5. **Provide feedback**: Mark sections needing adjustment
 
 ---
@@ -200,7 +200,7 @@ When reviewing scripts, verify:
 Once you approve these scripts:
 1. **Agent 4 (Technical Instructor/SME)**: Reviews technical content, validates code samples
 2. **Agent 5 (Technical Reviewer)**: Tests all hands-on labs end-to-end
-3. **Agent 6 (Content Producer)**: Creates slide decks, participant workbooks, and videos
+3. **Agent 6 (Content Producer)**: Creates slide decks, student workbooks, and videos
 4. **Agent 7-9**: Delivery planning, analytics setup, continuous improvement
 
 ---

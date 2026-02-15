@@ -19,7 +19,7 @@ Workshop prático para construir, implantar e gerenciar agentes de IA usando o *
 | [8](lesson-8-instances/) | Criando Instâncias | Teams + A365 CLI | Guia para criar instâncias de agente pessoais e compartilhadas no Teams |
 ## Materiais do Workshop
 
-Além do código das lições, este repositório inclui recursos abrangentes de facilitação e para participantes:
+Além do código das lições, este repositório inclui recursos abrangentes de facilitação e para estudantes:
 
 ### Para Instrutores
 
@@ -31,19 +31,18 @@ Além do código das lições, este repositório inclui recursos abrangentes de 
 | [PLANO DE CONTINGÊNCIA](CONTINGENCY-PLAN.md) | Estratégias de fallback para interrupções, problemas de ambiente e ritmo |
 | [CHECKLIST DE SALA](ROOM-READY-CHECKLIST.md) | Checklist de ambiente e logística pré-sessão |
 
-### Para Participantes
+### Para Estudantes
 
 | Recurso | Descrição |
 |---------|-----------|
-| [GUIA DE SETUP](participant-kit/SETUP-GUIDE.md) | Configuração do ambiente passo a passo (assinatura Azure, CLI, Python, Docker) |
-| [LINKS DE RECURSOS](participant-kit/RESOURCES-LINKS.md) | Links selecionados para documentação, trilhas de aprendizado e materiais de referência |
+| [GUIA DE SETUP](student-kit/SETUP-GUIDE.md) | Configuração do ambiente passo a passo (assinatura Azure, CLI, Python, Docker) |
+| [LINKS DE RECURSOS](student-kit/RESOURCES-LINKS.md) | Links selecionados para documentação, trilhas de aprendizado e materiais de referência |
 
 ### Referência Técnica
 
 | Recurso | Descrição |
 |---------|-----------|
 | [technical-content/](technical-content/) | Walkthroughs de demonstração e laboratórios práticos |
-| [context.md](context.md) | Diretrizes do workshop, problemas conhecidos e decisões técnicas |
 | [slides/](slides/) | Diagramas de arquitetura (draw.io / PNG) |
 ## Pré-requisitos
 
@@ -208,7 +207,7 @@ foundry-agents-workshop/
   lesson-8-instances/              # Guia de criação de instâncias (Teams)
   instructional-scripts/           # Scripts de entrega dos módulos para instrutores
   technical-content/               # Demos e laboratórios práticos
-  participant-kit/                 # Guia de setup e links de recursos para participantes
+  student-kit/                 # Guia de setup e links de recursos para estudantes
   INSTRUCTOR-GUIDE.md              # Guia de facilitação para instrutores
   WORKSHOP-MASTER-AGENDA.md        # Agenda detalhada de 5 dias
   CONTINGENCY-PLAN.md              # Estratégias de fallback
@@ -218,7 +217,6 @@ foundry-agents-workshop/
   slides/
     *.drawio                       # Diagramas editáveis (draw.io)
     *.png                          # Diagramas exportados
-  context.md                       # Diretrizes do workshop
 ```
 
 ## Tecnologias

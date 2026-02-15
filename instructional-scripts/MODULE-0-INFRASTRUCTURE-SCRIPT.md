@@ -172,7 +172,7 @@ param acrName = 'acrworkshop${uniqueString(resourceGroup().id)}'
   - `eastus2`
   - `westus2`
   - `northeurope`
-  - `brazilsouth` (for Brazilian participants)
+  - `brazilsouth` (for Brazilian students)
 
 **Save changes** if you modified anything.
 
@@ -480,18 +480,18 @@ az group show --name rg-foundry-workshop-xyz
 
 ### Pedagogical Approach
 This pre-workshop guide uses:
-- **Self-directed learning**: Participants complete independently
+- **Self-directed learning**: Students complete independently
 - **Checklist methodology**: Clear success indicators at each step
 - **Troubleshooting scaffolding**: Anticipate common errors, provide fixes
 - **Validation-driven**: Multiple checkpoints ensure correctness
 
 ### Expected Completion Rate
-- **90%+ participants** should complete without support
+- **90%+ students** should complete without support
 - **5-10%** may need async help (permissions, quota issues)
 - **<5%** may need synchronous office hours (complex blockers)
 
 ### Support Load Estimation
-- **Pre-workshop office hours**: Expect 10-15% of participants
+- **Pre-workshop office hours**: Expect 10-15% of students
 - **Most common issues**: Subscription permissions, quota limits
 - **Escalation scenarios**: IT admin approval needed (RBAC, quota increases)
 

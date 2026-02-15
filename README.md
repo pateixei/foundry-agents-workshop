@@ -20,31 +20,30 @@ Practical workshop to build, deploy, and manage AI agents using **Microsoft Foun
 
 ## Workshop Materials
 
-In addition to lesson code, this repository includes comprehensive facilitation and participant resources:
+In addition to lesson code, this repository includes comprehensive facilitation and student resources:
 
 ### For Instructors
 
 | Resource | Description |
 |----------|-------------|
-| [INSTRUCTOR-GUIDE.md](INSTRUCTOR-GUIDE.md) | Complete facilitation guide — preparation checklists, daily plans, techniques, troubleshooting |
-| [WORKSHOP-MASTER-AGENDA.md](WORKSHOP-MASTER-AGENDA.md) | Detailed minute-by-minute agenda for all 5 days (20 hours) |
+| [INSTRUCTOR GUIDE](INSTRUCTOR-GUIDE.md) | Complete facilitation guide — preparation checklists, daily plans, techniques, troubleshooting |
+| [WORKSHOP AGENDA](WORKSHOP-MASTER-AGENDA.md) | Detailed minute-by-minute agenda for all 5 days (20 hours) |
 | [instructional-scripts/](instructional-scripts/) | Module-by-module delivery scripts with talking points, demo steps, and timing cues |
-| [CONTINGENCY-PLAN.md](CONTINGENCY-PLAN.md) | Fallback strategies for outages, environment issues, and pacing problems |
-| [ROOM-READY-CHECKLIST.md](ROOM-READY-CHECKLIST.md) | Pre-session environment and logistics checklist |
+| [CONTINGENCY PLAN](CONTINGENCY-PLAN.md) | Fallback strategies for outages, environment issues, and pacing problems |
+| [ROOM READY CHECKLIST](ROOM-READY-CHECKLIST.md) | Pre-session environment and logistics checklist |
 
-### For Participants
+### For Students
 
 | Resource | Description |
 |----------|-------------|
-| [participant-kit/SETUP-GUIDE.md](participant-kit/SETUP-GUIDE.md) | Step-by-step environment setup (Azure subscription, CLI, Python, Docker) |
-| [participant-kit/RESOURCES-LINKS.md](participant-kit/RESOURCES-LINKS.md) | Curated links to documentation, learning paths, and reference materials |
+| [SETUP GUIDE](student-kit/SETUP-GUIDE.md) | Step-by-step environment setup (Azure subscription, CLI, Python, Docker) |
+| [RESOURCES LINKS](student-kit/RESOURCES-LINKS.md) | Curated links to documentation, learning paths, and reference materials |
 
 ### Technical Reference
 
 | Resource | Description |
 |----------|-------------|
 | [technical-content/](technical-content/) | Demo walkthroughs and hands-on labs |
-| [context.md](context.md) | Workshop guidelines, known issues, and technical decisions |
 | [slides/](slides/) | Architecture diagrams (draw.io / PNG) |
 
 ## Prerequisites
@@ -210,7 +209,7 @@ foundry-agents-workshop/
   lesson-8-instances/              # Instance creation guide (Teams)
   instructional-scripts/           # Module delivery scripts for instructors
   technical-content/               # Demos and hands-on labs
-  participant-kit/                 # Setup guide and resource links for participants
+  student-kit/                 # Setup guide and resource links for students
   INSTRUCTOR-GUIDE.md              # Facilitation guide for instructors
   WORKSHOP-MASTER-AGENDA.md        # Detailed 5-day agenda
   CONTINGENCY-PLAN.md              # Fallback strategies
@@ -220,7 +219,6 @@ foundry-agents-workshop/
   slides/
     *.drawio                       # Editable diagrams (draw.io)
     *.png                          # Exported diagrams
-  context.md                       # Workshop guidelines
 ```
 
 ## Technologies

@@ -14,7 +14,7 @@ Transform a training demand (e.g., *Java Course*) into a **clear, measurable, bu
 
 ## Responsibilities (what you do)
 - Gather client context: objectives, audience, maturity, stack, and constraints.
-- Define *learning outcomes* (what participants will be able to do at the end).
+- Define *learning outcomes* (what students will be able to do at the end).
 - Define success criteria/KPIs (e.g., practical assessment, NPS, lab completion rate).
 - Identify risks: insufficient time, unmet prerequisites, blocked environment, repository access, etc.
 - Formalize scope and out-of-scope.
@@ -26,7 +26,7 @@ Transform a training demand (e.g., *Java Course*) into a **clear, measurable, bu
 
 ## Required Inputs
 - Business objective (why does it exist?)
-- Participant profile (role, seniority, experience, language)
+- Student profile (role, seniority, experience, language)
 - Constraints: duration, format, tools, network/VPN, access policy, devices
 - Desired topics and target level (basic/intermediate/advanced)
 
@@ -42,7 +42,7 @@ Transform a training demand (e.g., *Java Course*) into a **clear, measurable, bu
 
 ## Work Process (step by step)
 1. **Stakeholder kickoff**: align expectations and metrics.
-2. **Quick interviews** with technical leaders and/or target participants.
+2. **Quick interviews** with technical leaders and/or target students.
 3. **Gap mapping**: current skills vs. desired.
 4. **Outcomes and scope proposal**: validate with stakeholder.
 5. **Handoff** to Learning Architect and Instructional Designer.

@@ -86,7 +86,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
 ```
 
 #### ⚠️ Minor Recommendations
-1. **Add Windows-specific Docker Desktop note**: Many participants may encounter WSL2 issues
+1. **Add Windows-specific Docker Desktop note**: Many students may encounter WSL2 issues
    - **Recommendation**: Add troubleshooting section for "Docker Desktop backend stopped"
    - **Fix**: Include `wsl --update` command
 
@@ -137,7 +137,7 @@ agent = project_client.agents.create_version(
 #### ✅ Pedagogical Effectiveness
 - The AWS Lambda analogy is clear and relevant for target audience
 - Three-pattern comparison table (Declarative/Hosted/Connected) is comprehensive
-- Decision framework helps participants choose appropriate pattern
+- Decision framework helps students choose appropriate pattern
 - Interactive polls are well-timed to maintain engagement
 
 #### ⚠️ Minor Recommendations
@@ -218,7 +218,7 @@ CMD ["python", "-m", "azure.ai.agentserver.agentframework", "app:app"]
 1. **Add context.md workaround documentation**: Document known MAF issues mentioned in context.md
    - **Issue 1**: AgentReference ID handling
    - **Issue 2**: Recursive routing with `_prepare_options`
-   - **Recommendation**: Create troubleshooting section referencing these fixes if participants encounter them
+   - **Recommendation**: Create troubleshooting section referencing these fixes if students encounter them
 
 2. **Clarify OpenTelemetry setup**: Explain when telemetry appears in Application Insights
    - **Note**: Telemetry may take 2-3 minutes to appear after first request
@@ -420,7 +420,7 @@ async def on_message_activity(turn_context):
 2. **Add Frontier Program alternative for testing**:
    - **Current**: Frontier Program is prerequisite
    - **Enhancement**: Mention sandbox/demo tenant option for workshops without Frontier access
-   - **Note**: Some participants may not have corp M365 tenant access
+   - **Note**: Some students may not have corp M365 tenant access
 
 3. **Expand Adaptive Cards examples**:
    - **Current**: Basic card shown
@@ -573,7 +573,7 @@ To fit the 20-hour workshop constraint while maintaining quality:
 ## Error Categories & Severity
 
 ### ✅ CRITICAL Errors (0 Found)
-**Definition**: Errors that would prevent workshop completion or cause major participant confusion.
+**Definition**: Errors that would prevent workshop completion or cause major student confusion.
 
 **Status**: ✅ **NONE FOUND** - All critical errors from previous iterations have been CORRECTED.
 

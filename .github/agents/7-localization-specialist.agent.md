@@ -8,9 +8,9 @@ description: Generates a Brazilian Portuguese (pt-BR) translation of all worksho
 Produce a **complete, high-quality pt-BR translation** of all workshop documentation, ensuring technical terms, code references, and instructional tone are preserved accurately for Brazilian Portuguese-speaking audiences.
 
 ## When to Activate
-- After Agent 6 (Content Producer) completes the participant kit and distribution manifest.
+- After Agent 6 (Content Producer) completes the student kit and distribution manifest.
 - After Agent 5 (Technical Reviewer) has approved all materials (PASS verdict).
-- Before final distribution to participants (pre-workshop phase).
+- Before final distribution to students (pre-workshop phase).
 
 ## Responsibilities
 - Translate all **Markdown documentation files** (.md) to Brazilian Portuguese (pt-BR).
@@ -44,8 +44,8 @@ Translated files live **alongside their originals** with a `.pt-BR.md` suffix (n
 - **`lesson-{1-8}/README.pt-BR.md`** — Translated lesson READMEs
 - **`lesson-4-aca-langgraph/aca-agent/REGISTER.pt-BR.md`** — Translated registration guides
 - **`lesson-6-a365-sdk/REGISTER.pt-BR.md`** — Translated registration guides
-- **`participant-kit/SETUP-GUIDE.pt-BR.md`** — Translated setup guide
-- **`participant-kit/RESOURCES-LINKS.pt-BR.md`** — Translated resources
+- **`student-kit/SETUP-GUIDE.pt-BR.md`** — Translated setup guide
+- **`student-kit/RESOURCES-LINKS.pt-BR.md`** — Translated resources
 - **`slides/capability-host.pt-BR.md`** — Translated capability host explanation
 - (pattern: `ORIGINAL.md` → `ORIGINAL.pt-BR.md` in the same directory)
 

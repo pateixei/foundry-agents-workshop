@@ -12,7 +12,7 @@
 
 ## 🎯 Learning Objectives
 
-By the end of this module, participants will be able to:
+By the end of this module, students will be able to:
 1. **Migrate** existing LangGraph agents from AWS Lambda/ECS to Azure Foundry
 2. **Implement** LangGraph agents using the Foundry adapter pattern
 3. **Compare** LangGraph and MAF architectures side-by-side
@@ -66,7 +66,7 @@ By the end of this module, participants will be able to:
 
 **Slide 2: Why Migrate?**
 
-**Ask participants**: "Why would you migrate from AWS to Azure?" (collect responses)
+**Ask students**: "Why would you migrate from AWS to Azure?" (collect responses)
 
 **Instructor provides**:
 - ✅ **Unified platform**: Foundry integrates agents with Copilot, Teams, M365
@@ -301,7 +301,7 @@ app = workflow.compile()
 
 #### Checkpoint 1: Code Review & Customization (10 min)
 
-**Participant Task**:
+**Student Task**:
 ```powershell
 cd lesson-3-hosted-langgraph/langgraph-agent
 
@@ -332,7 +332,7 @@ code main.py
 - "Don't just copy—understand the graph. Trace a sample request through nodes."
 - Walk around (or breakout rooms), answer questions
 
-**Success Criteria**: ✅ Participants understand graph flow
+**Success Criteria**: ✅ Students understand graph flow
 
 ---
 
@@ -369,7 +369,7 @@ pip install -r requirements.txt
 
 #### Checkpoint 3: Local Testing (Optional, 10 min)
 
-**Demonstrate** (instructor only, participants watch):
+**Demonstrate** (instructor only, students watch):
 ```powershell
 # Run agent locally (outside Foundry)
 python -c "
@@ -436,7 +436,7 @@ CMD ["python", "-m", "azure.ai.agentserver.langgraph", "--config", "caphost.json
 
 #### Checkpoint 5: Execute Deployment (15 min)
 
-**Participant Task**:
+**Student Task**:
 ```powershell
 # Execute deployment script
 .\deploy.ps1
@@ -495,7 +495,7 @@ Response: The current price of VALE (VALE3) is R$ 65.80 BRL.
 | "Port 8088 already in use" | Conflicting container | Stop other agents or use different port (not recommended) |
 | "Azure OpenAI endpoint error" | Missing env var | Verify `AZURE_OPENAI_ENDPOINT` in Foundry settings |
 
-**Success Criteria**: ✅ 85%+ participants have agent in Running status
+**Success Criteria**: ✅ 85%+ students have agent in Running status
 
 ---
 
@@ -651,7 +651,7 @@ assert result["messages"][-1] == expected
 
 **Activity**: Migration Assessment Checklist
 
-**Provide worksheet** (participants fill out):
+**Provide worksheet** (students fill out):
 
 ```
 My Current LangGraph Agent Assessment:
@@ -736,24 +736,24 @@ Is agent business-critical?
 ## 📋 Instructor Checklist
 
 ### Before Module 3:
-- [ ] All participants completed Module 2 (hosted MAF agent working)
+- [ ] All students completed Module 2 (hosted MAF agent working)
 - [ ] Slides loaded (comparison matrices, migration decision tree)
 - [ ] VS Code open with both `lesson-2` and `lesson-3` folders (side-by-side)
 - [ ] Test LangGraph deployment (verify adapter works)
 - [ ] Prepare migration worksheet (print or digital)
 
 ### During Module 3:
-- [ ] Confirm participants understand MAF vs LangGraph differences
+- [ ] Confirm students understand MAF vs LangGraph differences
 - [ ] Monitor LangGraph deployments (similar timeline to MAF)
 - [ ] Capture migration questions (for FAQ)
-- [ ] Track which participants have existing LangGraph agents (for follow-up)
+- [ ] Track which students have existing LangGraph agents (for follow-up)
 - [ ] Validate comparison discussion is balanced (not biased toward one framework)
 
 ### After Module 3:
 - [ ] Update `7-DELIVERY-LOG.md` with migration-specific issues
 - [ ] Share migration worksheet results (anonymized aggregate)
 - [ ] Collect feedback: Was comparison valuable?
-- [ ] Verify all participants ready for Module 4 (need working hosted agent)
+- [ ] Verify all students ready for Module 4 (need working hosted agent)
 
 ---
 
@@ -762,14 +762,14 @@ Is agent business-critical?
 ### Learning Theory Applied:
 - **Transfer Learning**: Leverage existing LangGraph knowledge
 - **Comparative Analysis**: Side-by-side frameworks builds schema
-- **Authentic Task**: Migration is real-world problem participants face
+- **Authentic Task**: Migration is real-world problem students face
 - **Self-Assessment**: Migration worksheet encourages reflection
 
 ### Adult Learning Principles:
 - **Relevance**: Migration is immediate concern for practitioners
-- **Autonomy**: Participants assess their own migration path
+- **Autonomy**: Students assess their own migration path
 - **Problem-Centered**: Solve "how do I move to Azure?" question
-- **Experience-Based**: Use participants' existing LangGraph projects as examples
+- **Experience-Based**: Use students' existing LangGraph projects as examples
 
 ### Cognitive Load Management:
 - **Intrinsic**: LangGraph familiar, reduces load
@@ -822,15 +822,15 @@ app = workflow.compile(checkpointer=checkpointer)
 ## 📊 Success Metrics
 
 **Module Completion Indicators**:
-- ✅ 85%+ participants deploy LangGraph agent successfully
+- ✅ 85%+ students deploy LangGraph agent successfully
 - ✅ 90%+ can articulate one difference between MAF and LangGraph
 - ✅ 75%+ complete migration assessment worksheet
 - ✅ 100% understand when to choose each framework
 
 **Learning Evidence**:
-- ✅ Participants can explain: adapter role in Foundry
-- ✅ Participants can compare: MAF decorators vs LangGraph nodes
-- ✅ Participants can assess: migration effort for their agents
+- ✅ Students can explain: adapter role in Foundry
+- ✅ Students can compare: MAF decorators vs LangGraph nodes
+- ✅ Students can assess: migration effort for their agents
 
 **Engagement Indicators**:
 - ✅ 70%+ participate in framework preference poll
@@ -845,7 +845,7 @@ app = workflow.compile(checkpointer=checkpointer)
 - If timing runs over → Reduce local testing demo
 - If comparison underwhelming → Add more code examples
 - If migration workshop too fast → Extend with pair discussions
-- If participants prefer MAF overwhelmingly → Emphasize LangGraph benefits more
+- If students prefer MAF overwhelmingly → Emphasize LangGraph benefits more
 
 **Feedback Collection**:
 - Poll: "Was side-by-side comparison helpful?"
@@ -859,7 +859,7 @@ app = workflow.compile(checkpointer=checkpointer)
 
 ---
 
-## 📚 Resources for Participants
+## 📚 Resources for Students
 
 **Documentation Links**:
 - 📘 LangGraph documentation

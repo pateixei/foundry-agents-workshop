@@ -47,7 +47,7 @@ All Agent 0 deliverables are **tracking/management artifacts** stored in `.works
 
 ### Two output locations:
 1. **`.workshop/`** — Logs, diagnostics, reviews, tracking artifacts, planning docs (internal process documents)
-2. **Project root** — Content deliverables (agendas, scripts, technical content, participant kits)
+2. **Project root** — Content deliverables (agendas, scripts, technical content, student kits)
 
 ### No numeric prefixes:
 Files and folders do NOT carry agent-number prefixes. Use descriptive names only.
@@ -67,7 +67,7 @@ As the orchestrator, determine the next agent to invoke by checking which artifa
 4. **`instructional-scripts/` folder exists at root** → Invoke Agent 4 (Technical Instructor/SME)
 5. **`technical-content/` folder exists at root** → Invoke Agent 5 (Technical Reviewer)
 6. **`.workshop/REVIEW-REPORT.md` exists** → Invoke Agent 6 (Content Producer)
-7. **`participant-kit/` folder exists at root** → Invoke Agent 7 (Localization Specialist)
+7. **`student-kit/` folder exists at root** → Invoke Agent 7 (Localization Specialist)
 8. **`.workshop/LOCALIZATION-LOG.md` exists** → Invoke Agent 8 (Workshop Integrator)
 9. **`.workshop/INTEGRATION-CHECKLIST.md` exists** → Workshop cycle complete
 

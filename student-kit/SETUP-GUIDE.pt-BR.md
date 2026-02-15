@@ -1,4 +1,4 @@
-# Guia de Configuração do Ambiente para Participantes
+# Guia de Configuração do Ambiente para Estudantes
 
 **Workshop**: Microsoft Foundry AI Agents Workshop — Intensivo de 5 Dias  
 **Versão**: 1.0  

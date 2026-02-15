@@ -13,7 +13,7 @@
 
 ## 🎯 Learning Objectives
 
-By the end of this module, participants will be able to:
+By the end of this module, students will be able to:
 1. **Create** a declarative agent using `PromptAgentDefinition` SDK
 2. **Configure** agent instructions, tools, and model selection
 3. **Test** the agent in Foundry portal playground  
@@ -240,7 +240,7 @@ print(f"   Status: {agent.status}")
 
 **Instructor Action**: Display setup checklist
 
-**Participant Task**:
+**Student Task**:
 ```powershell
 # Navigate to lesson folder
 cd c:\Cloud\Code\a365-workshop\lesson-1-declarative
@@ -273,7 +273,7 @@ pip install -r requirements.txt
 python -c "import azure.ai.agents; print('✅ SDK installed')"
 ```
 
-**Success Criteria**: ✅ All participants see "✅ SDK installed"
+**Success Criteria**: ✅ All students see "✅ SDK installed"
 
 ---
 
@@ -293,7 +293,7 @@ AZURE_SUBSCRIPTION_ID=xxxxx-xxxxx-xxxxx
 AZURE_RESOURCE_GROUP=rg-foundry-workshop-xyz
 ```
 
-**Participant Task**: Set environment variables
+**Student Task**: Set environment variables
 
 **Windows (PowerShell)**:
 ```powershell
@@ -323,7 +323,7 @@ echo $env:AZURE_AI_PROJECT_ENDPOINT  # PowerShell
 echo $AZURE_AI_PROJECT_ENDPOINT     # Bash
 ```
 
-**Success Criteria**: ✅ Participants see their Foundry endpoint URL
+**Success Criteria**: ✅ Students see their Foundry endpoint URL
 
 ---
 
@@ -367,7 +367,7 @@ temperature=0.3  # More deterministic
 - "Who wants a more creative agent? Increase temperature to 0.9"
 - "Who needs strict factual responses? Lower to 0.2"
 
-**Save File**: Remind participants to save changes
+**Save File**: Remind students to save changes
 
 **Success Criteria**: ✅ Code customized and saved
 
@@ -375,7 +375,7 @@ temperature=0.3  # More deterministic
 
 #### Checkpoint 4: Execute Agent Creation (12 min) | 02:15-02:27
 
-**Instructor Action**: Demonstrate execution, then participants run
+**Instructor Action**: Demonstrate execution, then students run
 
 **Demo First** (2 min):
 ```powershell
@@ -400,7 +400,7 @@ python create_agent.py
 >
 > "Contrast this with Lambda: you'd upload code, configure triggers, set IAM roles. Here? One SDK call."
 
-**Participant Execution** (5 min):
+**Student Execution** (5 min):
 **Say**: "Your turn. Run `python create_agent.py` now."
 
 **Monitor Progress**:
@@ -421,7 +421,7 @@ python create_agent.py
 - "Each agent appearing in portal as people complete"
 - Take poll: "Who's done?" (track completion rate)
 
-**Success Criteria**: ✅ 90% participants see "✅ Agent created successfully!"
+**Success Criteria**: ✅ 90% students see "✅ Agent created successfully!"
 
 ---
 
@@ -466,16 +466,16 @@ Based on market trends, here are three Brazilian stocks to watch:
 >
 > "Notice the disclaimer? That's from our instructions. The model respects our system prompt."
 
-**Participant Task**: 
+**Student Task**: 
 - "Everyone test your agent with a question"
 - "Screenshot your agent's response and share in chat"
 
 **Engagement**:
-- Show 3-4 screenshots from participants
+- Show 3-4 screenshots from students
 - Highlight variations based on customized instructions
 - Celebrate: "You've deployed your first Azure AI agent!"
 
-**Success Criteria**: ✅ All participants successfully invoke agent in playground
+**Success Criteria**: ✅ All students successfully invoke agent in playground
 
 ---
 
@@ -490,7 +490,7 @@ Based on market trends, here are three Brazilian stocks to watch:
 **Instructor Setup**:
 > "Now here's the magic of declarative agents. Let's modify the agent WITHOUT running code again."
 
-**Participant Steps**:
+**Student Steps**:
 1. **In Portal** → Agents → Your agent
 2. Click **"Edit"** (top right)
 3. **Modify Instructions**: Add new line:
@@ -519,7 +519,7 @@ Based on market trends, here are three Brazilian stocks to watch:
 
 #### Experiment 2: Model Swapping (5 min)
 
-**Participant Steps**:
+**Student Steps**:
 1. Click **"Edit"** again
 2. Change **Model**: `gpt-4` → `gpt-4-turbo`
 3. **Save** (creates version 3)
@@ -533,7 +533,7 @@ Based on market trends, here are three Brazilian stocks to watch:
 
 #### Experiment 3: Version Rollback (5 min)
 
-**Participant Steps**:
+**Student Steps**:
 1. Go to **"Versions"** tab
 2. See: Version 1, 2, 3 (all preserved)
 3. Click **Version 1** → "Set as Active"
@@ -662,7 +662,7 @@ _Display on screen_:
 ## 📋 Instructor Checklist
 
 ### Before Module 1:
-- [ ] Verify all participants completed Module 0 (infrastructure deployed)
+- [ ] Verify all students completed Module 0 (infrastructure deployed)
 - [ ] Slides loaded (patterns comparison, decision tree)
 - [ ] VS Code open with `lesson-1-declarative/create_agent.py`
 - [ ] Foundry Portal open (agents page)
@@ -672,17 +672,17 @@ _Display on screen_:
 
 ### During Module 1:
 - [ ] Monitor agent creation success rate (aim 90%+)
-- [ ] Capture screenshots of participant agents in portal
+- [ ] Capture screenshots of student agents in portal
 - [ ] Note timing: Is 45 min sufficient for lab?
 - [ ] Track common errors (update troubleshooting guide)
-- [ ] Verify at least 3 participants test experiments successfully
+- [ ] Verify at least 3 students test experiments successfully
 - [ ] Collect feedback on pacing (poll at end)
 
 ### After Module 1:
 - [ ] Update `7-DELIVERY-LOG.md` with issues encountered
-- [ ] Share screenshots of participant agents (celebrate wins)
+- [ ] Share screenshots of student agents (celebrate wins)
 - [ ] Post FAQ responses to common questions
-- [ ] Verify all participants have working agent (required for Module 2)
+- [ ] Verify all students have working agent (required for Module 2)
 - [ ] Prepare container environment setup for Module 2
 
 ---
@@ -696,7 +696,7 @@ _Display on screen_:
 - **Scaffolded Complexity**: Start simple (no tools), add complexity tomorrow
 
 ### Adult Learning Principles:
-- **Autonomy**: Participants customize agent (name, instructions, model)
+- **Autonomy**: Students customize agent (name, instructions, model)
 - **Relevance**: Financial agent relatable to target audience
 - **Immediate Feedback**: Playground provides instant validation
 - **Problem-Centered**: Scenarios drive pattern decision-making
@@ -768,15 +768,15 @@ pip install -r requirements.txt
 ## 📊 Success Metrics
 
 **Module Completion Indicators**:
-- ✅ 90%+ participants successfully create agent via SDK
+- ✅ 90%+ students successfully create agent via SDK
 - ✅ 85%+ complete all three portal experiments
 - ✅ 100% can articulate one difference between declarative vs hosted
 - ✅ <5 unique error types encountered (good design if low)
 
 **Learning Evidence**:
-- ✅ Participants can explain: "When would you NOT use declarative?"
-- ✅ Participants can demonstrate: Portal instruction editing
-- ✅ Participants can decide: Pattern selection given scenario
+- ✅ Students can explain: "When would you NOT use declarative?"
+- ✅ Students can demonstrate: Portal instruction editing
+- ✅ Students can decide: Pattern selection given scenario
 
 **Engagement Indicators**:
 - ✅ 70%+ share playground screenshot in chat
@@ -799,7 +799,7 @@ pip install -r requirements.txt
   - B) Hands-on lab
   - C) Portal experiments
   - D) Decision framework
-- Track: Did participants find AWS comparisons helpful? (yes/no)
+- Track: Did students find AWS comparisons helpful? (yes/no)
 
 **Enhancement Ideas**:
 - Add "Challenge" task: Create second agent with Code Interpreter tool
@@ -808,7 +808,7 @@ pip install -r requirements.txt
 
 ---
 
-## 📚 Resources for Participants
+## 📚 Resources for Students
 
 **Documentation Links**:
 - 📘 Azure AI Foundry SDK Reference: [link]

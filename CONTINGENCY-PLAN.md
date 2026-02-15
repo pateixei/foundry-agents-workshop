@@ -16,7 +16,7 @@ This document defines backup plans for the most likely disruptions during a 5-da
 ## Scenario 1: Internet / Network Outage
 
 ### Detection
-- Participants report `pip install` failures, `az` commands timing out, Docker pull stuck
+- Students report `pip install` failures, `az` commands timing out, Docker pull stuck
 - Instructor cannot reach Azure Portal or Foundry
 
 ### Immediate Actions (< 5 min)
@@ -35,11 +35,11 @@ This document defines backup plans for the most likely disruptions during a 5-da
   ```
 - [ ] Pre-build all Docker images on instructor machine (acts as demo fallback)
 - [ ] Save key Azure Portal screenshots for offline demo
-- [ ] Prepare offline version of `context.md` workarounds
+- [ ] Prepare offline version of known workarounds
 
 ### Recovery
 Once connectivity returns:
-1. Participants run `pip install -r requirements.txt` to catch up
+1. Students run `pip install -r requirements.txt` to catch up
 2. Resume hands-on from where code review left off
 3. If >30 min lost, compress current module's Q&A time
 
@@ -69,7 +69,7 @@ Once connectivity returns:
 - [ ] Deploy to **two Azure regions** (primary: eastus2, backup: westus3)
 - [ ] Pre-push all container images to ACR before workshop
 - [ ] Record short video demos (3–5 min each) of successful deployments for all modules
-- [ ] Have instructor Azure subscription in a different region than participant subscriptions
+- [ ] Have instructor Azure subscription in a different region than student subscriptions
 
 ### Recovery
 1. Monitor Azure status page for resolution
@@ -78,10 +78,10 @@ Once connectivity returns:
 
 ---
 
-## Scenario 3: Participant Environment Failures
+## Scenario 3: Student Environment Failures
 
 ### Detection
-- Multiple participants cannot run `deploy.ps1` or labs
+- Multiple students cannot run `deploy.ps1` or labs
 - Error patterns: auth failures, quota exceeded, missing tools
 
 ### Common Issues & Quick Fixes
@@ -97,14 +97,14 @@ Once connectivity returns:
 | PowerShell execution policy | `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` | 1 min |
 
 ### Escalation Path
-1. **Self-help**: Direct to `context.md` for known workarounds
-2. **Peer help**: Pair struggling participant with working neighbor
-3. **Instructor help**: 1-on-1 troubleshooting (max 5 min per participant)
-4. **Fallback**: Participant follows along on instructor's screen share until resolved
+1. **Self-help**: Check lesson READMEs for known workarounds
+2. **Peer help**: Pair struggling student with working neighbor
+3. **Instructor help**: 1-on-1 troubleshooting (max 5 min per student)
+4. **Fallback**: Student follows along on instructor's screen share until resolved
 
 ### Mitigation
 - [ ] Validate all environments at Office Hours (Day -3, Day -1)
-- [ ] Prepare "buddy system" — pair participants with different OS/setups
+- [ ] Prepare "buddy system" — pair students with different OS/setups
 - [ ] Have a pre-configured VM image (optional) as last-resort fallback
 
 ---
@@ -123,14 +123,14 @@ Once connectivity returns:
 
 | Time Gained | Action |
 |-------------|--------|
-| 15-30 min | Extended Q&A, participant show-and-tell |
+| 15-30 min | Extended Q&A, student show-and-tell |
 | 30-60 min | Bonus: multi-agent orchestration preview or architecture discussion |
 | 60+ min | Start next day's content early (with group consent) |
 
-### 4c. Wide Skill Gap Among Participants
+### 4c. Wide Skill Gap Among Students
 
-- **Fast participants**: Direct to stretch goals (add new tools, customize prompts, explore optional topics)
-- **Slower participants**: Provide solution code earlier; pair with advanced participant
+- **Fast students**: Direct to stretch goals (add new tools, customize prompts, explore optional topics)
+- **Slower students**: Provide solution code earlier; pair with advanced student
 - **Everyone stuck on same issue**: Full-group troubleshooting session (5-10 min cap)
 
 ---
@@ -147,7 +147,7 @@ Once connectivity returns:
    ```powershell
    a365 setup validate
    ```
-2. If tenant not provisioned: Demo from instructor tenant, participants observe
+2. If tenant not provisioned: Demo from instructor tenant, students observe
 3. If sideloading blocked: Enable in Teams Admin Center → Org Settings
 
 ### Mitigation
@@ -190,7 +190,6 @@ Once connectivity returns:
 - [ ] pip packages downloaded as wheels (offline-packages/)
 - [ ] All container images pre-pushed to ACR
 - [ ] Deployment demos recorded as video backups
-- [ ] `context.md` printed / saved as PDF
 - [ ] Backup Azure region tested
 - [ ] M365 demo tenant verified
 - [ ] Contingency plan shared with co-instructor and facilitator

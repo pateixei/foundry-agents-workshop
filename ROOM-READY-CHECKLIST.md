@@ -13,10 +13,10 @@
 - [ ] Instructor demo Resource Group deployed with all resources (run `prereq/deploy.ps1`)
 - [ ] Instructor has Contributor access on demo subscription
 - [ ] M365 Developer Tenant created and configured (for Days 3-5 demos)
-- [ ] GitHub/Azure DevOps repository accessible to all participants
+- [ ] GitHub/Azure DevOps repository accessible to all students
 - [ ] Repository tagged/branched at stable version for workshop delivery
 
-## B. Participant Communication (Day -7 to Day -3)
+## B. Student Communication (Day -7 to Day -3)
 
 - [ ] Welcome email sent with:
   - [ ] Setup guide link (`SETUP-GUIDE.md`)
@@ -32,8 +32,8 @@
 
 - [ ] Office Hours #1 held (Day -3): Subscription + tool install support
 - [ ] Office Hours #2 held (Day -1): Full environment validation
-- [ ] All participants confirmed ✅ on `validate-setup.ps1`
-- [ ] Participants with issues identified and mitigated
+- [ ] All students confirmed ✅ on `validate-setup.ps1`
+- [ ] Students with issues identified and mitigated
 - [ ] Contingency plan reviewed with co-instructor/facilitator
 
 ## D. Materials Validation (Day -2)
@@ -82,7 +82,7 @@
 
 ### Backup & Contingency
 - [ ] Offline copies of all slides/diagrams available
-- [ ] `context.md` workarounds reviewed and current
+- [ ] Known workarounds reviewed and current
 - [ ] Contingency plan (`CONTINGENCY-PLAN.md`) distributed to co-instructor
 - [ ] Alternative pip mirror URL documented (if primary blocked)
 
@@ -93,7 +93,7 @@
 - [ ] Recording started (if applicable)
 - [ ] Communication channel post: "Welcome! Workshop starts in 30 min"
 - [ ] Agenda slide ready as first screen
-- [ ] `context.md` open in a browser tab (quick reference for workarounds)
+- [ ] Troubleshooting appendix open in a browser tab (quick reference for workarounds)
 - [ ] Terminal open with Azure CLI logged in
 - [ ] VS Code open with `a365-workshop` workspace loaded
 

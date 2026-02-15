@@ -12,7 +12,7 @@
 
 ## 🎯 Learning Objectives
 
-By the end of these modules, participants will be able to:
+By the end of these modules, students will be able to:
 1. **Configure** Agent 365 (A365) CLI and authentication for cross-tenant scenarios
 2. **Register** Agent Blueprint in Microsoft 365 Entra ID
 3. **Understand** cross-tenant architecture (Azure Tenant A + M365 Tenant B)
@@ -100,7 +100,7 @@ Response flows back through Graph
 
 **Interactive (3 min)**:
 - **Poll**: "How many work in multi-tenant environments?" (count)
-- **Ask participants**: "What challenges have you faced with cross-tenant access?"
+- **Ask students**: "What challenges have you faced with cross-tenant access?"
 - Common answers: Auth complexity, RBAC confusion, network routing
 
 **Transition**:
@@ -114,7 +114,7 @@ Response flows back through Graph
 
 #### Checkpoint 1: Prerequisites Verification (5 min)
 
-**Participant Task**:
+**Student Task**:
 ```powershell
 # Check .NET SDK installed (required for A365 CLI)
 dotnet --version
@@ -138,7 +138,7 @@ dotnet --version
 
 #### Checkpoint 2: Install A365 CLI (5 min)
 
-**Participant Task**:
+**Student Task**:
 ```powershell
 # Install A365 CLI as .NET tool
 dotnet tool install --global Microsoft.Agents.A365.DevTools.Cli --prerelease
@@ -168,7 +168,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
 
 #### Checkpoint 3: Create A365 Config File (10 min)
 
-**Instructor demonstrates, participants follow**:
+**Instructor demonstrates, students follow**:
 
 ```powershell
 cd lesson-5-a365-prereq
@@ -244,7 +244,7 @@ az account show --query tenantId -o tsv
 # Different tenants: Cross-tenant scenario (more complex, common in large orgs)
 ```
 
-**Participant Task**:
+**Student Task**:
 ```powershell
 # Login to M365 Tenant (Tenant B, NOT Azure Tenant!)
 az login --tenant <m365-tenant-id>
@@ -284,7 +284,7 @@ az role assignment list --assignee $(az ad signed-in-user show --query id -o tsv
 
 #### Step 2: Register Agent Blueprint (10 min)
 
-**Participant Task**:
+**Student Task**:
 ```powershell
 # Run A365 setup
 a365 setup blueprint
@@ -336,7 +336,7 @@ a365 setup blueprint
 
 #### Step 3: Admin Consent (5 min)
 
-**Instructor demonstrates** (participants watch or follow if they have admin rights):
+**Instructor demonstrates** (students watch or follow if they have admin rights):
 
 **Navigate to Azure Portal** (yes, Azure Portal even for M365 Tenant!):
 1. portal.azure.com → Entra ID (top left, switch to M365 Tenant if needed)
@@ -352,7 +352,7 @@ a365 setup blueprint
 >
 > "In production, your IT admin does this. For workshop, you need Global Admin role."
 
-**⚠️ If participants lack admin rights**:
+**⚠️ If students lack admin rights**:
 > "No admin? No problem for today. Workshop continues—you can test locally. For M365 deployment, you'll need admin consent eventually."
 
 **Success Criteria**: ✅ Permissions granted (or noted for later)
@@ -467,7 +467,7 @@ async def messages(request: Request):
 
 #### Step 1: Install Dependencies (5 min)
 
-**Participant Task**:
+**Student Task**:
 ```powershell
 cd lesson-6-a365-sdk
 
@@ -567,7 +567,7 @@ def get_stock_price(symbol: str) -> dict:
 >
 > "In Application Insights, you'll see: How long did `get_stock_price` take? Success rate?"
 
-**Participant Task**: Add spans to 1-2 tools in their agent
+**Student Task**: Add spans to 1-2 tools in their agent
 
 **Success Criteria**: ✅ Span instrumentation added
 
@@ -646,7 +646,7 @@ async def messages(request: Request):
 - **TurnContext**: "Encapsulates conversation state. Use to send/receive messages."
 - **adapter.process_activity**: "Handles Bot Framework protocol authentication and routing."
 
-**Participant Task**: Implement (or review) `/api/messages` endpoint
+**Student Task**: Implement (or review) `/api/messages` endpoint
 
 **Success Criteria**: ✅ Endpoint implemented
 
@@ -695,7 +695,7 @@ Invoke-RestMethod -Uri "https://<aca-fqdn>/api/messages" -Method Post -Body $act
 ## 📋 Instructor Checklist
 
 ### Before Modules 5-6:
-- [ ] Verify Frontier Program access for participants
+- [ ] Verify Frontier Program access for students
 - [ ] Test A365 CLI setup end-to-end
 - [ ] Prepare M365 Tenant credentials (if shared tenant for workshop)
 - [ ] Application Insights connection string ready
@@ -710,7 +710,7 @@ Invoke-RestMethod -Uri "https://<aca-fqdn>/api/messages" -Method Post -Body $act
 ### After Modules 5-6:
 - [ ] Update `7-DELIVERY-LOG.md` with A365-specific issues
 - [ ] Document cross-tenant auth troubleshooting
-- [ ] Verify all participants ready for Module 7 (Blueprint registered)
+- [ ] Verify all students ready for Module 7 (Blueprint registered)
 
 ---
 

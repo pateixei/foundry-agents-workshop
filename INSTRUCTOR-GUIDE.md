@@ -32,7 +32,7 @@
    - Address Microsoft platform skepticism tactfully
 
 2. **Hands-On Support**
-   - Guide participants through labs
+   - Guide students through labs
    -troubleshoot technical issues proactively
    - Monitor progress and intervene when stuck
    - Validate successful completions
@@ -46,7 +46,7 @@
 4. **Community Building**
    - Foster collaborative learning environment
    - Manage discussions productively
-   - Recognize participant contributions
+   - Recognize student contributions
    - Create safe space for questions
 
 5. **Assessment & Feedback**
@@ -80,7 +80,7 @@
 ### 3 Weeks Before Workshop
 
 **Administrative**
-- [ ] Confirm participant list and contact information
+- [ ] Confirm student list and contact information
 - [ ] Send welcome email with prerequisites
 - [ ] Set up communication channels (Slack/Teams)
 - [ ] Schedule pre-workshop office hours
@@ -91,7 +91,6 @@
 - [ ] Test all lesson code end-to-end (Lessons 0-8)
 - [ ] Build all container images successfully
 - [ ] Deploy each agent pattern to verify functionality
-- [ ] Review `context.md` known issues and fixes
 - [ ] Prepare backup resources (pre-built images, sandbox subscriptions)
 
 **Materials**
@@ -103,7 +102,7 @@
 
 ### 1 Week Before Workshop
 
-**Participant Readiness**
+**Student Readiness**
 - [ ] Send reminder about prerequisites completion
 - [ ] Share study materials (Azure Fundamentals, MAF guide)
 - [ ] Send Azure subscription guide
@@ -120,15 +119,15 @@
 - [ ] Dry run of Day 1 content (timing check)
 - [ ] Test video conferencing setup
 - [ ] Prepare breakout rooms (if applicable)
-- [ ] Review participant pre-assessment scores
-- [ ] Identify participants who may need extra support
+- [ ] Review student pre-assessment scores
+- [ ] Identify students who may need extra support
 
 ### 48 Hours Before Workshop
 
 **Critical Checks**
 - [ ] Host Office Hours #2 (final validation)
-- [ ] Run `validate-setup.ps1` with participants
-- [ ] Confirm all participants "green" on environment
+- [ ] Run `validate-setup.ps1` with students
+- [ ] Confirm all students "green" on environment
 - [ ] Distribute final reminder with Day 1 logistics
 - [ ] Test recording setup
 
@@ -182,7 +181,7 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 **Focus**: Infrastructure, declarative pattern, MAF introduction
 
 **Key Objectives:**
-- Build participant confidence with first deployment
+- Build student confidence with first deployment
 - Establish positive learning environment
 - Address Azure onboarding anxieties
 - Demonstrate portal and basic patterns
@@ -191,7 +190,7 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 - Environment issues resolved quickly (have backup sandboxes ready)
 - Everyone deploys declarative agent successfully
 - Positive tone set for rest of week
-- Participants comfortable asking questions
+- Students comfortable asking questions
 
 **Instructor Mindset:**
 - Patient and encouraging (first-time Azure users!)
@@ -231,10 +230,10 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 1. **Azure quota limits**: Have list of alternative regions ready
 2. **ACR authentication fails**: Walk through `az acr login` step-by-step
 3. **Confusion about resource groups**: Use analogy (folders for resources)
-4. **MAF routing issues**: Apply context.md fixes; explain why they're needed
+4. **MAF routing issues**: Apply known fixes (see Troubleshooting appendix); explain why they're needed
 
 **End of Day 1 Checklist:**
-- [ ] All participants have infrastructure deployed
+- [ ] All students have infrastructure deployed
 - [ ] Declarative agent working for everyone
 - [ ] MAF agent either deployed or troubleshooting plan in place
 - [ ] Day 2 preview shared
@@ -255,7 +254,7 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 
 **Critical Success Factors:**
 - LangGraph agent deployed successfully (proof for AWS practitioners)
-- Participants see LangGraph compatibility
+- Students see LangGraph compatibility
 - Architecture decision framework internalized
 - Confidence with containerized agents
 
@@ -307,12 +306,12 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 1. **LangGraph graph not compiling**: Check edge connections; common mistake
 2. **Adapter import errors**: Verify requirements.txt includes `azure-ai-agentserver-langgraph`
 3. **Comparison questions**: "Which is faster, MAF or LangGraph?" (nuanced answer prepared)
-4. **Resistance flares up**: Some participants may vocalize AWS preference—handle diplomatically
+4. **Resistance flares up**: Some students may vocalize AWS preference—handle diplomatically
 
 **End of Day 2 Checklist:**
 - [ ] MAF agent deployed and enhanced with custom tools
 - [ ] LangGraph agent successfully deployed
-- [ ] Participants understand when to use each framework
+- [ ] Students understand when to use each framework
 - [ ] Addressed migration concerns
 - [ ] Confidence level increased
 
@@ -366,12 +365,12 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 
 **Facilitation Tips:**
 - **Hour 1**: Architecture comparison is visual—use diagrams extensively
-- **Hour 2**: Bicep template walkthrough appeals to infrastructure-focused participants
+- **Hour 2**: Bicep template walkthrough appeals to infrastructure-focused students
 - **Hour 3**: Observability lab is exploratory—encourage curiosity
 - **Hour 4**: Decision workshop benefits from real-world scenarios (bring 5-7 cases)
 
 **Cost Discussion Guidance:**
-- Participants may be surprised by costs
+- Students may be surprised by costs
 - Frame positively: "Free tier covers workshop; production requires budgeting"
 - Provide estimation tools/spreadsheets
 - Discuss cost optimization strategies
@@ -381,14 +380,14 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 1. **ACA ingress configuration**: External=true required; document this clearly
 2. **APIM confusion**: Explain gateway role simply; avoid unnecessary depth
 3. **Cost anxiety**: Reassure about cleanup scripts; show cost management tools
-4. **Decision paralysis**: Some participants struggle choosing patterns—provide framework
+4. **Decision paralysis**: Some students struggle choosing patterns—provide framework
 
 **End of Day 3 Checklist:**
 - [ ] ACA agent deployed and tested
 - [ ] Connected agent registered in Foundry
 - [ ] Cost analysis completed
 - [ ] Performance comparison documented
-- [ ] Participants can make architecture decisions independently
+- [ ] Students can make architecture decisions independently
 
 ---
 
@@ -424,9 +423,9 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 - **Hour 4**: Teams integration is the "wow moment"—build excitement
 
 **M365 Tenant Considerations:**
-- Some participants may not have M365 tenant access
+- Some students may not have M365 tenant access
 - Provide demo tenant credentials (if available)
-- Pair participants: those with/without access
+- Pair students: those with/without access
 - Focus on workflow understanding over hands-on for this section
 
 **Common Day 4 Issues:**
@@ -437,7 +436,7 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 
 **End of Day 4 Checklist:**
 - [ ] A365 SDK integration completed
-- [ ] Participants understand publishing workflow
+- [ ] Students understand publishing workflow
 - [ ] Agent instance visible in Teams (demo or hands-on)
 - [ ] Ready for capstone project
 - [ ] Capstone ideas identified
@@ -473,7 +472,7 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 - **Hour 1** (00:00-01:00):
   - 00:00-00:20: Comprehensive Days 1-4 recap
   - 00:20-00:50: Capstone briefing (3 project types: Portfolio Advisor, Risk Analyzer, Market Researcher)
-  - 00:50-01:00: Project planning (participants choose & plan)
+  - 00:50-01:00: Project planning (students choose & plan)
 - **Hours 2-3** (01:00-03:00): Independent project work
   - **Milestone checkpoints:**
     - ⏱️ 01:30 - Code complete, starting build
@@ -489,9 +488,9 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 **Timing Attention Points:**
 - ⚠️ Capstone briefing (00:20-00:50): Be clear on requirements; avoid over-explaining
 - ⚠️ Milestone 02:15 (deployment): If many behind, extend work time, shorten presentations
-- ⚠️ Capstone development (2 hours) is tight; participants must manage time
+- ⚠️ Capstone development (2 hours) is tight; students must manage time
 - ✅ Presentations can flex (3-5 min each depending on cohort size)
-- ⏱️ Keep closing to 5 min sharp; participants are tired
+- ⏱️ Keep closing to 5 min sharp; students are tired
 
 **Facilitation Tips:**
 - **Hour 1**: Briefing is motivational; inspire creativity within constraints
@@ -500,8 +499,8 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 - **Closing**: Make it memorable; acknowledge effort
 
 **Capstone Facilitation Balance:**
-- **Too much help**: Participants don't learn through struggle
-- **Too little help**: Participants get stuck and demoralized
+- **Too much help**: Students don't learn through struggle
+- **Too little help**: Students get stuck and demoralized
 - **Right balance**: Guide with questions; provide hints, not answers
 
 **Evaluation Approach:**
@@ -512,10 +511,10 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 - Grade privately; feedback individually later
 
 **Common Day 5 Issues:**
-1. **Scope creep**: Participants try to build too much—help refocus
+1. **Scope creep**: Students try to build too much—help refocus
 2. **Time management**: Some run out of time—encourage MVP focus
 3. **Technical blockers**: Deployment failures in capstone—have troubleshooting ready
-4. **Presentation anxiety**: Some participants nervous—create supportive environment
+4. **Presentation anxiety**: Some students nervous—create supportive environment
 
 **Closing Experience:**
 - **Avoid**: Weak, rushed ending
@@ -545,7 +544,7 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 
 **1. Storytelling Approach**
 - Frame concepts as journey: "Imagine you're migrating your AWS agent..."
-- Use participant context: Financial services examples throughout
+- Use student context: Financial services examples throughout
 - Personal anecdotes: Share your own learning experiences
 
 **2. Visual Learning**
@@ -558,7 +557,7 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 - Polls: "How many have deployed containers before?"
 - Chat questions: "What's your biggest concern about Azure?"
 - Think-pair-share: Discuss with neighbor, then share out
-- Live coding collaboratively (participants suggest next steps)
+- Live coding collaboratively (students suggest next steps)
 
 **4. Chunking Complex Topics**
 - Break MAF/LangGraph into digestible pieces
@@ -577,12 +576,12 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 **During Lab:**
 - **Monitor progress**: Use shared tracker or quick polls
 - **Circulate virtually**: Check in Slack/Teams
-- **Identify stuck participants early**: Proactive intervention
+- **Identify stuck students early**: Proactive intervention
 - **Balance individual help with group needs**: Address common issues publicly
 
 **Common Lab Facilitation Traps:**
 - ❌ Moving on before majority ready
-- ❌ Spending too long with one stuck participant (assign TA or defer to office hours)
+- ❌ Spending too long with one stuck student (assign TA or defer to office hours)
 - ❌ Not providing regular time updates: "15 minutes remaining"
 - ❌ Assuming silence means understanding
 
@@ -606,15 +605,15 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 
 | Scenario | Response Strategy |
 |----------|------------------|
-| **One participant dominates** | "Thanks, Alex. Let's hear from someone else now." |
+| **One student dominates** | "Thanks, Alex. Let's hear from someone else now." |
 | **Off-topic tangent** | "Important point, but not for today's scope. Let's offline that." |
 | **Negative attitude spreads** | Address privately; redirect publicly to positive aspects |
 | **Silence when asking for questions** | Ask specific people; rephrase question; use chat |
-| **Participant criticizes Microsoft** | Acknowledge concern; pivot to workshop value; stay neutral |
+| **Student criticizes Microsoft** | Acknowledge concern; pivot to workshop value; stay neutral |
 
 ### Building Psychological Safety
 
-**Create environment where participants:**
+**Create environment where students:**
 - Feel safe asking "basic" questions
 - Admit when stuck without embarrassment
 - Share mistakes and learn from them
@@ -648,7 +647,7 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 **Symptoms**: "Resource name '<name>' already taken"
 **Solution**:
 1. Add unique suffix to names in `.bicepparam`
-2. Use participant initials + timestamp: `foundry-jd-20260214`
+2. Use student initials + timestamp: `foundry-jd-20260214`
 3. Document pattern for consistency
 
 #### Container Build & Deployment
@@ -685,7 +684,7 @@ az acr repository list --name <acr-name>
 
 **Issue**: Recursive routing timeout
 **Symptoms**: Agent call hangs then times out (60s)
-**Solution**: Apply fix from `context.md`:
+**Solution**: Apply the following fix:
 ```python
 # Override _prepare_options to prevent recursive routing
 def _prepare_options_fixed(self, original_options):
@@ -698,7 +697,7 @@ client._prepare_options = _prepare_options_fixed
 
 **Issue**: "ID cannot be null or empty"
 **Symptoms**: 400 error from Foundry Responses API
-**Solution**: Add `id` field to agent reference (per `context.md`)
+**Solution**: Add `id` field to agent reference
 
 #### LangGraph Issues
 
@@ -736,26 +735,26 @@ client._prepare_options = _prepare_options_fixed
 3. Ensure minReplicas < maxReplicas
 4. Review ACA scaling docs
 
-### Participant-Related Issues
+### Student-Related Issues
 
 #### Learning & Engagement
 
-**Issue**: Participant far behind pace
+**Issue**: Student far behind pace
 **Strategy**:
 1. **Assess**: Is it technical issue or comprehension gap?
 2. **Triage**: Critical blockers vs nice-to-have completions
-3. **Support**: Assign TA or pair with another participant
+3. **Support**: Assign TA or pair with another student
 4. **Adapt**: Provide abbreviated path (skip optional elements)
 5. **Follow-up**: Offer extra office hours
 
-**Issue**: Participant disengaged or distracted
+**Issue**: Student disengaged or distracted
 **Strategy**:
 1. **Check-in privately**: "How's it going? Any blockers?"
-2. **Assign role**: Ask them to help another struggling participant
+2. **Assign role**: Ask them to help another struggling student
 3. **Vary format**: Switch from lecture to hands-on
 4. **Break**: Suggest they step away and return refreshed
 
-**Issue**: Participant frustrated with errors
+**Issue**: Student frustrated with errors
 **Strategy**:
 1. **Normalize**: "Errors are learning opportunities"
 2. **Guide**: Walk through debugging process
@@ -767,7 +766,7 @@ client._prepare_options = _prepare_options_fixed
 **Issue**: Skill level gap is very wide
 **Strategy**:
 1. **Pair strategically**: Mix skill levels for peer learning
-2. **Differentiate**: Provide advanced challenges for faster participants
+2. **Differentiate**: Provide advanced challenges for faster students
 3. **Supporting roles**: Advanced learners can help troubleshoot
 4. **Normalize**: "Everyone brings different strengths"
 
@@ -776,7 +775,7 @@ client._prepare_options = _prepare_options_fixed
 1. **Address root cause**: Is content too hard/too fast?
 2. **Redirect energy**: Turn complaints into constructive feedback
 3. **Highlight positives**: "Look how far we've come!"
-4. **Private conversation**: With most negative participant
+4. **Private conversation**: With most negative student
 
 ---
 
@@ -806,7 +805,7 @@ client._prepare_options = _prepare_options_fixed
 
 ### Response Frameworks
 
-**When participant says: "Why not just use AWS?"**
+**When student says: "Why not just use AWS?"**
 
 ❌ **Don't say**: "Azure is better than AWS"
 ✅ **Do say**:
@@ -815,7 +814,7 @@ client._prepare_options = _prepare_options_fixed
 3. "Some use cases fit Azure better, others AWS. Now you can choose."
 4. "Think of it as bilingual—you can work with clients on either platform."
 
-**When participant says: "This is too complicated"**
+**When student says: "This is too complicated"**
 
 ❌ **Don't say**: "It's actually quite simple"
 ✅ **Do say**:
@@ -824,7 +823,7 @@ client._prepare_options = _prepare_options_fixed
 3. "Which specific part feels most complicated? Let's focus there."
 4. "Remember Day 1—you've already conquered a lot."
 
-**When participant says: "I don't need M365 integration"**
+**When student says: "I don't need M365 integration"**
 
 ❌ **Don't say**: "Yes you do, everyone needs it"
 ✅ **Do say**:
@@ -894,14 +893,14 @@ client._prepare_options = _prepare_options_fixed
 - Extend Q&A or discussion
 - Go deeper on complex topic
 - Add bonus content or advanced examples
-- Allow longer break (participants appreciate)
+- Allow longer break (students appreciate)
 
 ### Balancing Coverage vs Comprehension
 
 **Signs You're Going Too Fast**:
-- Participants aren't asking questions (confusion, not understanding)
+- Students aren't asking questions (confusion, not understanding)
 - Labs taking much longer than estimated
-- Many participants stuck on same issue
+- Many students stuck on same issue
 - Feedback: "Too fast" or "hard to follow"
 
 **When to Slow Down**:
@@ -950,7 +949,7 @@ client._prepare_options = _prepare_options_fixed
 
 **Self-Check Questions:**
 - Provided in lesson READMEs
-- Participants reflect independently
+- Students reflect independently
 - Optionally discuss in groups
 - Instructor spots-checks understanding
 
@@ -958,7 +957,7 @@ client._prepare_options = _prepare_options_fixed
 - Maintain shared spreadsheet/dashboard
 - Track: Module completion, blockers, status
 - Update in real-time or end-of-day
-- Identify struggling participants early
+- Identify struggling students early
 
 ### Summative Assessment (End of Workshop)
 
@@ -983,7 +982,7 @@ client._prepare_options = _prepare_options_fixed
    - Suggest improvements
 
 **Rubric Application** (see Module Maps for detailed rubric):
-- Be consistent across all participants
+- Be consistent across all students
 - Document rationale for scores
 - Avoid grade inflation
 - Distinguish between effort and outcome
@@ -1075,7 +1074,7 @@ client._prepare_options = _prepare_options_fixed
 - Celebrate successes
 - Seek peer support if challenging moments occurred
 
-**Managing Difficult Participants**:
+**Managing Difficult Students**:
 - Don't take resistance personally
 - Remember: They're stressed too
 - Focus on those engaged positively

@@ -16,7 +16,7 @@ This document describes the automatic orchestration system for workshop agents (
 | Location | Purpose | Examples |
 |----------|---------|----------|
 | **`.workshop/`** | Process logs, diagnostics, reviews, tracking | `DIAGNOSTIC.md`, `REVIEW-REPORT.md`, `LOCALIZATION-LOG.md` |
-| **Project root** | Content deliverables (agendas, scripts, labs, kits) | `WORKSHOP-MASTER-AGENDA.md`, `instructional-scripts/`, `technical-content/`, `participant-kit/` |
+| **Project root** | Content deliverables (agendas, scripts, labs, kits) | `WORKSHOP-MASTER-AGENDA.md`, `instructional-scripts/`, `technical-content/`, `student-kit/` |
 
 ### Rules:
 1. **No numeric prefixes** on any file or folder name
@@ -69,7 +69,7 @@ def determine_next_agent():
         3: exists("instructional-scripts/"),
         4: exists("technical-content/"),
         5: exists(".workshop/REVIEW-REPORT.md"),
-        6: exists("participant-kit/"),
+        6: exists("student-kit/"),
         7: exists(".workshop/LOCALIZATION-LOG.md"),
         8: exists(".workshop/INTEGRATION-CHECKLIST.md"),
     }
@@ -152,7 +152,7 @@ Start
 ┌────────────────────────────────────────────────────────┐
 │ Agent 6: Content Producer                              │
 │ Outputs → project root:                                │
-│   participant-kit/                                     │
+│   student-kit/                                     │
 │   CONTINGENCY-PLAN.md                                  │
 │   ROOM-READY-CHECKLIST.md                              │
 │ Output → .workshop/:                                   │
@@ -194,7 +194,7 @@ Start
 | **3** | Instructional Designer | `instructional-scripts/` | Project root |
 | **4** | Technical Instructor/SME | `technical-content/` (with `demos/`, `labs/`) | Project root |
 | **5** | Technical Reviewer | `REVIEW-REPORT.md` | `.workshop/` |
-| **6** | Content Producer | `participant-kit/`, `CONTINGENCY-PLAN.md`, `ROOM-READY-CHECKLIST.md` | Project root |
+| **6** | Content Producer | `student-kit/`, `CONTINGENCY-PLAN.md`, `ROOM-READY-CHECKLIST.md` | Project root |
 | | | `DISTRIBUTION-MANIFEST.md` | `.workshop/` |
 | **7** | Localization Specialist | `LOCALIZATION-LOG.md`, `GLOSSARY.md` + `*.pt-BR.md` files | `.workshop/` + alongside originals |
 | **8** | Workshop Integrator | `README.md` (updated) | Project root |
@@ -240,7 +240,7 @@ project-root/
 │   ├── labs/
 │   └── TECHNICAL-VALIDATION-REPORT.md
 │
-├── participant-kit/             # Content Producer output
+├── student-kit/             # Content Producer output
 │   ├── SETUP-GUIDE.md
 │   └── RESOURCES-LINKS.md
 │
@@ -347,7 +347,7 @@ $workshopArtifacts | ForEach-Object {
 }
 
 # Check content folders
-@("instructional-scripts", "technical-content", "participant-kit") | ForEach-Object {
+@("instructional-scripts", "technical-content", "student-kit") | ForEach-Object {
     if (Test-Path $_) { "$_/ → EXISTS" } else { "$_/ → MISSING" }
 }
 

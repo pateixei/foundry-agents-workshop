@@ -12,7 +12,7 @@
 
 ## 🎯 Learning Objectives
 
-By the end of these modules, participants will be able to:
+By the end of these modules, students will be able to:
 1. **Publish** Agent Blueprint to Microsoft 365 Admin Center
 2. **Navigate** admin approval workflow (submission → validation → approval → publication)
 3. **Create** agent instances in Microsoft Teams (personal and shared)
@@ -109,7 +109,7 @@ Developer                   M365 Admin                  End Users
 
 #### Step 1: Verify Blueprint Registration (3 min)
 
-**Participant Task**:
+**Student Task**:
 ```powershell
 cd lesson-7-publish
 
@@ -136,7 +136,7 @@ Blueprints in tenant <m365-tenant-id>:
 **Instructor explains**:
 > "Publication requires metadata: Name, description, icon, category."
 
-**Participant Task**: Edit `publication-manifest.json`
+**Student Task**: Edit `publication-manifest.json`
 
 **Template**:
 ```json
@@ -168,7 +168,7 @@ Blueprints in tenant <m365-tenant-id>:
 - `icons`: "192x192 PNG for color, 32x32 for outline."
 - `permissions`: "Same as registered in Module 5."
 
-**Participant Task**: Customize description with their agent's capabilities
+**Student Task**: Customize description with their agent's capabilities
 
 **Success Criteria**: ✅ Manifest JSON valid
 
@@ -176,7 +176,7 @@ Blueprints in tenant <m365-tenant-id>:
 
 #### Step 3: Submit for Publication (5 min)
 
-**Participant Task**:
+**Student Task**:
 ```powershell
 # Publish Blueprint to M365 Admin Center
 a365 publish --manifest publication-manifest.json
@@ -212,9 +212,9 @@ a365 publish --manifest publication-manifest.json
 
 ### 15:10-15:35 | Validation & Approval (25 min)
 
-**Instructional Method**: Instructor demonstration (participants observe)
+**Instructional Method**: Instructor demonstration (students observe)
 
-**Note**: Since participants likely lack M365 Admin Center access, instructor demonstrates with screen share.
+**Note**: Since students likely lack M365 Admin Center access, instructor demonstrates with screen share.
 
 #### Admin Portal Walkthrough (15 min)
 
@@ -293,7 +293,7 @@ Technical details:
 - Messaging Endpoint: https://aca-lg-agent...azurecontainerapps.io/api/messages
 ```
 
-**Participant Task**: Check publication status
+**Student Task**: Check publication status
 ```powershell
 a365 publication status sub-123abc
 ```
@@ -324,7 +324,7 @@ Published Date: 2026-02-14 15:12 UTC
 - **Errors**: 2% failure rate (timeout errors)
 - **Top users**: Finance team members
 
-**Participant exploration** (if admin access):
+**Student exploration** (if admin access):
 ```powershell
 # List all published agents
 a365 publication list
@@ -415,7 +415,7 @@ a365 publication unpublish --app-id a1b2c3d4-...
 
 #### Step 1: Discover Agent in Teams (5 min)
 
-**Participant Task** (in Microsoft Teams desktop/web app):
+**Student Task** (in Microsoft Teams desktop/web app):
 
 1. Open Teams → Apps (left sidebar)
 2. Search: "Financial Advisor"
@@ -439,7 +439,7 @@ a365 publication unpublish --app-id a1b2c3d4-...
 
 #### Step 2: Install Personal Instance (10 min)
 
-**Participant Task**:
+**Student Task**:
 
 1. Click "Add" (or "Add for me" if personal-only)
 2. Confirm permissions prompt (if shown):
@@ -462,7 +462,7 @@ a365 publication unpublish --app-id a1b2c3d4-...
 **Instructor explains**:
 > "Personal instance created! This is YOUR agent—conversation history private to you."
 
-**Participant Task**: Send first message
+**Student Task**: Send first message
 ```
 Hello! Can you explain what you do?
 ```
@@ -488,7 +488,7 @@ What would you like to know?
 
 #### Step 3: Test Conversation Flow (5 min)
 
-**Participant Task**: Test multi-turn conversation
+**Student Task**: Test multi-turn conversation
 
 **Example dialogue**:
 ```
@@ -527,7 +527,7 @@ Agent: [Calls get_market_sentiment tool]
 
 #### Step 1: Add to Channel (10 min)
 
-**Participant Task** (Team owner or member with permissions):
+**Student Task** (Team owner or member with permissions):
 
 1. Navigate to Teams → Select team (e.g., "Finance Department")
 2. Select channel (e.g., "#general" or create "#ai-trading")
@@ -565,7 +565,7 @@ Permissions:
 
 #### Step 2: Test Shared Instance (10 min)
 
-**Participant Task**: Interact with agent in channel
+**Student Task**: Interact with agent in channel
 
 **Channel message**:
 ```
@@ -607,7 +607,7 @@ Permissions:
 
 #### Scenario 1: Personal Research Workflow (10 min)
 
-**Participant Task** (individual):
+**Student Task** (individual):
 
 1. Open personal instance
 2. Conduct research session:
@@ -631,7 +631,7 @@ Permissions:
 
 #### Scenario 2: Team Collaboration (10 min)
 
-**Participant Task** (in channel with other participants):
+**Student Task** (in channel with other students):
 
 **Facilitator prompts team activity**:
 > "Your team is evaluating tech stocks for Q1 portfolio rebalancing."
@@ -652,7 +652,7 @@ Permissions:
 
 #### Scenario 3: Error Handling (5 min)
 
-**Participant Task**: Test agent robustness
+**Student Task**: Test agent robustness
 
 **Edge cases**:
 ```
@@ -679,7 +679,7 @@ Permissions:
 
 **If implemented in Module 6**:
 
-**Participant Task**: Request data that triggers adaptive card
+**Student Task**: Request data that triggers adaptive card
 
 ```
 @Financial Advisor Show me a dashboard for AAPL
@@ -712,7 +712,7 @@ Permissions:
 
 **Scenario**: Agent code updated (bug fix or new feature)
 
-**Participant Task**:
+**Student Task**:
 ```powershell
 # Redeploy ACA agent (from lesson-6-a365-sdk)
 cd lesson-6-a365-sdk
@@ -755,7 +755,7 @@ cd lesson-6-a365-sdk
 
 **Scenario**: Permanently remove agent
 
-**Participant Task**:
+**Student Task**:
 1. Personal instance: Right-click agent → Uninstall
 2. Shared instance: Channel tab → Remove tab → Confirm delete
 
@@ -783,7 +783,7 @@ This will:
 
 #### Restore Instance (2 min)
 
-**Participant Task**: Re-add agent after deletion
+**Student Task**: Re-add agent after deletion
 
 1. Search agent in Teams app store
 2. Click "Add" → Select channel/personal
@@ -837,8 +837,8 @@ This will:
 ### After Modules 7-8:
 - [ ] Update `7-DELIVERY-LOG.md` with Teams integration issues
 - [ ] Document publication approval workflow timing (for future workshops)
-- [ ] Collect participant feedback on M365 UX
-- [ ] Verify all participants tested both instance types
+- [ ] Collect student feedback on M365 UX
+- [ ] Verify all students tested both instance types
 
 ---
 

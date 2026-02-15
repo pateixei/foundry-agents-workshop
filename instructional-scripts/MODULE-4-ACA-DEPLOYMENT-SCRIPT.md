@@ -12,7 +12,7 @@
 
 ## 🎯 Learning Objectives
 
-By the end of this module, participants will be able to:
+By the end of this module, students will be able to:
 1. **Deploy** containerized agents to Azure Container Apps (ACA) infrastructure
 2. **Understand** the difference between Foundry Hosted vs ACA (Connected Agent)
 3. **Configure** ACA with custom domains, managed identity, and environment variables
@@ -371,7 +371,7 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
 
 #### Checkpoint 1: Pre-Deployment Configuration (8 min)
 
-**Participant Task**:
+**Student Task**:
 ```powershell
 cd lesson-4-aca-langgraph/aca-agent
 
@@ -399,7 +399,7 @@ echo "ACR: $acrName"
 
 #### Checkpoint 2: Execute Deployment Script (25 min)
 
-**Participant Task**:
+**Student Task**:
 ```powershell
 # Run deployment (builds container + deploys ACA)
 .\deploy.ps1
@@ -485,13 +485,13 @@ Next Step: Register as Connected Agent in Foundry (see REGISTER.md)
 | "Role assignment failed" | Insufficient permissions | Ensure user has "User Access Administrator" role |
 | "Health check timeout" | Container not starting | Check ACA logs: `az containerapp logs show` |
 
-**Success Criteria**: ✅ 80%+ participants see "Deployment complete" message
+**Success Criteria**: ✅ 80%+ students see "Deployment complete" message
 
 ---
 
 #### Checkpoint 3: Portal Verification (7 min)
 
-**Instructor demonstrates**, participants follow:
+**Instructor demonstrates**, students follow:
 
 1. **Navigate to Azure Portal** → Container Apps
 2. **Find your Container App**: `aca-lg-agent-<yourname>`
@@ -515,7 +515,7 @@ Next Step: Register as Connected Agent in Foundry (see REGISTER.md)
 >
 > "Unlike Foundry Hosted, you can SSH into containers, adjust resource limits, configure custom domains—full control."
 
-**Success Criteria**: ✅ All participants can see their ACA in portal with Running status
+**Success Criteria**: ✅ All students can see their ACA in portal with Running status
 
 ---
 
@@ -542,7 +542,7 @@ Next Step: Register as Connected Agent in Foundry (see REGISTER.md)
 
 #### Step 2: Registration via Foundry CLI (10 min)
 
-**Instructor demonstrates** (participants follow):
+**Instructor demonstrates** (students follow):
 
 ```powershell
 # Get agent FQDN from deployment output
@@ -596,7 +596,7 @@ az cognitiveservices connectedagent create \
 **Say**:
 > "Notice: Unlike Hosted Agents, you can't edit configuration in portal. It's read-only—agent lives outside Foundry."
 
-**Success Criteria**: ✅ All participants see Connected Agent in Foundry portal
+**Success Criteria**: ✅ All students see Connected Agent in Foundry portal
 
 ---
 
@@ -660,14 +660,14 @@ az cognitiveservices agent invoke \
   - Proxy: External access, need rate limiting, governance
 - **Key**: Connected Agents give you BOTH options
 
-**Success Criteria**: ✅ All participants successfully tested both paths
+**Success Criteria**: ✅ All students successfully tested both paths
 
 ---
 
 ## 📋 Instructor Checklist
 
 ### Before Module 4:
-- [ ] All participants completed Module 3 (LangGraph agent deployed)
+- [ ] All students completed Module 3 (LangGraph agent deployed)
 - [ ] Slides loaded (deployment models, architecture diagrams)
 - [ ] Bicep template tested (verify it deploys cleanly)
 - [ ] ACA quota verified (ensure subscription can create environments)
@@ -684,7 +684,7 @@ az cognitiveservices agent invoke \
 - [ ] Update `7-DELIVERY-LOG.md` with ACA-specific issues
 - [ ] Document common Bicep errors
 - [ ] Share cost comparison data (Hosted vs Connected)
-- [ ] Verify all participants ready for Module 5 (need working ACA agent)
+- [ ] Verify all students ready for Module 5 (need working ACA agent)
 
 ---
 
@@ -748,19 +748,19 @@ az role assignment list --assignee <mi-principal-id> --all
 ## 📊 Success Metrics
 
 **Module Completion Indicators**:
-- ✅ 80%+ participants deploy ACA successfully
+- ✅ 80%+ students deploy ACA successfully
 - ✅ 90%+ register Connected Agent in Foundry
 - ✅ 85%+ test both direct and proxy paths successfully
 - ✅ 100% understand difference between Hosted and Connected
 
 **Learning Evidence**:
-- ✅ Participants can explain: When to use Connected vs Hosted
-- ✅ Participants can deploy: Bicep infrastructure for agent
-- ✅ Participants can configure: Managed Identity with RBAC
+- ✅ Students can explain: When to use Connected vs Hosted
+- ✅ Students can deploy: Bicep infrastructure for agent
+- ✅ Students can configure: Managed Identity with RBAC
 
 ---
 
-## 📚 Resources for Participants
+## 📚 Resources for Students
 
 **Documentation Links**:
 - 📘 Azure Container Apps documentation

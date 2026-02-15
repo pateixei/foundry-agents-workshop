@@ -12,7 +12,7 @@
 
 ## 🎯 Learning Objectives
 
-By the end of this module, participants will be able to:
+By the end of this module, students will be able to:
 1. **Implement** custom Python tools using Microsoft Agent Framework decorators
 2. **Build** and containerize a MAF agent application
 3. **Deploy** containerized agent to Azure Container Registry (ACR)
@@ -61,7 +61,7 @@ By the end of this module, participants will be able to:
 
 Show example:
 ```
-Participant Question: "Can my declarative agent query my company's SQL database?"
+Student Question: "Can my declarative agent query my company's SQL database?"
 Answer: ❌ No - declarative agents can't execute custom Python code. You can connect to company's SQL Databases indirectly by using tools available in Foundry Portal (such as calling an API or using a connection to Microsoft Fabric)
 
 Solution: ✅ Hosted Agent with MAF - run ANY Python code as tools.
@@ -350,7 +350,7 @@ def run():
 
 **Instructional Method**: Guided code modification
 
-**Objective**: Participants add a NEW custom tool to the agent
+**Objective**: Students add a NEW custom tool to the agent
 
 #### Activity Setup (5 min)
 
@@ -383,7 +383,7 @@ def get_market_sentiment(symbol: str) -> dict:
     return result
 ```
 
-**Participant Task** (20 min):
+**Student Task** (20 min):
 
 1. **Add function to `tools/finance_tools.py`** (5 min)
 2. **Register tool in `src/agent/finance_agent.py`** (5 min):
@@ -417,7 +417,7 @@ def get_market_sentiment(symbol: str) -> dict:
   - Type hint issues → show correct syntax
   - Decorator forgotten → agent doesn't see tool
 
-**Success Criteria**: ✅ Participants' new tool returns sentiment data locally
+**Success Criteria**: ✅ Students' new tool returns sentiment data locally
 
 #### Discussion: Tool Design Patterns (5 min)
 
@@ -522,7 +522,7 @@ python test_agent.py
 
 #### Checkpoint 3: Execute Deployment (20 min)
 
-**Participant Task**:
+**Student Task**:
 ```powershell
 cd lesson-2-hosted-maf/foundry-agent
 
@@ -613,7 +613,7 @@ az cognitiveservices agent status `
 **Say**:
 > "Status: **Running** means success. Foundry is routing requests to your container."
 
-**Participant Task**:
+**Student Task**:
 - Everyone runs status check
 - "Thumbs up in chat if status = Running"
 
@@ -641,7 +641,7 @@ az cognitiveservices agent logs --name financial-advisor-maf | Select -Last 50
 - Help individuals in breakout rooms if needed
 - "If still broken after 5 min, use instructor backup agent"
 
-**Success Criteria**: ✅ 85%+ participants have Running status
+**Success Criteria**: ✅ 85%+ students have Running status
 
 ---
 
@@ -664,7 +664,7 @@ az cognitiveservices agent logs --name financial-advisor-maf | Select -Last 50
 > "To change behavior: update code, rebuild container, redeploy."
 
 **Interactive**:
-- Have participants navigate to their agent in portal
+- Have students navigate to their agent in portal
 - "Screenshot your agent's Tools section—shows your 3 custom tools"
 - Share screenshots in chat
 
@@ -702,7 +702,7 @@ Apple (AAPL) has **positive** market sentiment (85% confidence) based on a stron
 >
 > "Agent decided which tools to call. You didn't specify—ReAct pattern in action."
 
-**Participant Task**:
+**Student Task**:
 - Run `python test_agent.py`
 - Test these queries:
   1. "Compare AAPL and PETR4 prices"
@@ -737,7 +737,7 @@ az cognitiveservices agent logs --name financial-advisor-maf --follow
 >
 > "Use `--follow` for real-time tailing. Use filters for errors: `| Select-String 'ERROR'`"
 
-**Success Criteria**: ✅ All participants successfully tested agent with 3 queries
+**Success Criteria**: ✅ All students successfully tested agent with 3 queries
 
 ---
 
@@ -786,7 +786,7 @@ az cognitiveservices agent logs --name financial-advisor-maf --follow
    - Fix: Improve instruction prompts
 
 **Interactive Activity**:
-- **Give participants broken agent code** (missing function from TOOLS list or missing docstring)
+- **Give students broken agent code** (missing function from TOOLS list or missing docstring)
 - "Fix it and redeploy"
 - Time: 10 minutes
 
@@ -998,18 +998,18 @@ Is data in Azure (AI Search, Cosmos, Blob)?
 ## 📋 Instructor Checklist
 
 ### Before Module 2 (Day 1):
-- [ ] All participants completed Module 1 (declarative agent working)
+- [ ] All students completed Module 1 (declarative agent working)
 - [ ] Docker Desktop running on all machines (verify in Module 0)
 - [ ] VS Code open with `lesson-2-hosted-maf/foundry-agent/`
 - [ ] Slides loaded (MAF concepts, comparison matrix, decision tree)
 - [ ] ACR accessible (test with `az acr login`)
-- [ ] Backup hosted agent deployed (for participants with build failures)
+- [ ] Backup hosted agent deployed (for students with build failures)
 
 ### During Module 2 (Day 1):
-- [ ] Confirm participants understand MAF vs declarative differences
+- [ ] Confirm students understand MAF vs declarative differences
 - [ ] Monitor container builds (expect 10-15 min each)
 - [ ] Capture build errors (for troubleshooting guide updates)
-- [ ] Track which participants' builds complete before Day 1 ends
+- [ ] Track which students' builds complete before Day 1 ends
 - [ ] Post async support info (for overnight build monitoring)
 
 ### Before Module 2 (Day 2):
@@ -1019,17 +1019,17 @@ Is data in Azure (AI Search, Cosmos, Blob)?
 - [ ] Test instructor backup agent (for failed deployments)
 
 ### During Module 2 (Day 2):
-- [ ] Verify 85%+ participants have Running agents
+- [ ] Verify 85%+ students have Running agents
 - [ ] Confirm all tested agents with 3+ queries
 - [ ] Collect feedback on debugging difficulty
 - [ ] Note timing: Was 40 min debugging enough?
-- [ ] Identify participants needing LangGraph vs MAF guidance
+- [ ] Identify students needing LangGraph vs MAF guidance
 
 ### After Module 2:
 - [ ] Update `7-DELIVERY-LOG.md` with issues encountered
 - [ ] Document common errors (build failures, tool registration issues)
-- [ ] Capture participant questions (FAQ)
-- [ ] Verify all participants ready for Module 3 (need working hosted agent)
+- [ ] Capture student questions (FAQ)
+- [ ] Verify all students ready for Module 3 (need working hosted agent)
 - [ ] Share comparison matrix and decision tree as handout
 
 ---
@@ -1122,16 +1122,16 @@ az role assignment create `
 ## 📊 Success Metrics
 
 **Module Completion Indicators**:
-- ✅ 85%+ participants have hosted agent in Running status
+- ✅ 85%+ students have hosted agent in Running status
 - ✅ 90%+ successfully tested agent with 3+ queries
 - ✅ 75%+ completed custom tool implementation
 - ✅ 100% can explain one difference between MAF and declarative
 - ✅ <10 unique error types encountered (indicates good design)
 
 **Learning Evidence**:
-- ✅ Participants can implement: New tool function registered in TOOLS list
-- ✅ Participants can debug: Use logs to identify tool call failures
-- ✅ Participants can decide: Choose pattern for given scenario
+- ✅ Students can implement: New tool function registered in TOOLS list
+- ✅ Students can debug: Use logs to identify tool call failures
+- ✅ Students can decide: Choose pattern for given scenario
 
 **Engagement Indicators**:
 - ✅ 70%+ share custom tool screenshots
@@ -1143,7 +1143,7 @@ az role assignment create `
 ## 🔄 Continuous Improvement Notes
 
 **For Next Iteration**:
-- If >20% build failures → Pre-build images, participants just deploy
+- If >20% build failures → Pre-build images, students just deploy
 - If timing runs over → Reduce tool implementation to demo only
 - If debugging too fast → Add more complex scenarios
 - If pattern comparison underwhelming → Use real production case studies
@@ -1151,7 +1151,7 @@ az role assignment create `
 **Feedback Collection**:
 - Post-Day 1 poll: "Was split across 2 days effective?"
 - Post-Day 2 poll: "Was debugging section valuable?"
-- Track: Did participants prefer MAF or declarative? Why?
+- Track: Did students prefer MAF or declarative? Why?
 
 **Enhancement Ideas**:
 - **Advanced**: Multi-agent orchestration (MAF calling MAF)
@@ -1160,7 +1160,7 @@ az role assignment create `
 
 ---
 
-## 📚 Resources for Participants
+## 📚 Resources for Students
 
 **Documentation Links**:
 - 📘 Microsoft Agent Framework documentation

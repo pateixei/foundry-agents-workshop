@@ -45,7 +45,7 @@ Each day follows this pattern:
   - Azure subscription acquisition instructions
   - Pre-assessment quiz link
   - Office hours schedule
-- ⏱️ Expected participant effort: 8-12 hours spread over week
+- ⏱️ Expected student effort: 8-12 hours spread over week
 
 **Day -3 (Wednesday)**
 - 🎥 Live Office Hours #1 (60 min)
@@ -60,7 +60,7 @@ Each day follows this pattern:
   - Run `validate-setup.ps1` together
   - Last-minute issues resolution
   - Workshop expectations and logistics
-- ✅ Instructor validates: All participants pass environment check
+- ✅ Instructor validates: All students pass environment check
 
 ---
 
@@ -93,7 +93,7 @@ Each day follows this pattern:
   - Explain Bicep template structure
   - Run `deploy.ps1` (Foundry, ACR, ACA, App Insights)
   - Show Azure Portal resources created
-- 🛠️ Participant Lab (15 min):
+- 🛠️ Student Lab (15 min):
   - Clone workshop repository
   - Execute `prereq/deploy.ps1` in their subscription
   - Validate deployment with `validate-deployment.ps1`
@@ -120,7 +120,7 @@ Each day follows this pattern:
   - Explain `PromptAgentDefinition`
   - Run script: agent appears in portal
   - Test in portal playground
-- 🛠️ Participant Lab (20 min):
+- 🛠️ Student Lab (20 min):
   ```powershell
   cd lesson-1-declarative
   pip install -r requirements.txt
@@ -158,7 +158,7 @@ Each day follows this pattern:
   - Explain MAF tool decorators
   - Show Dockerfile and container structure
   - Preview deploy.ps1 automation
-- 🛠️ Participant Lab (15 min):
+- 🛠️ Student Lab (15 min):
   - Review MAF agent code
   - Customize tool function (e.g., add new stock ticker)
   - Understand container build process
@@ -169,7 +169,7 @@ Each day follows this pattern:
 ### Hour 4: Deep Dive & Troubleshooting (03:00-04:00)
 
 **03:00-03:30 | Lesson 2: Hosted Agent (MAF) - Part 2 (Deployment)**
-- 🛠️ Participant Lab (30 min):
+- 🛠️ Student Lab (30 min):
   ```powershell
   cd lesson-2-hosted-maf/foundry-agent
   .\deploy.ps1
@@ -183,10 +183,10 @@ Each day follows this pattern:
 **⚠️ Expected Challenges**:
 - ACR authentication issues
 - Container build timeouts (slow network)
-- Known MAF routing issues (apply context.md fixes)
+- Known MAF routing issues (apply known fixes)
 
 **03:30-04:00 | Q&A, Debug Session & Day 1 Wrap**
-- 🐛 Troubleshooting clinic (instructor helps stuck participants)
+- 🐛 Troubleshooting clinic (instructor helps stuck students)
 - 💬 Open discussion: MAF vs Declarative trade-offs
 - 📋 Preview Day 2: LangGraph deep dive (the critical lesson!)
 - 📝 Optional homework: Read `lesson-3-hosted-langgraph/README.md`
@@ -218,7 +218,7 @@ Each day follows this pattern:
   - Agent versions and deployments
   - Container lifecycle (build → register → start → stop → delete)
   - Debugging strategies (logs, tracing, local testing)
-  - Known issues and workarounds (from context.md)
+  - Known issues and workarounds
   - Managed Identity and RBAC requirements
   - Environment variables best practices
 
@@ -235,7 +235,7 @@ Each day follows this pattern:
 ### Hour 2: MAF Hands-On Enhancement (01:00-02:00)
 
 **01:00-01:45 | Lab: Enhance Your MAF Agent**
-- 🛠️ Participant Exercise (45 min):
+- 🛠️ Student Exercise (45 min):
   - **Task 1** (15 min): Add a new custom tool (e.g., currency converter)
   - **Task 2** (15 min): Implement error handling and logging
   - **Task 3** (15 min): Test tool locally, then redeploy
@@ -246,7 +246,7 @@ Each day follows this pattern:
 - 💬 Discussion: "What challenges did you face?"
 - 📝 Best practices: Tool design patterns
 
-**✅ Checkpoint**: Participants have custom MAF agent with multiple tools
+**✅ Checkpoint**: Students have custom MAF agent with multiple tools
 
 ---
 
@@ -271,7 +271,7 @@ Each day follows this pattern:
   - Compare with AWS Lambda implementation (side-by-side)
   - Explain ReAct pattern in LangGraph
   - Show adapter integration
-- 🛠️ Participant Lab (15 min):
+- 🛠️ Student Lab (15 min):
   - Review LangGraph code: `langgraph-agent/main.py`
   - Identify similarities with their AWS agents
   - Customize agent graph (add node or edge)
@@ -282,7 +282,7 @@ Each day follows this pattern:
 ### Hour 4: LangGraph Deployment & Troubleshooting (03:00-04:00)
 
 **03:00-03:30 | Lesson 3: Hosted Agent (LangGraph) - Part 2 (Deployment)**
-- 🛠️ Participant Lab (30 min):
+- 🛠️ Student Lab (30 min):
   ```powershell
   cd lesson-3-hosted-langgraph/langgraph-agent
   .\deploy.ps1
@@ -354,7 +354,7 @@ Each day follows this pattern:
   - Environment variables and secrets
 
 **01:15-01:50 | Lab: Deploy Connected Agent**
-- 🛠️ Participant Lab (35 min):
+- 🛠️ Student Lab (35 min):
   ```powershell
   cd lesson-4-aca-langgraph/aca-agent
   .\deploy.ps1
@@ -404,7 +404,7 @@ Each day follows this pattern:
 
 **03:30-03:50 | Open Q&A & Troubleshooting Clinic**
 - 💬 Open floor discussion
-- 🐛 Debug session for stuck participants
+- 🐛 Debug session for stuck students
 - 📝 Share experiences and lessons learned
 
 **03:50-04:00 | Day 3 Wrap & Preview**
@@ -445,7 +445,7 @@ Each day follows this pattern:
 
 **00:45-01:00 | Lesson 5: A365 Prerequisites**
 - 📖 Read: `lesson-5-a365-prereq/README.md` (5 min)
-- 🛠️ Participant Lab (10 min):
+- 🛠️ Student Lab (10 min):
   - Install A365 CLI: `a365 --version`
   - Configure for cross-tenant scenario
   - Create Entra ID app registration
@@ -468,7 +468,7 @@ Each day follows this pattern:
   - Instrumented tools with span tracking
 
 **01:15-01:50 | Lab: Enhance Agent with A365 SDK**
-- 🛠️ Participant Lab (35 min):
+- 🛠️ Student Lab (35 min):
   ```powershell
   cd lesson-6-a365-sdk
   .\deploy.ps1
@@ -517,7 +517,7 @@ Each day follows this pattern:
 **03:00-03:30 | Lesson 8: Teams Integration**
 - 📖 Read: `lesson-8-instances/README.md` (5 min)
 - 🎬 Demo: Create agent instance in Teams (10 min)
-- 🛠️ Participant Lab (15 min):
+- 🛠️ Student Lab (15 min):
   - Create personal agent instance in Teams
   - Create shared team instance
   - Test agent in Teams chat
@@ -581,7 +581,7 @@ Each day follows this pattern:
   - Test datasets provided
 
 **00:50-01:00 | Project Planning**
-- 🛠️ Participants:
+- 🛠️ Students:
   - Choose project scenario
   - Sketch architecture (hosted vs connected?)
   - List tools to implement
@@ -596,7 +596,7 @@ Each day follows this pattern:
 
 **01:00-03:00 | Independent Project Development (120 min)**
 
-- 🛠️ **Participant Work**:
+- 🛠️ **Student Work**:
   - Create new directory: `capstone/<your-project-name>/`
   - Clone and customize appropriate lesson template
   - Implement custom tools (financial API integrations)
@@ -620,7 +620,7 @@ Each day follows this pattern:
 - ⏱️ **02:15** - Deployment successful
 - ⏱️ **02:45** - Testing complete, documentation finalized
 
-**⚠️ Instructor Alert**: Monitor for stuck participants; intervene proactively
+**⚠️ Instructor Alert**: Monitor for stuck students; intervene proactively
 
 ---
 
@@ -628,8 +628,8 @@ Each day follows this pattern:
 
 **03:00-03:40 | Capstone Presentations (40 min)**
 
-- 🎤 **Lightning Talks** (5 min each, 8 participants max per session):
-  - Participant shares screen
+- 🎤 **Lightning Talks** (5 min each, 8 students max per session):
+  - Student shares screen
   - Demo agent functionality (2 min)
   - Explain architecture decisions (2 min)
   - Q&A (1 min)
@@ -657,7 +657,7 @@ Each day follows this pattern:
 **03:55-04:00 | Closing & Next Steps (5 min)**
 
 - 🎓 **Graduation Moment**:
-  - Congratulate participants
+  - Congratulate students
   - Highlight workshop achievements
   - Share aggregate quiz results
   - Recognize standout projects
@@ -680,9 +680,9 @@ Each day follows this pattern:
 ## Post-Workshop Support (Weeks 1-2)
 
 ### Week 1: Consolidation
-- **Day 1-2**: Participants finalize capstone projects if needed
+- **Day 1-2**: Students finalize capstone projects if needed
 - **Day 3**: Instructor reviews all capstone submissions
-- **Day 4**: Individual feedback sent to participants
+- **Day 4**: Individual feedback sent to students
 - **Day 5**: Async Q&A via community channel
 
 ### Week 2: Continuous Learning
@@ -720,7 +720,7 @@ Each day follows this pattern:
 ### 1 Month Post-Workshop
 - ✅ Production agents deployed count
 - ✅ Executive stakeholder feedback
-- ✅ Participant testimonials collected
+- ✅ Student testimonials collected
 
 ---
 
@@ -750,12 +750,12 @@ Each day follows this pattern:
 **1 Week Before**:
 - [ ] Send welcome email with prereqs
 - [ ] Test video conferencing setup
-- [ ] Review diagnostic and participant profiles
+- [ ] Review diagnostic and student profiles
 - [ ] Prepare troubleshooting playbook
 - [ ] Schedule office hours
 
 **1 Day Before**:
-- [ ] Validate all participants completed setup
+- [ ] Validate all students completed setup
 - [ ] Prepare slides and demos
 - [ ] Test screen sharing and recordings
 - [ ] Review common issues from past cohorts
@@ -767,7 +767,7 @@ See separate document: `INSTRUCTOR-GUIDE.md` (detailed minute-by-minute facilita
 
 ### Appendix D: Emergency Scenarios
 
-**Scenario 1: Participant's subscription blocked**
+**Scenario 1: Student's subscription blocked**
 - **Solution**: Provide instructor sandbox access
 - **Prevention**: Pre-validation 24h before
 
@@ -779,7 +779,7 @@ See separate document: `INSTRUCTOR-GUIDE.md` (detailed minute-by-minute facilita
 - **Solution**: Pause, address collectively, adjust schedule
 - **Prevention**: Progressive difficulty, checkpoints
 
-**Scenario 4: Network issues for remote participants**
+**Scenario 4: Network issues for remote students**
 - **Solution**: Record sessions, provide async catch-up materials
 - **Prevention**: Pre-downloaded materials, offline mode options
 
