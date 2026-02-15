@@ -6,7 +6,7 @@
 **Module**: 1 - Declarative Agent Pattern  
 **Duration**: 120 minutes (Day 1, Hours 2-3: 01:15-03:15)  
 **Instructor**: Technical SME + Facilitator  
-**Location**: `instructional-scripts/MODULE-1-DECLARATIVE-AGENT-SCRIPT.md`  
+**Location**: `instructor-guide/MODULE-1-DECLARATIVE-AGENT-SCRIPT.md`  
 **Agent**: 3 (Instructional Designer)  
 
 ---

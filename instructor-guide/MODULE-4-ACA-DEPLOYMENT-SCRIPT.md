@@ -5,7 +5,7 @@
 **Module**: 4 - Azure Container Apps (ACA) Deployment  
 **Duration**: 120 minutes (Day 3, Hours 1-2: 09:00-11:00)  
 **Instructor**: Technical SME + Facilitator  
-**Location**: `instructional-scripts/MODULE-4-ACA-DEPLOYMENT-SCRIPT.md`  
+**Location**: `instructor-guide/MODULE-4-ACA-DEPLOYMENT-SCRIPT.md`  
 **Agent**: 3 (Instructional Designer)  
 
 ---

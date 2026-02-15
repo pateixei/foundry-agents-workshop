@@ -6,7 +6,7 @@
 **Completion Time**: 45-60 minutes  
 **Format**: Self-paced, asynchronous  
 **Deadline**: Complete 24 hours BEFORE workshop Day 1  
-**Location**: `instructional-scripts/MODULE-0-INFRASTRUCTURE-SCRIPT.md`  
+**Location**: `instructor-guide/MODULE-0-INFRASTRUCTURE-SCRIPT.md`  
 **Agent**: 3 (Instructional Designer)  
 
 ---

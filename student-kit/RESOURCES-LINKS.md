@@ -126,4 +126,4 @@ opentelemetry-instrumentation-fastapi>=0.48b0
 | Known Issues & Workarounds | `context.md` (repository root) |
 | Architecture Diagrams | Each lesson's `media/` folder |
 | Lab Statements | Each lesson's `labs/` folder |
-| Instructor Scripts | `instructional-scripts/` |
+| Instructor Materials | `instructor-guide/` |

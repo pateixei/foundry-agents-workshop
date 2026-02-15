@@ -55,7 +55,7 @@
 - [ ] LAB-STATEMENT.md files reviewed — tasks match starter/solution
 
 ### Instructional Scripts
-- [ ] All 7 module scripts available in `instructional-scripts/`
+- [ ] All 7 module scripts available in `instructor-guide/`
 - [ ] Instructor has reviewed scripts and is comfortable with flow
 - [ ] Demo timing validated (scripts fit within allocated time)
 
@@ -83,7 +83,7 @@
 ### Backup & Contingency
 - [ ] Offline copies of all diagrams available
 - [ ] Known workarounds reviewed and current
-- [ ] Contingency plan (`CONTINGENCY-PLAN.md`) distributed to co-instructor
+- [ ] Contingency plan (`instructor-guide/CONTINGENCY-PLAN.md`) distributed to co-instructor
 - [ ] Alternative pip mirror URL documented (if primary blocked)
 
 ## F. Delivery Day (Day 0 — 30 min before start)

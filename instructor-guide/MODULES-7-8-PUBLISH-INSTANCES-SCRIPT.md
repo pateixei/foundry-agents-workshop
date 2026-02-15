@@ -5,7 +5,7 @@
 **Modules**: 7-8 - Admin Center Publishing & Teams Instance Creation  
 **Duration**: 120 minutes (Day 4 Hours 2-3 + Day 5 Hour 1: 14:45-17:00)  
 **Instructor**: Technical SME + M365 Admin  
-**Location**: `instructional-scripts/MODULES-7-8-PUBLISH-INSTANCES-SCRIPT.md`  
+**Location**: `instructor-guide/MODULES-7-8-PUBLISH-INSTANCES-SCRIPT.md`  
 **Agent**: 3 (Instructional Designer)  
 
 ---

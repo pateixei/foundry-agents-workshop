@@ -5,7 +5,7 @@
 **Module**: 2 - Hosted Agent with MAF  
 **Duration**: 180 minutes (Day 1 Hours 3-4: 03:30-05:30, Day 2 Hours 1-2: 09:00-11:00)  
 **Instructor**: Technical SME + Facilitator  
-**Location**: `instructional-scripts/MODULE-2-HOSTED-MAF-SCRIPT.md`  
+**Location**: `instructor-guide/MODULE-2-HOSTED-MAF-SCRIPT.md`  
 **Agent**: 3 (Instructional Designer)  
 
 ---

@@ -126,4 +126,4 @@ opentelemetry-instrumentation-fastapi>=0.48b0
 | Problemas Conhecidos & Soluções Alternativas | `context.md` (raiz do repositório) |
 | Diagramas de Arquitetura | Pasta `media/` de cada lição |
 | Enunciados dos Laboratórios | Pasta `labs/` de cada lição |
-| Roteiros do Instrutor | `instructional-scripts/` |
+| Materiais do Instrutor | `instructor-guide/` |

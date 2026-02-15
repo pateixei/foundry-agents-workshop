@@ -23,13 +23,15 @@ Além do código das lições, este repositório inclui recursos abrangentes de 
 
 ### Para Instrutores
 
+Todos os materiais do instrutor estão na pasta [instructor-guide/](instructor-guide/):
+
 | Recurso | Descrição |
 |---------|-----------|
-| [GUIA DO INSTRUTOR](INSTRUCTOR-GUIDE.md) | Guia completo de facilitação — checklists de preparação, planos diários, técnicas, troubleshooting |
-| [AGENDA DO WORKSHOP](WORKSHOP-MASTER-AGENDA.md) | Agenda detalhada minuto a minuto para todos os 5 dias (20 horas) |
-| [instructional-scripts/](instructional-scripts/) | Scripts de entrega módulo a módulo com pontos de fala, passos de demo e marcações de tempo |
-| [PLANO DE CONTINGÊNCIA](CONTINGENCY-PLAN.md) | Estratégias de fallback para interrupções, problemas de ambiente e ritmo |
-| [CHECKLIST DE SALA](ROOM-READY-CHECKLIST.md) | Checklist de ambiente e logística pré-sessão |
+| [GUIA DO INSTRUTOR](instructor-guide/INSTRUCTOR-GUIDE.md) | Guia completo de facilitação — checklists de preparação, planos diários, técnicas, troubleshooting |
+| [AGENDA DO WORKSHOP](instructor-guide/WORKSHOP-MASTER-AGENDA.md) | Agenda detalhada minuto a minuto para todos os 5 dias (20 horas) |
+| [PLANO DE CONTINGÊNCIA](instructor-guide/CONTINGENCY-PLAN.md) | Estratégias de fallback para interrupções, problemas de ambiente e ritmo |
+| [CHECKLIST DE SALA](instructor-guide/ROOM-READY-CHECKLIST.md) | Checklist de ambiente e logística pré-sessão |
+| Scripts dos Módulos | `MODULE-*-SCRIPT.md` — scripts de entrega módulo a módulo com pontos de fala, passos de demo e marcações de tempo |
 
 ### Para Estudantes
 
@@ -209,12 +211,8 @@ foundry-agents-workshop/
     demos/ labs/ solution/
   lesson-7-publish/                # Guia de publicação (M365 Admin Center)
   lesson-8-instances/              # Guia de criação de instâncias (Teams)
-  instructional-scripts/           # Scripts de entrega dos módulos para instrutores
+  instructor-guide/                # Todos os materiais do instrutor (guia, agenda, scripts, checklists)
   student-kit/                     # Guia de setup e links de recursos para estudantes
-  INSTRUCTOR-GUIDE.md              # Guia de facilitação para instrutores
-  WORKSHOP-MASTER-AGENDA.md        # Agenda detalhada de 5 dias
-  CONTINGENCY-PLAN.md              # Estratégias de fallback
-  ROOM-READY-CHECKLIST.md          # Checklist pré-sessão
   test/
     chat.py                        # Cliente unificado para todos os agentes
 ```

@@ -24,13 +24,15 @@ In addition to lesson code, this repository includes comprehensive facilitation 
 
 ### For Instructors
 
+All instructor materials are in the [instructor-guide/](instructor-guide/) folder:
+
 | Resource | Description |
 |----------|-------------|
-| [INSTRUCTOR GUIDE](INSTRUCTOR-GUIDE.md) | Complete facilitation guide — preparation checklists, daily plans, techniques, troubleshooting |
-| [WORKSHOP AGENDA](WORKSHOP-MASTER-AGENDA.md) | Detailed minute-by-minute agenda for all 5 days (20 hours) |
-| [instructional-scripts/](instructional-scripts/) | Module-by-module delivery scripts with talking points, demo steps, and timing cues |
-| [CONTINGENCY PLAN](CONTINGENCY-PLAN.md) | Fallback strategies for outages, environment issues, and pacing problems |
-| [ROOM READY CHECKLIST](ROOM-READY-CHECKLIST.md) | Pre-session environment and logistics checklist |
+| [INSTRUCTOR GUIDE](instructor-guide/INSTRUCTOR-GUIDE.md) | Complete facilitation guide — preparation checklists, daily plans, techniques, troubleshooting |
+| [WORKSHOP AGENDA](instructor-guide/WORKSHOP-MASTER-AGENDA.md) | Detailed minute-by-minute agenda for all 5 days (20 hours) |
+| [CONTINGENCY PLAN](instructor-guide/CONTINGENCY-PLAN.md) | Fallback strategies for outages, environment issues, and pacing problems |
+| [ROOM READY CHECKLIST](instructor-guide/ROOM-READY-CHECKLIST.md) | Pre-session environment and logistics checklist |
+| Module Scripts | `MODULE-*-SCRIPT.md` — module-by-module delivery scripts with talking points, demo steps, and timing cues |
 
 ### For Students
 
@@ -211,12 +213,8 @@ foundry-agents-workshop/
     demos/ labs/ solution/
   lesson-7-publish/                # Publishing guide (M365 Admin Center)
   lesson-8-instances/              # Instance creation guide (Teams)
-  instructional-scripts/           # Module delivery scripts for instructors
+  instructor-guide/                # All instructor materials (guide, agenda, scripts, checklists)
   student-kit/                     # Setup guide and resource links for students
-  INSTRUCTOR-GUIDE.md              # Facilitation guide for instructors
-  WORKSHOP-MASTER-AGENDA.md        # Detailed 5-day agenda
-  CONTINGENCY-PLAN.md              # Fallback strategies
-  ROOM-READY-CHECKLIST.md          # Pre-session checklist
   test/
     chat.py                        # Unified client for all agents
 ```

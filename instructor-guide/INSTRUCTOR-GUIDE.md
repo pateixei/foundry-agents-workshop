@@ -154,13 +154,13 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 
 | Day | Module | Script | Description |
 |-----|--------|--------|-------------|
-| 1 | Module 0 — Infrastructure Setup | [MODULE-0-INFRASTRUCTURE-SCRIPT.md](instructional-scripts/MODULE-0-INFRASTRUCTURE-SCRIPT.md) | Azure resource deployment, environment validation, troubleshooting setup issues |
-| 1 | Module 1 — Declarative Agent | [MODULE-1-DECLARATIVE-AGENT-SCRIPT.md](instructional-scripts/MODULE-1-DECLARATIVE-AGENT-SCRIPT.md) | First agent creation using declarative pattern, Azure AI Foundry portal walkthrough |
-| 1–2 | Module 2 — Hosted MAF Agent | [MODULE-2-HOSTED-MAF-SCRIPT.md](instructional-scripts/MODULE-2-HOSTED-MAF-SCRIPT.md) | Microsoft Agent Framework hosted agent, code structure, local testing, deployment |
-| 2–3 | Module 3 — Hosted LangGraph Agent | [MODULE-3-HOSTED-LANGGRAPH-SCRIPT.md](instructional-scripts/MODULE-3-HOSTED-LANGGRAPH-SCRIPT.md) | LangGraph agent on Azure AI Foundry, graph-based orchestration |
-| 3 | Module 4 — ACA Deployment | [MODULE-4-ACA-DEPLOYMENT-SCRIPT.md](instructional-scripts/MODULE-4-ACA-DEPLOYMENT-SCRIPT.md) | Azure Container Apps deployment, Bicep templates, production patterns |
-| 4 | Modules 5–6 — A365 Prerequisites & SDK | [MODULES-5-6-A365-SETUP-SDK-SCRIPT.md](instructional-scripts/MODULES-5-6-A365-SETUP-SDK-SCRIPT.md) | Microsoft 365 Agents SDK setup, configuration, and integration |
-| 5 | Modules 7–8 — Publish & Instances | [MODULES-7-8-PUBLISH-INSTANCES-SCRIPT.md](instructional-scripts/MODULES-7-8-PUBLISH-INSTANCES-SCRIPT.md) | Agent publishing to Teams, agent instances, capstone project |
+| 1 | Module 0 — Infrastructure Setup | [MODULE-0-INFRASTRUCTURE-SCRIPT.md](MODULE-0-INFRASTRUCTURE-SCRIPT.md) | Azure resource deployment, environment validation, troubleshooting setup issues |
+| 1 | Module 1 — Declarative Agent | [MODULE-1-DECLARATIVE-AGENT-SCRIPT.md](MODULE-1-DECLARATIVE-AGENT-SCRIPT.md) | First agent creation using declarative pattern, Azure AI Foundry portal walkthrough |
+| 1–2 | Module 2 — Hosted MAF Agent | [MODULE-2-HOSTED-MAF-SCRIPT.md](MODULE-2-HOSTED-MAF-SCRIPT.md) | Microsoft Agent Framework hosted agent, code structure, local testing, deployment |
+| 2–3 | Module 3 — Hosted LangGraph Agent | [MODULE-3-HOSTED-LANGGRAPH-SCRIPT.md](MODULE-3-HOSTED-LANGGRAPH-SCRIPT.md) | LangGraph agent on Azure AI Foundry, graph-based orchestration |
+| 3 | Module 4 — ACA Deployment | [MODULE-4-ACA-DEPLOYMENT-SCRIPT.md](MODULE-4-ACA-DEPLOYMENT-SCRIPT.md) | Azure Container Apps deployment, Bicep templates, production patterns |
+| 4 | Modules 5–6 — A365 Prerequisites & SDK | [MODULES-5-6-A365-SETUP-SDK-SCRIPT.md](MODULES-5-6-A365-SETUP-SDK-SCRIPT.md) | Microsoft 365 Agents SDK setup, configuration, and integration |
+| 5 | Modules 7–8 — Publish & Instances | [MODULES-7-8-PUBLISH-INSTANCES-SCRIPT.md](MODULES-7-8-PUBLISH-INSTANCES-SCRIPT.md) | Agent publishing to Teams, agent instances, capstone project |
 
 ### How to Use the Scripts
 

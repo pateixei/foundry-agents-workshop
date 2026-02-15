@@ -5,7 +5,7 @@
 **Module**: 3 - Hosted Agent with LangGraph  
 **Duration**: 120 minutes (Day 2, Hours 3-4: 11:15-13:15)  
 **Instructor**: Technical SME + Facilitator  
-**Location**: `instructional-scripts/MODULE-3-HOSTED-LANGGRAPH-SCRIPT.md`  
+**Location**: `instructor-guide/MODULE-3-HOSTED-LANGGRAPH-SCRIPT.md`  
 **Agent**: 3 (Instructional Designer)  
 
 ---

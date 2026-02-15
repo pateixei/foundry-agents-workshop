@@ -5,7 +5,7 @@
 **Modules**: 5-6 - Agent 365 Prerequisites & SDK Integration  
 **Duration**: 180 minutes (Day 3 Hours 3-4 + Day 4 Hour 1: 11:15-14:30)  
 **Instructor**: Technical SME + M365 Specialist  
-**Location**: `instructional-scripts/MODULES-5-6-A365-SETUP-SDK-SCRIPT.md`  
+**Location**: `instructor-guide/MODULES-5-6-A365-SETUP-SDK-SCRIPT.md`  
 **Agent**: 3 (Instructional Designer)  
 
 ---

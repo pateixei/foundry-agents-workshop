@@ -763,7 +763,7 @@ Each day follows this pattern:
 
 ### Appendix C: Daily Instructor Guide
 
-See separate document: `INSTRUCTOR-GUIDE.md` (detailed minute-by-minute facilitation notes)
+See separate document: `INSTRUCTOR-GUIDE.md` in this folder (detailed minute-by-minute facilitation notes)
 
 ### Appendix D: Emergency Scenarios
 

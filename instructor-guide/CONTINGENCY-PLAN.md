@@ -164,7 +164,7 @@ Once connectivity returns:
 - Primary instructor reports illness/emergency
 
 ### Action Plan
-1. **Co-instructor takes over** using prepared instructional scripts in `instructional-scripts/`
+1. **Co-instructor takes over** using prepared instructional scripts in this `instructor-guide/` folder
 2. Scripts contain full narration, timing, and code walkthrough — designed to be self-sufficient
 3. Fall back to self-paced mode with facilitated Q&A if no co-instructor available
 4. Instructor scripts cover all 7 module sets with detailed "Say" prompts
