@@ -16,12 +16,20 @@ This folder contains Infrastructure as Code (IaC) scripts using Bicep to provisi
 
 Use the automated script for complete deployment:
 
+**Windows (PowerShell)**:
 ```powershell
 .\deploy.ps1 -ResourceGroupName "rg-agent365-workshop" -Location "eastus"
 ```
 
+**Linux / WSL (Bash)**:
+```bash
+chmod +x deploy.sh
+./deploy.sh --resource-group "rg-agent365-workshop" --location "eastus"
+```
+
 ### Script Parameters
 
+**Windows (PowerShell)**:
 ```powershell
 # Basic deploy
 .\deploy.ps1
@@ -42,6 +50,27 @@ Use the automated script for complete deployment:
 .\deploy.ps1 -SkipValidation
 ```
 
+**Linux / WSL (Bash)**:
+```bash
+# Basic deploy
+./deploy.sh
+
+# Deploy with specific subscription
+./deploy.sh --subscription "your-subscription-id"
+
+# Custom deploy
+./deploy.sh \
+  --resource-group "my-rg" \
+  --location "westus2" \
+  --deployment-name "workshop-deployment"
+
+# Simulate deployment (what-if)
+./deploy.sh --what-if
+
+# Deploy without automatic validation
+./deploy.sh --skip-validation
+```
+
 The script will:
 - ✓ Check prerequisites (Azure CLI, authentication)
 - ✓ Install required extensions
@@ -55,34 +84,43 @@ The script will:
 
 ### 1. Define your environment variables
 
+**Windows (PowerShell)**:
 ```powershell
 $RESOURCE_GROUP = "rg-agent365-workshop"
 $LOCATION = "eastus"
 $SUBSCRIPTION_ID = "your-subscription-id"
 ```
 
+**Linux / WSL (Bash)**:
+```bash
+RESOURCE_GROUP="rg-agent365-workshop"
+LOCATION="eastus"
+SUBSCRIPTION_ID="your-subscription-id"
+```
+
 ### 2. Login to Azure
 
-```powershell
+```bash
 az login
 az account set --subscription $SUBSCRIPTION_ID
 ```
 
 ### 3. Install required extensions
 
-```powershell
+```bash
 az extension add --name containerapp
 az extension add --name ml
 ```
 
 ### 4. Create the Resource Group
 
-```powershell
+```bash
 az group create --name $RESOURCE_GROUP --location $LOCATION
 ```
 
 ### 5. Deploy the infrastructure
 
+**Windows (PowerShell)**:
 ```powershell
 az deployment group create `
   --resource-group $RESOURCE_GROUP `
@@ -90,26 +128,34 @@ az deployment group create `
   --parameters main.bicepparam
 ```
 
+**Linux / WSL (Bash)**:
+```bash
+az deployment group create \
+  --resource-group $RESOURCE_GROUP \
+  --template-file main.bicep \
+  --parameters main.bicepparam
+```
+
 Or with inline parameters:
 
-```powershell
-az deployment group create `
-  --resource-group $RESOURCE_GROUP `
-  --template-file main.bicep `
-  --parameters location=$LOCATION `
-  --parameters acrName="acrworkshop123" `
-  --parameters logAnalyticsName="log-workshop" `
-  --parameters appInsightsName="appi-workshop" `
-  --parameters aiHubName="aihub-workshop" `
+```bash
+az deployment group create \
+  --resource-group $RESOURCE_GROUP \
+  --template-file main.bicep \
+  --parameters location=$LOCATION \
+  --parameters acrName="acrworkshop123" \
+  --parameters logAnalyticsName="log-workshop" \
+  --parameters appInsightsName="appi-workshop" \
+  --parameters aiHubName="aihub-workshop" \
   --parameters aiProjectName="aiproj-workshop"
 ```
 
 ### 6. Capture the outputs
 
-```powershell
-az deployment group show `
-  --resource-group $RESOURCE_GROUP `
-  --name main `
+```bash
+az deployment group show \
+  --resource-group $RESOURCE_GROUP \
+  --name main \
   --query properties.outputs
 ```
 
@@ -119,8 +165,14 @@ az deployment group show `
 
 Execute the validation script to ensure all resources were created correctly:
 
+**Windows (PowerShell)**:
 ```powershell
 .\validate-deployment.ps1 -ResourceGroupName $RESOURCE_GROUP -DeploymentName "main"
+```
+
+**Linux / WSL (Bash)**:
+```bash
+./validate-deployment.sh --resource-group $RESOURCE_GROUP --deployment-name "main"
 ```
 
 The script will:
@@ -148,8 +200,10 @@ Edit the `main.bicepparam` file to customize:
 
 ## 📝 Files
 
-- **deploy.ps1** - Automated deployment script
-- **validate-deployment.ps1** - Post-deployment validation script
+- **deploy.ps1** - Automated deployment script (Windows/PowerShell)
+- **deploy.sh** - Automated deployment script (Linux/WSL/macOS)
+- **validate-deployment.ps1** - Post-deployment validation script (Windows/PowerShell)
+- **validate-deployment.sh** - Post-deployment validation script (Linux/WSL/macOS)
 - **main.bicep** - Main infrastructure template
 - **main.bicepparam** - Parameters file
 

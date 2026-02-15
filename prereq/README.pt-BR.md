@@ -1,5 +1,7 @@
 # Pré-requisitos - Infraestrutura Azure
 
+> 🇺🇸 **[Read in English](README.md)**
+
 Esta pasta contém scripts de Infraestrutura como Código (IaC) usando Bicep para provisionar todos os recursos necessários para o workshop.
 
 ## Recursos Provisionados
@@ -14,12 +16,20 @@ Esta pasta contém scripts de Infraestrutura como Código (IaC) usando Bicep par
 
 Use o script automatizado para implantação completa:
 
+**Windows (PowerShell)**:
 ```powershell
 .\deploy.ps1 -ResourceGroupName "rg-agent365-workshop" -Location "eastus"
 ```
 
+**Linux / WSL (Bash)**:
+```bash
+chmod +x deploy.sh
+./deploy.sh --resource-group "rg-agent365-workshop" --location "eastus"
+```
+
 ### Parâmetros do Script
 
+**Windows (PowerShell)**:
 ```powershell
 # Deploy básico
 .\deploy.ps1
@@ -40,6 +50,27 @@ Use o script automatizado para implantação completa:
 .\deploy.ps1 -SkipValidation
 ```
 
+**Linux / WSL (Bash)**:
+```bash
+# Deploy básico
+./deploy.sh
+
+# Deploy com assinatura específica
+./deploy.sh --subscription "your-subscription-id"
+
+# Deploy personalizado
+./deploy.sh \
+  --resource-group "my-rg" \
+  --location "westus2" \
+  --deployment-name "workshop-deployment"
+
+# Simular implantação (what-if)
+./deploy.sh --what-if
+
+# Deploy sem validação automática
+./deploy.sh --skip-validation
+```
+
 O script irá automaticamente:
 - ✓ Verificar pré-requisitos (Azure CLI, autenticação)
 - ✓ Instalar extensões necessárias
@@ -53,34 +84,43 @@ O script irá automaticamente:
 
 ### 1. Defina suas variáveis de ambiente
 
+**Windows (PowerShell)**:
 ```powershell
 $RESOURCE_GROUP = "rg-agent365-workshop"
 $LOCATION = "eastus"
 $SUBSCRIPTION_ID = "your-subscription-id"
 ```
 
+**Linux / WSL (Bash)**:
+```bash
+RESOURCE_GROUP="rg-agent365-workshop"
+LOCATION="eastus"
+SUBSCRIPTION_ID="your-subscription-id"
+```
+
 ### 2. Faça login no Azure
 
-```powershell
+```bash
 az login
 az account set --subscription $SUBSCRIPTION_ID
 ```
 
 ### 3. Instale as extensões necessárias
 
-```powershell
+```bash
 az extension add --name containerapp
 az extension add --name ml
 ```
 
 ### 4. Crie o Resource Group
 
-```powershell
+```bash
 az group create --name $RESOURCE_GROUP --location $LOCATION
 ```
 
 ### 5. Implante a infraestrutura
 
+**Windows (PowerShell)**:
 ```powershell
 az deployment group create `
   --resource-group $RESOURCE_GROUP `
@@ -88,26 +128,34 @@ az deployment group create `
   --parameters main.bicepparam
 ```
 
+**Linux / WSL (Bash)**:
+```bash
+az deployment group create \
+  --resource-group $RESOURCE_GROUP \
+  --template-file main.bicep \
+  --parameters main.bicepparam
+```
+
 Ou com parâmetros inline:
 
-```powershell
-az deployment group create `
-  --resource-group $RESOURCE_GROUP `
-  --template-file main.bicep `
-  --parameters location=$LOCATION `
-  --parameters acrName="acrworkshop123" `
-  --parameters logAnalyticsName="log-workshop" `
-  --parameters appInsightsName="appi-workshop" `
-  --parameters aiHubName="aihub-workshop" `
+```bash
+az deployment group create \
+  --resource-group $RESOURCE_GROUP \
+  --template-file main.bicep \
+  --parameters location=$LOCATION \
+  --parameters acrName="acrworkshop123" \
+  --parameters logAnalyticsName="log-workshop" \
+  --parameters appInsightsName="appi-workshop" \
+  --parameters aiHubName="aihub-workshop" \
   --parameters aiProjectName="aiproj-workshop"
 ```
 
 ### 6. Capture os outputs
 
-```powershell
-az deployment group show `
-  --resource-group $RESOURCE_GROUP `
-  --name main `
+```bash
+az deployment group show \
+  --resource-group $RESOURCE_GROUP \
+  --name main \
   --query properties.outputs
 ```
 
@@ -117,8 +165,14 @@ az deployment group show `
 
 Execute o script de validação para garantir que todos os recursos foram criados corretamente:
 
+**Windows (PowerShell)**:
 ```powershell
 .\validate-deployment.ps1 -ResourceGroupName $RESOURCE_GROUP -DeploymentName "main"
+```
+
+**Linux / WSL (Bash)**:
+```bash
+./validate-deployment.sh --resource-group $RESOURCE_GROUP --deployment-name "main"
 ```
 
 O script irá:
@@ -146,8 +200,10 @@ Edite o arquivo `main.bicepparam` para personalizar:
 
 ## 📝 Arquivos
 
-- **deploy.ps1** - Script de implantação automatizada
-- **validate-deployment.ps1** - Script de validação pós-implantação
+- **deploy.ps1** - Script de implantação automatizada (Windows/PowerShell)
+- **deploy.sh** - Script de implantação automatizada (Linux/WSL/macOS)
+- **validate-deployment.ps1** - Script de validação pós-implantação (Windows/PowerShell)
+- **validate-deployment.sh** - Script de validação pós-implantação (Linux/WSL/macOS)
 - **main.bicep** - Template principal de infraestrutura
 - **main.bicepparam** - Arquivo de parâmetros
 

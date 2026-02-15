@@ -15,11 +15,13 @@ Before starting, ensure you have:
 
 | # | Requirement | Notes |
 |---|-------------|-------|
-| 1 | Laptop with admin/sudo rights | Windows 10+, macOS 12+, or Ubuntu 22.04+ |
+| 1 | Laptop with admin/sudo rights | Windows 10+, macOS 12+, or Ubuntu 22.04+ (native or WSL) |
 | 2 | Internet ≥ 10 Mbps | Required for Azure, Docker, pip |
 | 3 | Azure subscription with **Contributor** role | [azure.com/free](https://azure.com/free) or enterprise |
 | 4 | GitHub account | To clone workshop repo |
 | 5 | Microsoft 365 Developer Tenant (Days 3-5) | [developer.microsoft.com/microsoft-365/dev-program](https://developer.microsoft.com/microsoft-365/dev-program) |
+
+> **WSL Users (Windows Subsystem for Linux)**: All Linux instructions apply inside your WSL terminal. Ensure WSL 2 is installed: `wsl --install -d Ubuntu` from an elevated PowerShell prompt. Open a WSL terminal via `wsl` or Windows Terminal → Ubuntu.
 
 ---
 
@@ -27,75 +29,155 @@ Before starting, ensure you have:
 
 ### 1.1 Python 3.11+
 
+**Windows (PowerShell)**:
 ```powershell
-# Windows — winget
 winget install Python.Python.3.11
+```
 
-# macOS — Homebrew
+**Linux / WSL (Debian/Ubuntu)**:
+```bash
+sudo apt update && sudo apt install -y python3.11 python3.11-venv python3-pip
+```
+
+**macOS (Homebrew)**:
+```bash
 brew install python@3.11
+```
 
-# Verify
-python --version   # Expected: Python 3.11.x or higher
+**Verify**:
+```bash
+python3 --version   # Expected: Python 3.11.x or higher
 ```
 
 ### 1.2 Azure CLI 2.60+
 
+**Windows (PowerShell)**:
 ```powershell
-# Windows — winget
 winget install Microsoft.AzureCLI
+```
 
-# macOS — Homebrew
+**Linux / WSL (Debian/Ubuntu)**:
+```bash
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+```
+
+**macOS (Homebrew)**:
+```bash
 brew install azure-cli
+```
 
-# Verify
+**Verify**:
+```bash
 az version   # Expected: "azure-cli": "2.60.0" or higher
 ```
 
-### 1.3 Docker Desktop
+### 1.3 Docker
 
-Download from [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/) and install.
+**Windows**: Download [Docker Desktop](https://www.docker.com/products/docker-desktop/) and ensure WSL 2 backend is enabled (Settings → General → Use the WSL 2 based engine).
 
-```powershell
-# Verify
-docker --version       # Expected: Docker version 24.x+
-docker info            # Should show "Server: Docker Desktop"
+**Linux / WSL (Debian/Ubuntu)**:
+```bash
+# Install Docker Engine (not Docker Desktop)
+sudo apt update
+sudo apt install -y ca-certificates curl gnupg
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin
+
+# Add your user to docker group (avoids sudo for docker commands)
+sudo usermod -aG docker $USER
+newgrp docker
 ```
 
-> **Windows**: Ensure WSL 2 backend is enabled (Docker Desktop → Settings → General → Use the WSL 2 based engine).
+> **WSL Tip**: If Docker Desktop for Windows is installed and WSL integration is enabled (Settings → Resources → WSL Integration), you can use `docker` directly from WSL without installing Docker Engine separately.
+
+**Verify**:
+```bash
+docker --version       # Expected: Docker version 24.x+
+docker info            # Should show server running
+```
 
 ### 1.4 Git
 
+**Windows (PowerShell)**:
 ```powershell
-# Windows — winget
 winget install Git.Git
+```
 
-# macOS — Xcode tools (usually pre-installed)
-xcode-select --install
+**Linux / WSL (Debian/Ubuntu)**:
+```bash
+sudo apt install -y git
+```
 
-# Verify
+**macOS**: Usually pre-installed. If not: `xcode-select --install`
+
+**Verify**:
+```bash
 git --version   # Expected: git version 2.40+
 ```
 
 ### 1.5 .NET 8.0 SDK (Required for Days 3–5: A365 CLI)
 
+**Windows (PowerShell)**:
 ```powershell
-# Windows — winget
 winget install Microsoft.DotNet.SDK.8
+```
 
-# macOS — Homebrew
+**Linux / WSL (Debian/Ubuntu)**:
+```bash
+# Add Microsoft package repository
+wget https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+rm packages-microsoft-prod.deb
+
+sudo apt update
+sudo apt install -y dotnet-sdk-8.0
+```
+
+**macOS (Homebrew)**:
+```bash
 brew install dotnet@8
+```
 
-# Verify
+**Verify**:
+```bash
 dotnet --version   # Expected: 8.0.x
 ```
 
-### 1.6 VS Code
+### 1.6 jq (Linux / WSL only — JSON processor)
+
+The bash deployment scripts use `jq` for JSON parsing:
+
+```bash
+sudo apt install -y jq
+```
+
+### 1.7 VS Code
 
 Download from [code.visualstudio.com](https://code.visualstudio.com/) or:
 
+**Windows**:
 ```powershell
 winget install Microsoft.VisualStudioCode
 ```
+
+**Linux / WSL (Debian/Ubuntu)**:
+```bash
+sudo apt install -y wget gpg
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+rm -f packages.microsoft.gpg
+sudo apt update
+sudo apt install -y code
+```
+
+> **WSL Tip**: Install VS Code on Windows and use the **Remote - WSL** extension to develop inside WSL. Run `code .` from a WSL terminal to open VS Code connected to WSL.
 
 ---
 
@@ -144,9 +226,13 @@ az account set --subscription "<YOUR_SUBSCRIPTION_ID>"
 
 ### 3.3 Verify Permissions
 
-```powershell
+```bash
 # Must show "Contributor" or "Owner"
+# Windows PowerShell:
 az role assignment list --assignee $(az ad signed-in-user show --query id -o tsv) --query "[].roleDefinitionName" -o tsv
+
+# Linux / WSL / macOS (Bash):
+az role assignment list --assignee "$(az ad signed-in-user show --query id -o tsv)" --query "[].roleDefinitionName" -o tsv
 ```
 
 ### 3.4 Register Required Providers
@@ -192,6 +278,7 @@ a365-workshop/
 
 ### 5.1 Create a Resource Group
 
+**Windows (PowerShell)**:
 ```powershell
 $RESOURCE_GROUP = "rg-ai-agents-workshop"
 $LOCATION = "eastus2"
@@ -199,13 +286,27 @@ $LOCATION = "eastus2"
 az group create --name $RESOURCE_GROUP --location $LOCATION
 ```
 
+**Linux / WSL (Bash)**:
+```bash
+RESOURCE_GROUP="rg-ai-agents-workshop"
+LOCATION="eastus2"
+
+az group create --name $RESOURCE_GROUP --location $LOCATION
+```
+
 ### 5.2 Deploy Workshop Resources
 
+**Windows (PowerShell)**:
 ```powershell
 cd prereq
-
-# Deploy using the Bicep template
 ./deploy.ps1
+```
+
+**Linux / WSL (Bash)**:
+```bash
+cd prereq
+chmod +x deploy.sh
+./deploy.sh
 ```
 
 This provisions:
@@ -217,8 +318,14 @@ This provisions:
 
 ### 5.3 Validate Deployment
 
+**Windows (PowerShell)**:
 ```powershell
 ./validate-deployment.ps1
+```
+
+**Linux / WSL (Bash)**:
+```bash
+./validate-deployment.sh
 ```
 
 Expected output — all resources showing `✅`:
@@ -238,15 +345,14 @@ Expected output — all resources showing `✅`:
 
 ### 6.1 Create Virtual Environment
 
-```powershell
+```bash
 # From repository root
-python -m venv .venv
+python3 -m venv .venv
 
-# Activate
-# Windows PowerShell:
+# Activate — Windows PowerShell:
 .\.venv\Scripts\Activate.ps1
 
-# macOS/Linux:
+# Activate — Linux / WSL / macOS:
 source .venv/bin/activate
 ```
 
@@ -278,8 +384,9 @@ a365 --version
 
 ## Step 8: Environment Validation Script
 
-Run this comprehensive check:
+Run this comprehensive check to verify your setup.
 
+**Windows (PowerShell)**:
 ```powershell
 Write-Host "=== Workshop Environment Validation ===" -ForegroundColor Cyan
 
@@ -307,7 +414,43 @@ $sdk = python -c "import azure.ai.agents; print(azure.ai.agents.__version__)" 2>
 Write-Host "`n=== Validation Complete ===" -ForegroundColor Cyan
 ```
 
-Save as `validate-setup.ps1` or run inline. All items should show **green**.
+**Linux / WSL (Bash)**:
+```bash
+#!/bin/bash
+echo "=== Workshop Environment Validation ==="
+
+# Colors
+GREEN='\033[0;32m'; RED='\033[0;31m'; YELLOW='\033[1;33m'; NC='\033[0m'
+check() { if [ $? -eq 0 ]; then echo -e "${GREEN}✅ $1${NC}"; else echo -e "${RED}❌ $1${NC}"; fi }
+
+# 1. Python
+python3 --version 2>/dev/null && check "Python" || check "Python NOT FOUND"
+
+# 2. Azure CLI
+az version --query '"azure-cli"' -o tsv 2>/dev/null && check "Azure CLI" || check "Azure CLI NOT FOUND"
+
+# 3. Docker
+docker --version 2>/dev/null && check "Docker" || check "Docker NOT FOUND"
+
+# 4. Git
+git --version 2>/dev/null && check "Git" || check "Git NOT FOUND"
+
+# 5. .NET SDK
+dotnet --version 2>/dev/null && check ".NET SDK" || echo -e "${YELLOW}⚠️  .NET SDK not found (needed for Days 3-5)${NC}"
+
+# 6. Azure login
+az account show --query name -o tsv 2>/dev/null && check "Azure Account" || check "Azure login FAILED (run: az login)"
+
+# 7. azure-ai-agents SDK
+python3 -c "import azure.ai.agents; print(azure.ai.agents.__version__)" 2>/dev/null && check "azure-ai-agents" || check "azure-ai-agents NOT INSTALLED"
+
+# 8. jq (needed for bash scripts)
+jq --version 2>/dev/null && check "jq" || echo -e "${YELLOW}⚠️  jq not found (run: sudo apt install -y jq)${NC}"
+
+echo "=== Validation Complete ==="
+```
+
+Save as `validate-setup.ps1` (Windows) or `validate-setup.sh` (Linux). All items should show **green/✅**.
 
 ---
 
@@ -315,40 +458,82 @@ Save as `validate-setup.ps1` or run inline. All items should show **green**.
 
 ### "az login" fails with SSO/MFA
 
-```powershell
+```bash
 az login --use-device-code
 ```
 
 ### Docker daemon not started
 
-- Windows: Open Docker Desktop from Start Menu, wait for "Docker Desktop is running"
-- macOS: `open -a Docker`
+- **Windows**: Open Docker Desktop from Start Menu, wait for "Docker Desktop is running"
+- **macOS**: `open -a Docker`
+- **Linux**: `sudo systemctl start docker`
+- **WSL**: If using Docker Desktop, ensure WSL integration is enabled. If using Docker Engine in WSL: `sudo service docker start`
 
 ### Python version mismatch
 
-```powershell
-# Check all Python installations
-where.exe python          # Windows
-which -a python3          # macOS/Linux
+```bash
+# Windows:
+where.exe python
+
+# Linux / WSL / macOS:
+which -a python3
+python3 --version
 ```
+
+> **Linux/WSL Tip**: Use `python3` instead of `python`. If you need the `python` alias: `sudo apt install python-is-python3`
 
 ### Azure subscription quota errors
 
-```powershell
-# Check quota for CognitiveServices
+```bash
 az cognitiveservices usage list --location eastus2 -o table
 ```
 
-### "Permission denied" on deploy.ps1
+### "Permission denied" on .ps1 scripts (Windows)
 
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
+### "Permission denied" on .sh scripts (Linux / WSL)
+
+```bash
+chmod +x deploy.sh validate-deployment.sh
+```
+
 ### pip install fails behind corporate proxy
 
-```powershell
+```bash
 pip install --proxy http://proxy.company.com:8080 azure-ai-agents
+```
+
+### WSL-specific issues
+
+**WSL not installed**:
+```powershell
+# From elevated PowerShell on Windows
+wsl --install -d Ubuntu
+# Restart required after installation
+```
+
+**WSL 1 vs WSL 2**:
+```bash
+# Check version
+wsl --list --verbose
+
+# Convert to WSL 2 if needed (from Windows PowerShell):
+wsl --set-version Ubuntu 2
+```
+
+**DNS resolution issues in WSL**:
+```bash
+# If apt or pip fail with network errors
+echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
+```
+
+**Disk space in WSL**: WSL has a default virtual disk limit. If you run out of space building Docker images:
+```bash
+df -h   # Check available space
+docker system prune -a   # Clean unused Docker data
 ```
 
 ---
