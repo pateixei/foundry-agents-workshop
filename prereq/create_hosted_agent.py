@@ -9,14 +9,14 @@ Uso:
     python create_hosted_agent.py --endpoint <ep> --acr-image <img> --model-deployment <model> --agent-name fin-market-agent --env-endpoint FOUNDRY_PROJECT_ENDPOINT --env-model FOUNDRY_MODEL_DEPLOYMENT_NAME
     python create_hosted_agent.py --endpoint <ep> --acr-image <img> --model-deployment <model> --agent-name lg-market-agent --env-endpoint AZURE_AI_PROJECT_ENDPOINT --env-model AZURE_AI_MODEL_DEPLOYMENT_NAME
 
-Requer: pip install azure-ai-projects azure-identity
+Requer: pip install azure-ai-agents azure-identity
 """
 
 import argparse
 import time
 
-from azure.ai.projects import AIProjectClient
-from azure.ai.projects.models import (
+from azure.ai.agents import AIProjectClient
+from azure.ai.agents.models import (
     ImageBasedHostedAgentDefinition,
     ProtocolVersionRecord,
 )

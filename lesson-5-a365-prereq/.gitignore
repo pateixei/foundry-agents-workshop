@@ -1,0 +1,17 @@
+# Environment files
+.env
+*.env.local
+
+# Generated configs with real credentials
+setup-output.txt
+a365.generated.config.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# IDE
+.vscode/settings.json

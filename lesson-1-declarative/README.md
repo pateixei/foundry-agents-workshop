@@ -1,6 +1,6 @@
 # Lesson 1 - Declarative Agent (Prompt-Based)
 
-Creates a **declarative** financial agent in Azure AI Foundry using the `azure-ai-projects` SDK.
+Creates a **declarative** financial agent in Azure AI Foundry using the `azure-ai-agents` SDK.
 
 ## What is a declarative agent?
 
@@ -49,7 +49,7 @@ python test_agent.py
 | Feature | Lesson 1 (Declarative) | Lesson 2 (Hosted MAF) | Lesson 3 (Hosted LangGraph) |
 |---|---|---|---|
 | Type | Prompt-based | Hosted (container) | Hosted (container) |
-| Framework | SDK azure-ai-projects | Microsoft Agent Framework | LangGraph |
+| Framework | SDK azure-ai-agents | Microsoft Agent Framework | LangGraph |
 | Container | No | Yes (Docker/ACR) | Yes (Docker/ACR) |
 | Custom tools | No (server-side only) | Yes (local Python) | Yes (local Python) |
 | Editable in portal | Yes | No | No |
@@ -69,8 +69,8 @@ One of the biggest advantages of the declarative agent is the ability to use **t
 ```python
 import os
 from azure.identity import DefaultAzureCredential
-from azure.ai.projects import AIProjectClient
-from azure.ai.projects.models import (
+from azure.ai.agents import AgentsClient
+from azure.ai.agents.models import (
     PromptAgentDefinition,
     BingGroundingAgentTool,
     BingGroundingSearchToolParameters,
@@ -78,7 +78,7 @@ from azure.ai.projects.models import (
 )
 
 credential = DefaultAzureCredential()
-project_client = AIProjectClient(
+project_client = AgentsClient(
     endpoint=os.environ["AZURE_AI_PROJECT_ENDPOINT"],
     credential=credential,
 )
@@ -119,7 +119,7 @@ print(response.output_text)
 
 ### Tools available via SDK (same as the portal)
 
-| Tool | SDK Class (`azure.ai.projects.models`) |
+| Tool | SDK Class (`azure.ai.agents.models`) |
 |------|---------------------------------------------|
 | Bing Grounding | `BingGroundingAgentTool` |
 | Bing Custom Search | `BingCustomSearchAgentTool` |

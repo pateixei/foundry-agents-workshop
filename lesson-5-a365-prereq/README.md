@@ -1,6 +1,6 @@
-# Lesson 5 - Prerequisites for Microsoft Agent 365
+# Lesson 5 - Microsoft Agent 365 Complete Setup
 
-This lesson prepares the environment to integrate the workshop agents with **Microsoft Agent 365** (A365). We won't create agents here - only configure the prerequisites for the A365 development cycle.
+This lesson covers the complete setup and deployment of agents to **Microsoft Agent 365** (A365), from configuration to publishing and creating agent instances in Microsoft 365.
 
 > **IMPORTANT**: Agent 365 requires participation in the [Frontier preview program](https://adoption.microsoft.com/copilot/frontier-program/).
 
@@ -43,15 +43,15 @@ This means:
 
 ## Agent 365 Development Cycle
 
-The complete cycle has 6 steps. **In this lesson we cover steps 2-3 (config + blueprint)**:
+The complete cycle has 6 steps. **In this lesson we cover steps 2-6 (complete A365 setup)**:
 
 ```
 1. Build and run agent          <-- already done (lesson 4, ACA in Tenant A)
 2. Setup Agent 365 config       <-- THIS LESSON
 3. Setup agent blueprint        <-- THIS LESSON
 4. Deploy                       <-- already done (lesson 4, needDeployment: false)
-5. Publish to M365 admin center <-- future lesson
-6. Create agent instances       <-- future lesson
+5. Publish to M365 admin center <-- THIS LESSON
+6. Create agent instances       <-- THIS LESSON
 ```
 
 Reference: [Agent 365 Development Lifecycle](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/a365-dev-lifecycle)
@@ -343,6 +343,210 @@ Test-Path a365.generated.config.json
 
 ---
 
+## Step 5 - Publish to M365 Admin Center
+
+After setting up the blueprint, the agent must be published to the M365 admin center so tenant administrators can make it available to users.
+
+### 5.1 - Understanding Agent Publishing
+
+Publishing makes the agent available in the **Microsoft 365 admin center** under **Integrated apps**. This allows:
+- **Tenant administrators** to review and approve the agent
+- **Deployment controls** to specific users, groups, or the entire organization
+- **Centralized management** of agent availability and permissions
+
+### 5.2 - Publish the Agent
+
+```powershell
+# Publish the agent blueprint to M365 admin center
+a365 publish
+```
+
+The command performs these actions:
+
+1. **Packages the agent manifest** with blueprint metadata
+2. **Submits to M365 admin center** for tenant admin review
+3. **Creates an app listing** in the Integrated apps catalog
+4. **Generates publish artifacts** in `a365.generated.config.json`
+
+Expected output:
+```
+Publishing agent to Microsoft 365...
+✓ Agent blueprint validated
+✓ Manifest packaged
+✓ Submitted to M365 admin center
+✓ Agent available for admin approval
+
+Agent publish details:
+  Agent Name: Financial Market Agent
+  Blueprint ID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+  Status: Pending Admin Approval
+  Admin Center URL: https://admin.microsoft.com/AdminPortal/Home#/Settings/IntegratedApps
+```
+
+### 5.3 - Admin Approval (M365 Admin Center)
+
+After publishing, a **tenant administrator** must approve the agent:
+
+1. Go to [M365 Admin Center](https://admin.microsoft.com/)
+2. Navigate to **Settings > Integrated apps**
+3. Find **Financial Market Agent** in the list
+4. Click on the agent to review:
+   - Blueprint permissions (Microsoft Graph, etc.)
+   - Messaging endpoint
+   - Publisher information
+5. Click **Deploy** and configure:
+   - **Users**: Specific users, groups, or entire organization
+   - **Deployment type**: Optional or Required
+6. Click **Next** and then **Finish deployment**
+
+> **Note**: Only Global Administrators can deploy integrated apps in M365 admin center.
+
+### 5.4 - Verify Publishing Status
+
+```powershell
+# Check agent publishing status
+a365 publish status
+
+# Expected output when approved:
+# Status: Deployed
+# Availability: Enabled for selected users
+# Deployed to: 15 users in "Sales Team" group
+```
+
+**Verification checklist**:
+- [ ] Agent appears in M365 admin center > Integrated apps
+- [ ] Status shows "Deployed" or "Available"
+- [ ] Deployment scope configured (users/groups)
+- [ ] Permissions granted by admin
+
+---
+
+## Step 6 - Create Agent Instances
+
+After publishing and admin approval, users can create **agent instances** in Teams and Outlook. Each instance is a personal or shared bot that users interact with.
+
+### 6.1 - Understanding Agent Instances
+
+- **Agent Blueprint**: The template/identity registered in Entra ID (Step 3)
+- **Agent Instance**: An active bot created from the blueprint, appearing in Teams/Outlook
+- **Instance Types**:
+  - **Personal**: Individual user's private agent
+  - **Shared**: Team or group agent accessible by multiple users
+
+### 6.2 - Create an Instance via CLI
+
+```powershell
+# Create a personal agent instance
+a365 create-instance `
+  --name "My Market Agent" `
+  --type personal `
+  --deploy-to-teams `
+  --deploy-to-outlook
+
+# Create a shared team instance
+a365 create-instance `
+  --name "Sales Team Market Agent" `
+  --type shared `
+  --team-id "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" `
+  --deploy-to-teams
+```
+
+**Parameters**:
+| Parameter | Description | Required |
+|-----------|-------------|:--------:|
+| `--name` | Display name for the instance | Yes |
+| `--type` | `personal` or `shared` | Yes |
+| `--deploy-to-teams` | Make available in Teams | No |
+| `--deploy-to-outlook` | Make available in Outlook | No |
+| `--team-id` | Teams team ID (for shared instances) | For shared |
+| `--description` | Instance description | No |
+
+Expected output:
+```
+Creating agent instance...
+✓ Instance created successfully
+✓ Deployed to Microsoft Teams
+✓ Deployed to Outlook
+
+Instance details:
+  Name: My Market Agent
+  Instance ID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+  Type: Personal
+  Status: Active
+  Teams App ID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+  Outlook Add-in ID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+```
+
+### 6.3 - Create Instance via Teams App
+
+Users can also install agent instances directly from Teams:
+
+1. Open **Microsoft Teams**
+2. Click **Apps** in the left sidebar
+3. Search for **"Financial Market Agent"** (or browse **Built by your org**)
+4. Click **Add** to create a personal instance
+5. Or click **Add to a team** to create a shared instance
+
+The agent will appear in:
+- **Teams**: Chat list or Team channels
+- **Outlook**: Add-ins panel (if deployed)
+
+### 6.4 - Manage Instances
+
+```powershell
+# List all instances
+a365 list-instances
+
+# Get instance details
+a365 get-instance --instance-id <instance-id>
+
+# Delete an instance
+a365 delete-instance --instance-id <instance-id>
+
+# Update instance settings
+a365 update-instance `
+  --instance-id <instance-id> `
+  --name "Updated Name" `
+  --description "New description"
+```
+
+### 6.5 - Test the Agent Instance
+
+Once the instance is created, test it in Teams:
+
+1. **Open Teams** and find the agent in your chat list
+2. **Send a message**: `What is the PETR4 stock price?`
+3. **Verify response**: The agent should call your ACA endpoint and return market data
+4. **Check telemetry**: View requests in Azure Monitor (ACA logs)
+
+**Expected flow**:
+```
+User (Teams) 
+  → M365 Agent Service 
+  → Messaging Endpoint (ACA) 
+  → LangGraph Agent 
+  → Azure OpenAI (gpt-4.1) 
+  → Response → User
+```
+
+### 6.6 - Instance Lifecycle
+
+| State | Description | Actions Available |
+|-------|-------------|-------------------|
+| **Active** | Instance is running and available | Chat, update settings, suspend |
+| **Suspended** | Temporarily disabled | Resume, delete |
+| **Deleted** | Permanently removed | None (create new) |
+
+```powershell
+# Suspend an instance
+a365 suspend-instance --instance-id <instance-id>
+
+# Resume a suspended instance
+a365 resume-instance --instance-id <instance-id>
+```
+
+---
+
 ## Summary of artifacts generated
 
 At the end of this lesson, you will have:
@@ -350,16 +554,20 @@ At the end of this lesson, you will have:
 | Artifact | Location | Description |
 |----------|-------------|-----------|
 | `a365.config.json` | `lesson-5-a365-prereq/` | Manual configuration (created by hand, no wizard) |
-| `a365.generated.config.json` | `lesson-5-a365-prereq/` | Configuration generated by CLI (IDs, secrets) |
+| `a365.generated.config.json` | `lesson-5-a365-prereq/` | Configuration generated by CLI (IDs, secrets, publish details) |
 | Custom Client App | Entra ID (M365 Tenant) | App registration for CLI authentication |
 | Agent Blueprint | Entra ID (M365 Tenant) | Agent identity + permissions |
 | Service Principal | Entra ID (M365 Tenant) | Agent identity for authentication |
+| Published Agent | M365 Admin Center | Agent available in Integrated apps catalog |
+| Agent Instances | Teams/Outlook | Active bots users can interact with |
 
 > **What was NOT created**: No Azure resources (Resource Group, App Service Plan, Web App). The agent continues running in ACA of Tenant A (lesson 4) and A365 only points to it via `messagingEndpoint`.
 
 ---
 
 ## Troubleshooting
+
+### Steps 2-3 (Config & Blueprint)
 
 | Problem | Probable Cause | Solution |
 |----------|---------------|---------|
@@ -373,25 +581,73 @@ At the end of this lesson, you will have:
 | Blueprint doesn't appear in Entra | Incomplete setup | Run `a365 setup all` again |
 | Endpoint not registered | needDeployment=false without messagingEndpoint | Run `a365 setup blueprint --endpoint-only` |
 
+### Step 5 (Publish)
+
+| Problem | Probable Cause | Solution |
+|----------|---------------|---------|
+| `a365 publish` fails with 403 | Insufficient permissions | Ensure CLI user has Agent ID Admin or Global Admin role |
+| Agent not in admin center | Publish incomplete | Run `a365 publish status` to check, retry `a365 publish` |
+| Admin can't find agent | Wrong tenant | Verify admin is logged into M365 Tenant (Tenant B) |
+| Deployment fails in admin center | Permission issues | Review and grant all requested Graph permissions |
+| Agent shows "Blocked" | Tenant policies | Check M365 tenant policies for third-party apps |
+
+### Step 6 (Create Instances)
+
+| Problem | Probable Cause | Solution |
+|----------|---------------|---------|
+| `a365 create-instance` fails | Agent not published/approved | Ensure step 5 is complete and admin approved |
+| Instance not in Teams | Deployment scope | Verify user is in deployment scope configured in admin center |
+| Agent doesn't respond | Endpoint unreachable | Check ACA is running: `az containerapp show --name aca-lg-agent` |
+| 404 from messaging endpoint | Wrong endpoint path | Verify endpoint in `a365.config.json` includes `/api/messages` |
+| Agent responds with error | Azure OpenAI access | Check ACA managed identity has RBAC on Foundry OpenAI |
+| Slow responses | Cold start | ACA may be scaling from 0 replicas, subsequent calls will be faster |
+| Instance not in Outlook | Not deployed to Outlook | Use `--deploy-to-outlook` flag when creating instance |
+
 ---
 
 ## Next steps
 
-With the prerequisites configured, the next steps in the A365 cycle are:
+With the complete A365 setup done, you can now:
 
-- **Lesson 6 (future)**: Adapt agent code with A365 SDK (observability, tooling, notifications)
-- **Lesson 7 (future)**: Publish agent to M365 admin center (`a365 publish`)
-- **Lesson 8 (future)**: Create agent instances in Teams (`a365 create-instance` or via Teams Apps)
+- **Monitor agent usage** in Azure Monitor and M365 admin center analytics
+- **Update the agent** by deploying new versions to ACA and updating the messaging endpoint
+- **Scale deployment** to more users, groups, or the entire organization
+- **Integrate advanced features** like proactive notifications, adaptive cards, and SSO
+- **Monitor compliance** and data governance through M365 admin center reports
+
+### Advanced Topics (Beyond Workshop)
+
+- **Proactive Notifications**: Send messages from agent to users without user initiation
+- **Adaptive Cards**: Rich interactive UI in Teams/Outlook messages
+- **Single Sign-On (SSO)**: Seamless authentication with user's M365 identity
+- **Multi-language Support**: Localized agent responses
+- **Analytics & Telemetry**: Detailed usage tracking and performance metrics
+- **Lifecycle Management**: Automated testing, staging, and production deployments
 
 ---
 
 ## References
 
+### Core Documentation
 - [Agent 365 Development Lifecycle](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/a365-dev-lifecycle)
 - [Agent 365 CLI](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/agent-365-cli)
+- [Agent 365 Config Reference](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/reference/cli/config)
+
+### Setup & Configuration
 - [Setting up Agent 365 Config](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/a365-config)
 - [Custom Client App Registration](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/custom-client-app-registration)
 - [Setup Agent Blueprint](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/registration)
 - [Agent Messaging Endpoint](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/agent-messaging-endpoint)
-- [Agent 365 Config Reference](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/reference/cli/config)
+
+### Publishing & Deployment
+- [Publish Agents to M365](https://learn.microsoft.com/en-us/microsoft-agent-365/admin/publish-agents)
+- [M365 Admin Center - Integrated Apps](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-deployment-of-add-ins)
+- [Deploy Apps in M365](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/test-and-deploy-microsoft-365-apps)
+
+### Instance Management
+- [Create Agent Instances](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/create-instances)
+- [Teams Apps Development](https://learn.microsoft.com/en-us/microsoftteams/platform/bots/what-are-bots)
+- [Outlook Add-ins](https://learn.microsoft.com/en-us/office/dev/add-ins/outlook/outlook-add-ins-overview)
+
+### Program Access
 - [Frontier Preview Program](https://adoption.microsoft.com/copilot/frontier-program/)

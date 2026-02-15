@@ -1,0 +1,8 @@
+agent-framework-azure-ai==1.0.0b260107
+agent-framework-core==1.0.0b260107
+azure-ai-agentserver-agentframework==1.0.0b10
+azure-ai-agentserver-core==1.0.0b10
+azure-identity>=1.19.0
+azure-monitor-opentelemetry>=1.6.0
+opentelemetry-api>=1.25.0
+opentelemetry-sdk>=1.25.0

@@ -40,19 +40,19 @@ adapter.run()                # opens HTTP server on port 8088
 
 This transforms the LangGraph graph into a Responses API server that Foundry knows how to call.
 
-#### 3. LLM via `init_chat_model` with Azure credential
+#### 3. LLM via `AzureChatOpenAI` with Azure credential
 
 The container uses `DefaultAzureCredential` (managed identity) to authenticate to Azure OpenAI:
 
 ```python
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
-from langchain.chat_models import init_chat_model
+from langchain_openai import AzureChatOpenAI
 
 credential = DefaultAzureCredential()
 token_provider = get_bearer_token_provider(credential, "https://cognitiveservices.azure.com/.default")
 
-llm = init_chat_model(
-    "azure_openai:gpt-4.1",
+llm = AzureChatOpenAI(
+    azure_deployment=os.getenv("AZURE_AI_MODEL_DEPLOYMENT_NAME", "gpt-4o-mini"),
     azure_ad_token_provider=token_provider,
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
     api_version="2025-01-01-preview",

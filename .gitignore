@@ -40,3 +40,8 @@ prereq/main.json
 # A365 CLI generated config (contains secrets)
 a365.generated.config.json
 a365.config.json
+
+#workshop
+.workshop/
+context.md
+context.pt-BR.md

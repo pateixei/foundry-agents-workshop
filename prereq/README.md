@@ -4,16 +4,11 @@ This folder contains Infrastructure as Code (IaC) scripts using Bicep to provisi
 
 ## Provisioned Resources
 
-- **Azure OpenAI Service** - With GPT-5.2 model deployment
+- **Azure AI Services (Foundry Account)** - With GPT-4o-mini model deployment
 - **Azure Container Registry** - To store agent Docker images
-- **Container Apps Environment** - Environment to run the LangGraph Agent
-- **Container App** - For the LangGraph Agent
-- **AI Hub** - Microsoft Foundry workspace
-- **AI Project** - To host the Agent Framework Agent
+- **AI Project** - Microsoft Foundry project to host agents
 - **Log Analytics Workspace** - For logs and monitoring
 - **Application Insights** - For telemetry and observability
-- **Storage Account** - For the AI Hub
-- **Key Vault** - For the AI Hub
 
 ## 🚀 Quick Deploy (Recommended)
 
@@ -100,13 +95,11 @@ az deployment group create `
   --resource-group $RESOURCE_GROUP `
   --template-file main.bicep `
   --parameters location=$LOCATION `
-  --parameters openAIServiceName="openai-workshop-demo" `
   --parameters acrName="acrworkshop123" `
   --parameters logAnalyticsName="log-workshop" `
   --parameters appInsightsName="appi-workshop" `
-  --parameters containerAppsEnvName="cae-workshop" `
-  --parameters langgraphAgentName="ca-langgraph-agent" `
-  --parameters agentFrameworkAgentName="ca-agent-framework"
+  --parameters aiHubName="aihub-workshop" `
+  --parameters aiProjectName="aiproj-workshop"
 ```
 
 ### 6. Capture the outputs
@@ -137,20 +130,19 @@ The script will:
 
 **Expected success rate:** ≥ 90%
 
-## ⚙️ Customizable Parameters
+## Customizable Parameters
 
 Edit the `main.bicepparam` file to customize:
 
 - `location` - Azure region (default: eastus)
-- `openAIServiceName` - Azure OpenAI service name
-- `gpt52DeploymentName` - GPT-5.2 deployment name
-- `acrName` - Azure Container Registry name
-- `langgraphAgentName` - Container App name for LangGraph
-- `agentFrameworkAgentName` - Container App name for Agent Framework
-- `gpt52Capacity` - Model TPM capacity (default: 100)
-- `gpt52ModelVersion` - GPT-5.2 model version
-- `aiHubName` - AI Hub name (Microsoft Foundry)
+- `aiHubName` - AI Services / Foundry account name
 - `aiProjectName` - AI Project name
+- `aiModelDeployment` - Model deployment name (default: gpt-4o-mini)
+- `acrName` - Azure Container Registry name
+- `logAnalyticsName` - Log Analytics workspace name
+- `appInsightsName` - Application Insights name
+- `modelVersion` - Model version
+- `modelCapacity` - Model TPM capacity (default: 100)
 
 ## 📝 Files
 
