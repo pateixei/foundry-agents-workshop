@@ -16,7 +16,7 @@
 4. [Daily Facilitation Plans](#daily-facilitation-plans)
 5. [Facilitation Techniques](#facilitation-techniques)
 6. [Troubleshooting Common Issues](#troubleshooting-common-issues)
-7. [Managing Resistance](#managing-resistance)
+7. [Highlighting Platform Advantages](#highlighting-platform-advantages)
 8. [Time Management Strategies](#time-management-strategies)
 9. [Assessment Administration](#assessment-administration)
 
@@ -28,8 +28,8 @@
 1. **Content Delivery**
    - Present concepts clearly and engagingly
    - Demonstrate technical implementations
-   - Bridge AWS → Azure knowledge gaps
-   - Address Microsoft platform skepticism tactfully
+   - Leverage students' prior cloud experience to accelerate learning
+   - Highlight unique Azure + M365 integration capabilities
 
 2. **Hands-On Support**
    - Guide students through labs
@@ -244,25 +244,25 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 ### Day 2: Deepening Understanding
 
 **Theme**: "Mastering Hosted Agents with MAF"  
-**Focus**: MAF deep-dive, LangGraph migration, debugging
+**Focus**: MAF deep-dive, LangGraph on Foundry, debugging
 
 **Key Objectives:**
 - Complete MAF deployment (if not done Day 1)
 - Master container debugging skills
 - Successfully deploy LangGraph agent (CRITICAL)
-- Address platform resistance head-on
+- Demonstrate multi-framework flexibility of the platform
 
 **Critical Success Factors:**
-- LangGraph agent deployed successfully (proof for AWS practitioners)
-- Students see LangGraph compatibility
+- LangGraph agent deployed successfully (validates framework portability)
+- Students see LangGraph compatibility with Azure Foundry
 - Architecture decision framework internalized
 - Confidence with containerized agents
 
 **Instructor Mindset:**
-- Bridge builder (AWS ↔ Azure)
+- Enabler of multi-platform fluency
 - Technical depth (debugging session)
-- Empathetic to migration concerns
-- Firm on LangGraph value proposition
+- Focused on expanding students' capabilities
+- Confident in the LangGraph value proposition
 
 **Granular Timing Overview** (aligned with Master Agenda):
 - **Hour 1** (00:00-01:00):
@@ -273,7 +273,7 @@ Each module has a **detailed instructional script** with minute-by-minute facili
   - 01:00-01:45: MAF enhancement lab (add custom tools)
   - 01:45-02:00: Code review & pair sharing
 - **Hour 3** (02:00-03:00):
-  - 02:00-02:30: LangGraph migration story (addressing resistance)
+  - 02:00-02:30: LangGraph on Foundry (multi-framework advantage)
   - 02:30-03:00: Module 3 Part 1 (code walkthrough & customization)
 - **Hour 4** (03:00-04:00):
   - 03:00-03:30: Module 3 Part 2 (LangGraph deployment)
@@ -291,28 +291,27 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 **Facilitation Tips:**
 - **Hour 1**: Start with recap quiz (gamify with Kahoot); re-energizes cohort
 - **Hour 2**: Live debugging demo is powerful—don't skip it
-- **Hour 3**: "Why Foundry?" section is critical for engagement; speak to resistance directly
+- **Hour 3**: "Why Foundry?" section is critical for engagement; let the platform strengths speak for themselves
 - **Hour 4**: Decision framework exercise works best in breakout groups (if virtual)
 
-**Managing Resistance (Day 2 Focus):**
-- **Anticipated pushback**: "Why not just stay on AWS?"
-- **Your response framework**:
-  1. Acknowledge: "AWS is excellent, and you've built great agents there"
-  2. Expand: "This adds M365 integration without replacing AWS"
-  3. Demonstrate: "Your LangGraph code runs virtually unchanged"
-  4. Empower: "You can choose the best platform per use case"
+**Engagement Strategy (Day 2 Focus):**
+- **Key message**: "Azure Foundry gives you the flexibility to bring your own framework"
+- **Value proposition sequence**:
+  1. Demonstrate: "Your LangGraph code runs virtually unchanged on Foundry"
+  2. Expand: "Plus, you gain M365 integration, enterprise governance, and Teams delivery"
+  3. Empower: "Now you have more options—choose the best platform per use case"
 
 **Common Day 2 Issues:**
 1. **LangGraph graph not compiling**: Check edge connections; common mistake
 2. **Adapter import errors**: Verify requirements.txt includes `azure-ai-agentserver-langgraph`
 3. **Comparison questions**: "Which is faster, MAF or LangGraph?" (nuanced answer prepared)
-4. **Resistance flares up**: Some students may vocalize AWS preference—handle diplomatically
+4. **Framework preference questions**: Focus on strengths of each—students benefit from understanding all options
 
 **End of Day 2 Checklist:**
 - [ ] MAF agent deployed and enhanced with custom tools
 - [ ] LangGraph agent successfully deployed
 - [ ] Students understand when to use each framework
-- [ ] Addressed migration concerns
+- [ ] Students can articulate Azure-specific advantages
 - [ ] Confidence level increased
 
 ---
@@ -374,7 +373,7 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 - Frame positively: "Free tier covers workshop; production requires budgeting"
 - Provide estimation tools/spreadsheets
 - Discuss cost optimization strategies
-- Compare with AWS costs fairly (not biased)
+- Present Azure pricing transparently—students appreciate honesty
 
 **Common Day 3 Issues:**
 1. **ACA ingress configuration**: External=true required; document this clearly
@@ -543,7 +542,7 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 ### Effective Presentation Strategies
 
 **1. Storytelling Approach**
-- Frame concepts as journey: "Imagine you're migrating your AWS agent..."
+- Frame concepts as journey: "Imagine you're deploying your first enterprise agent..."
 - Use student context: Financial services examples throughout
 - Personal anecdotes: Share your own learning experiences
 
@@ -555,7 +554,7 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 
 **3. Interactive Elements**
 - Polls: "How many have deployed containers before?"
-- Chat questions: "What's your biggest concern about Azure?"
+- Chat questions: "What capabilities are you most excited to explore in Azure?"
 - Think-pair-share: Discuss with neighbor, then share out
 - Live coding collaboratively (students suggest next steps)
 
@@ -609,7 +608,7 @@ Each module has a **detailed instructional script** with minute-by-minute facili
 | **Off-topic tangent** | "Important point, but not for today's scope. Let's offline that." |
 | **Negative attitude spreads** | Address privately; redirect publicly to positive aspects |
 | **Silence when asking for questions** | Ask specific people; rephrase question; use chat |
-| **Student criticizes Microsoft** | Acknowledge concern; pivot to workshop value; stay neutral |
+| **Student asks about a competitor platform** | "Great context! Let's focus on what makes this platform unique for our goals." |
 
 ### Building Psychological Safety
 
@@ -779,87 +778,68 @@ client._prepare_options = _prepare_options_fixed
 
 ---
 
-## Managing Resistance
+## Highlighting Platform Advantages
 
-### Understanding Resistance Sources
+### Key Differentiators to Emphasize
 
-**AWS Loyalty ("Why leave what works?")**
-- **Root**: Sunk cost fallacy, expertise investment, comfort zone
-- **Approach**: Expansion framing, not replacement
-- **Language**: "Add to your toolkit" not "Replace AWS"
+Throughout the workshop, frame Azure Foundry capabilities as unique advantages that expand students' professional toolkit.
 
-**Microsoft Skepticism**
-- **Root**: Past negative experiences, bias, skepticism of big tech
-- **Approach**: Acknowledge openly, focus on technical merit
-- **Language**: "Judge based on what you build this week"
+**M365 & Enterprise Ecosystem Integration**
+- Agents deploy directly into Microsoft Teams, SharePoint, and Copilot
+- Enterprise governance built-in: RBAC, auditing, compliance
+- **Value**: "Your agents reach users where they already work—no custom UI needed"
 
-**Framework Lock-In Concern**
-- **Root**: Don't want to learn "yet another framework"
-- **Approach**: Show LangGraph compatibility, minimal changes
-- **Language**: "Your LangGraph knowledge transfers directly"
+**Multi-Framework Flexibility**
+- Azure Foundry supports LangGraph, MAF, and declarative patterns
+- Existing LangGraph code runs with minimal adapter changes
+- **Value**: "Bring your preferred framework—Foundry doesn't force you to rewrite"
 
-**Change Fatigue**
-- **Root**: Already learned one complex platform, tired of learning
-- **Approach**: Emphasize ROI, efficiency gains, career value
-- **Language**: "This opens new opportunities for you"
+**Unified Agent Management**
+- Centralized portal for monitoring, versioning, and testing all agents
+- Immutable versioning with one-click rollback
+- **Value**: "One dashboard to manage declarative and hosted agents together"
 
-### Response Frameworks
+**Enterprise-Ready from Day One**
+- Data residency via Azure regions
+- Azure EA agreements and reserved instances for cost optimization
+- Application Insights for built-in observability
+- **Value**: "Production readiness isn't an afterthought—it's built into the platform"
 
-**When student says: "Why not just use AWS?"**
+### Effective Communication Strategies
 
-❌ **Don't say**: "Azure is better than AWS"
-✅ **Do say**:
-1. "AWS is excellent. You've built great things there."
-2. "This workshop adds Microsoft ecosystem access to your options."
-3. "Some use cases fit Azure better, others AWS. Now you can choose."
-4. "Think of it as bilingual—you can work with clients on either platform."
+**When discussing platform capabilities**:
+1. **Lead with what students can achieve**: "By end of this module, your agent will be live in Teams"
+2. **Show, don't tell**: Live demos are more compelling than slides
+3. **Emphasize transferable skills**: "These agent patterns apply across cloud platforms"
+4. **Celebrate progress**: "You've deployed three different agent patterns this week"
 
-**When student says: "This is too complicated"**
+**When students have questions about their current stack**:
+1. "Great context—this adds a new dimension to what you already know."
+2. "This workshop expands your options. You choose the best fit per use case."
+3. "Think of it as becoming multi-platform fluent—a strong career asset."
 
-❌ **Don't say**: "It's actually quite simple"
-✅ **Do say**:
-1. "You're learning a lot in a short time—that's challenging."
+**When discussing complexity**:
+1. "You're learning a lot in a short time—that's challenging and valuable."
 2. "By end of week, this will feel more natural."
-3. "Which specific part feels most complicated? Let's focus there."
-4. "Remember Day 1—you've already conquered a lot."
+3. "Which specific part should we focus on? Let's dig deeper there."
+4. "Look how far you've come since Day 1."
 
-**When student says: "I don't need M365 integration"**
+### Keeping Engagement High
 
-❌ **Don't say**: "Yes you do, everyone needs it"
-✅ **Do say**:
-1. "That's fair—maybe not for your current projects."
-2. "But your company or future clients might."
-3. "Think of this as adding a valuable skill to your portfolio."
-4. "Focus on the agent patterns—those apply everywhere."
+1. **Build on Existing Expertise**
+   - "Your container skills translate directly here"
+   - "You already know the hard parts—agent design, workflow orchestration"
+   - "This is applying familiar concepts in a new, powerful context"
 
-### Turning Resistance into Engagement
-
-**Strategies**:
-
-1. **Acknowledge & Validate**
-   - "That's a legitimate concern"
-   - "I understand where you're coming from"
-   - "You're not wrong to question that"
-
-2. **Reframe Perspective**
-   - "Let's look at it another way..."
-   - "Consider this scenario..."
-   - "What if you could..."
-
-3. **Empower Choice**
+2. **Empower Decision-Making**
    - "You decide what's best for your use case"
-   - "You don't have to use everything we cover"
-   - "Take what's valuable to you"
+   - "Take what's most valuable to your projects"
+   - "The decision framework helps you pick the right pattern every time"
 
-4. **Focus on Transferable Skills**
-   - "These patterns apply to any platform"
-   - "Debugging skills work everywhere"
-   - "Architectural thinking is universal"
-
-5. **Build on Existing Expertise**
-   - "Your LangGraph skills are directly applicable"
-   - "You already know the hard parts"
-   - "This is just a different wrapper on familiar concepts"
+3. **Focus on Transferable Skills**
+   - "These agent patterns work regardless of cloud provider"
+   - "Debugging and observability skills are universal"
+   - "Architectural thinking is the real takeaway"
 
 ---
 
@@ -1051,7 +1031,7 @@ client._prepare_options = _prepare_options_fixed
 **Workshop delivery is demanding**:
 - Long days (4 hours + prep/support)
 - Constant context switching (content → troubleshooting → discussion)
-- Emotional labor (managing resistance, building confidence)
+- Sustained energy and enthusiasm across the week
 - Technical complexity (multiple systems, potential failures)
 
 **Self-Care Strategies**:
@@ -1075,8 +1055,8 @@ client._prepare_options = _prepare_options_fixed
 - Seek peer support if challenging moments occurred
 
 **Managing Difficult Students**:
-- Don't take resistance personally
-- Remember: They're stressed too
+- Stay focused on the content and its value
+- Remember: Everyone learns at their own pace
 - Focus on those engaged positively
 - Know when to escalate (if behavior inappropriate)
 
@@ -1099,11 +1079,11 @@ Before we dive in, quick logistics:
 - Slack/Teams channel for async support
 
 Quick poll: How many of you have:
-- Deployed agents on AWS? [show of hands]
+- Deployed agents on any cloud platform? [show of hands]
 - Used LangGraph before? [show of hands]
 - Used Azure before? [show of hands]
 
-Great! You bring valuable experience. This week, we're adding Microsoft Foundry to your toolkit—not replacing what you already know, but expanding your options.
+Great! You bring valuable experience. This week, we're adding Microsoft Foundry to your toolkit—expanding your options and giving you access to the M365 enterprise ecosystem.
 
 By Friday, you'll deploy multiple agents, make informed architecture decisions, and have agents running in Microsoft Teams.
 

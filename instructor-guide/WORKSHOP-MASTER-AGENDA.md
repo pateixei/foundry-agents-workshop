@@ -4,7 +4,7 @@
 ---
 
 **Version**: 1.0  
-**Target Audience**: Mid-Senior Developers transitioning from AWS/LangGraph to Microsoft Foundry  
+**Target Audience**: Mid-Senior Developers expanding their agent development skills to Microsoft Foundry  
 **Total Duration**: 20 hours (4 hours/day × 5 days)  
 **Format**: Self-paced with optional live Q&A  
 **Delivery**: English/Portuguese bilingual materials  
@@ -52,7 +52,7 @@ Each day follows this pattern:
   - Azure subscription troubleshooting
   - Tool installation support
   - Azure fundamentals Q&A
-  - AWS → Azure terminology review
+  - Cloud platform terminology for Azure
 
 **Day -1 (Friday)**
 - 🎥 Live Office Hours #2 (60 min)
@@ -80,12 +80,12 @@ Each day follows this pattern:
 - 🤝 Communication channels (Slack/Teams, async support)
 
 **00:15-00:30 | Azure & Foundry Fundamentals**
-- 📊 Presentation: "Azure for AWS Practitioners" (15 min)
-  - Resource Manager vs CloudFormation
+- 📊 Presentation: "Azure Fundamentals for Cloud Practitioners" (15 min)
+  - Resource Manager vs other IaC tools
   - Resource Groups vs Tags
   - Subscriptions, Managed Identities
   - Azure CLI quick reference
-- 🗺️ AWS → Azure service mapping cheat sheet
+- 🗺️ Cloud-to-Azure service mapping cheat sheet
 
 **00:30-01:00 | Lesson 0: Infrastructure Provisioning**
 - 🎬 Instructor Demo (15 min):
@@ -250,30 +250,30 @@ Each day follows this pattern:
 
 ---
 
-### Hour 3: LangGraph Migration Story (02:00-03:00)
+### Hour 3: LangGraph on Azure Foundry (02:00-03:00)
 
 **02:00-02:30 | Concept: LangGraph on Foundry**
-- 📊 Presentation: "Why Migrate LangGraph from AWS to Foundry?" (20 min)
-  - **Addressing resistance head-on**:
-    - "You don't have to replace AWS—you can run both"
-    - "LangGraph code runs virtually unchanged"
-    - "Gain M365 integration without rewriting"
+- 📊 Presentation: "Running LangGraph on Azure Foundry" (20 min)
+  - **Key advantages of Foundry for LangGraph teams**:
+    - "Your LangGraph code runs virtually unchanged"
+    - "Gain M365 integration and enterprise governance"
+    - "Multi-framework flexibility—choose the best tool per project"
   - LangGraph compatibility story
-  - AWS Lambda + LangGraph vs Foundry Hosted LangGraph
+  - LangGraph deployment patterns on Foundry
   - `azure-ai-agentserver-langgraph` adapter explained
-  - Migration effort estimation (minimal!)
-  - Coexistence patterns (hybrid cloud)
+  - Deployment effort estimation (minimal!)
+  - Multi-platform patterns (run agents where they fit best)
 
 **02:30-03:00 | Lesson 3: Hosted Agent (LangGraph) - Part 1**
 - 📖 Read together: `lesson-3-hosted-langgraph/README.md` (5 min)
 - 🎬 Instructor Demo (10 min):
   - Code walkthrough: LangGraph agent structure
-  - Compare with AWS Lambda implementation (side-by-side)
+  - Compare LangGraph structure with MAF (side-by-side)
   - Explain ReAct pattern in LangGraph
   - Show adapter integration
 - 🛠️ Student Lab (15 min):
   - Review LangGraph code: `solution/main.py`
-  - Identify similarities with their AWS agents
+  - Identify familiar patterns from their LangGraph experience
   - Customize agent graph (add node or edge)
   - Prepare for deployment
 
@@ -290,7 +290,7 @@ Each day follows this pattern:
   - Build LangGraph container
   - Deploy to Foundry as hosted agent
   - Test via SDK: `python test_agent.py`
-  - Compare behavior with AWS version (if applicable)
+  - Compare behavior across different deployment approaches
 
 **03:30-03:50 | Discussion: MAF vs LangGraph Decision Framework**
 - 🎯 Interactive exercise: Decision tree activity

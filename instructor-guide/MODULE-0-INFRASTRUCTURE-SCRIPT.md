@@ -377,9 +377,9 @@ param acrName = 'acrworkshop${uniqueString(resourceGroup().id)}'
 
 If you want to arrive even more prepared, review these (20-30 min total):
 
-### For AWS Practitioners (Target Audience)
-- 📄 **AWS to Azure service comparison**: [Microsoft guide](https://learn.microsoft.com/azure/architecture/aws-professional/)
-  - Focus on: CloudFormation→Bicep, ECR→ACR, ECS→ACA
+### For Cloud Practitioners (Target Audience)
+- 📄 **Cloud services comparison**: [Microsoft guide](https://learn.microsoft.com/azure/architecture/aws-professional/)
+  - Focus on: IaC tools→Bicep, Container registries→ACR, Container services→ACA
 - 📄 **Azure Resource Manager concepts**: [Overview](https://learn.microsoft.com/azure/azure-resource-manager/management/overview)
 
 ### For AI/ML Background
@@ -410,10 +410,10 @@ With infrastructure ready, Day 1 starts with:
 - Deploy to Azure Container Apps
 - Compare declarative vs hosted patterns
 
-**Hour 4 (13:00-14:00)**: Module 3 - LangGraph Migration
-- Convert LangGraph agent to Foundry-hosted
-- Deploy same architecture
-- Understand migration path from AWS Lambda/ECS
+**Hour 4 (13:00-14:00)**: Module 3 - LangGraph on Foundry
+- Deploy LangGraph agent on Foundry
+- Deploy same architecture with different framework
+- Understand how to bring LangGraph workloads to Azure
 
 ---
 

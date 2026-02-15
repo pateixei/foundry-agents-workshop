@@ -19,7 +19,7 @@ By the end of this module, students will be able to:
 3. **Test** the agent in Foundry portal playground  
 4. **Modify** agent configuration in portal without redeployment
 5. **Explain** when to use declarative vs hosted patterns
-6. **Compare** declarative agents to AWS Lambda functions (architectural shift)
+6. **Compare** declarative agents to other agent hosting patterns (architectural shift)
 
 ---
 
@@ -40,7 +40,7 @@ By the end of this module, students will be able to:
 
 ### 01:15-01:30 | Agent Patterns Overview (15 min)
 
-**Instructional Method**: Presentation with AWS comparison
+**Instructional Method**: Presentation with platform comparison
 
 **Opening (2 min)**:
 > "You've got infrastructure running. Now let's deploy actual AI agents. Microsoft supports three patterns, and choosing the right one is critical for your architecture."
@@ -51,11 +51,11 @@ By the end of this module, students will be able to:
 
 Display table:
 
-| Pattern | Where It Runs | When to Use | AWS Analogy |
-|---------|---------------|-------------|-------------|
-| **Declarative** | Foundry backend | Quick prototypes, no custom code | Lambda with SDK only |
-| **Hosted (MAF)** | Your container | Custom tools, complex logic | Lambda with layers |
-| **Hosted (LangGraph)** | Your container | Migration from LangChain | ECS container task |
+| Pattern | Where It Runs | When to Use | Familiar Analogy |
+|---------|---------------|-------------|------------------|
+| **Declarative** | Foundry backend | Quick prototypes, no custom code | Serverless function (SDK only) |
+| **Hosted (MAF)** | Your container | Custom tools, complex logic | Container with business logic |
+| **Hosted (LangGraph)** | Your container | Existing LangGraph expertise | Container task |
 
 **Say**:
 > "Today we focus on **declarative agents**—the simplest pattern. Think of this as a 'serverless agent' where Foundry manages execution."
@@ -88,12 +88,12 @@ Show diagram:
 **Narration**:
 > "Notice: your code only **defines** the agent. The agent **runs** in Foundry, not your container."
 >
-> "This is fundamentally different from Lambda functions where your code executes on invocation."
+> "This is fundamentally different from traditional serverless functions where your code executes on invocation."
 
 **Interactive Activity (3 min)**:
-- **Poll**: "Who's built Lambda functions that just call another API?" (many hands)
-- **Say**: "That's declarative! Your Lambda doesn't have business logic—it orchestrates. Same concept here."
-- **Contrast**: "Hosted agents are like Lambda with full business logic inside."
+- **Poll**: "Who's built serverless functions that just call another API?" (many hands)
+- **Say**: "That's the declarative pattern! Your function doesn't have business logic—it orchestrates. Same concept here."
+- **Contrast**: "Hosted agents are like containers with full business logic inside."
 
 **Slide 3: Key Advantages & Limitations**
 
@@ -148,7 +148,7 @@ project_client = AIProjectClient(
 ```
 
 **Say**:
-> "Authentication uses `DefaultAzureCredential`—like AWS SDK's credential chain."
+> "Authentication uses `DefaultAzureCredential`—similar to how other cloud SDKs use credential chains."
 >
 > "It tries: CLI credentials → managed identity → environment variables."
 >
@@ -176,13 +176,13 @@ Be concise and data-driven.""",
 
 **Narrate line-by-line**:
 - `agent_name`: **Say**: "This is your agent's identifier. Must be unique within your Foundry project."
-- `model`: **Say**: "GPT-4 by default. You can choose: `gpt-4`, `gpt-4-turbo`, `gpt-35-turbo`. Think of this as choosing Lambda runtime."
+- `model`: **Say**: "GPT-4 by default. You can choose: `gpt-4`, `gpt-4-turbo`, `gpt-35-turbo`. Think of this as choosing your model runtime."
 - `instructions`: **Say**: "This is your system prompt. The 'personality' of your agent. Foundry injects this on every request."
 - `tools`: **Say**: "Empty for now. Later we'll add Bing, Code Interpreter, etc."
 - `temperature`: **Say**: "0 = deterministic, 1 = creative. Finance needs accuracy → 0.7 is balanced."
 
 **Interactive Check (2 min)**:
-- **Ask**: "What's the equivalent of `instructions` in AWS Bedrock?" (wait for answer: "system prompt")
+- **Ask**: "What's the equivalent of `instructions` in other LLM platforms?" (wait for answer: "system prompt")
 - **Ask**: "Why would you set temperature=0 for a finance agent?" (answer: "deterministic, reproducible")
 
 **Show output handling**:
@@ -398,7 +398,7 @@ python create_agent.py
 **Narrate**:
 > "In 3 seconds, we've deployed an AI agent. No Docker, no container registry—just SDK call."
 >
-> "Contrast this with Lambda: you'd upload code, configure triggers, set IAM roles. Here? One SDK call."
+> "Contrast this with traditional deployments: you'd build a container, configure triggers, set up IAM. Here? One SDK call."
 
 **Student Execution** (5 min):
 **Say**: "Your turn. Run `python create_agent.py` now."
@@ -508,7 +508,7 @@ Based on market trends, here are three Brazilian stocks to watch:
 **Instructor Narration**:
 > "This is powerful for rapid iteration. Your product manager can tweak prompts without engineering support."
 >
-> "In AWS Lambda, you'd: update code → redeploy → wait for provisioning. Here? Edit in UI, instant."
+> "In traditional deployments, you'd: update code → rebuild container → wait for provisioning. Here? Edit in UI, instant."
 
 **Interactive Check**:
 - **Ask**: "Who got a Portuguese response?" (count responses)
@@ -542,7 +542,7 @@ Based on market trends, here are three Brazilian stocks to watch:
 **Instructor Narration**:
 > "Immutable versioning is built-in. If a prompt change breaks production, rollback in one click."
 >
-> "This is like Lambda aliases/versions, but simpler."
+> "This is like version pinning in other platforms, but simpler."
 
 **Key Takeaway** (wrap up):
 **Say**:
@@ -650,7 +650,7 @@ _Display on screen_:
 > - Build custom tools in Python (stock price fetcher)
 > - Containerize the agent
 > - Deploy to Azure Container Apps
-> - See how it compares to Lambda containerization
+> - See how agent hosting compares across different patterns
 >
 > "Same agent, different hosting model. You'll understand when to use each."
 
@@ -692,7 +692,7 @@ _Display on screen_:
 ### Learning Theory Applied:
 - **Experiential Learning**: Immediate hands-on creation (not passive observation)
 - **Discovery Learning**: Portal experiments encourage exploration
-- **Comparative Learning**: Constant AWS analogies leverage prior knowledge
+- **Comparative Learning**: Platform comparisons leverage prior knowledge
 - **Scaffolded Complexity**: Start simple (no tools), add complexity tomorrow
 
 ### Adult Learning Principles:
@@ -799,7 +799,7 @@ pip install -r requirements.txt
   - B) Hands-on lab
   - C) Portal experiments
   - D) Decision framework
-- Track: Did students find AWS comparisons helpful? (yes/no)
+- Track: Did students find platform comparisons helpful? (yes/no)
 
 **Enhancement Ideas**:
 - Add "Challenge" task: Create second agent with Code Interpreter tool

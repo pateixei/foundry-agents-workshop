@@ -13,12 +13,12 @@
 ## 🎯 Learning Objectives
 
 By the end of this module, students will be able to:
-1. **Migrate** existing LangGraph agents from AWS Lambda/ECS to Azure Foundry
+1. **Deploy** LangGraph agents on Azure Foundry using the adapter pattern
 2. **Implement** LangGraph agents using the Foundry adapter pattern
 3. **Compare** LangGraph and MAF architectures side-by-side
 4. **Deploy** LangGraph agents as Foundry Hosted Agents
 5. **Decide** when to use LangGraph vs MAF for specific use cases
-6. **Explain** the migration path from AWS to Azure for agent workloads
+6. **Map** LangGraph deployments across different cloud environments
 
 ---
 
@@ -26,47 +26,47 @@ By the end of this module, students will be able to:
 
 | Element | Duration | Method |
 |---------|----------|--------|
-| **LangGraph Migration Context** | 20 min | Presentation (AWS → Azure) |
+| **LangGraph on Azure: Multi-Platform Advantage** | 20 min | Presentation (platform capabilities) |
 | **LangGraph on Foundry Architecture** | 25 min | Code walkthrough + adapter pattern |
 | **Hands-On Deployment** | 45 min | Deploy LangGraph agent to Foundry |
 | **MAF vs LangGraph Comparison** | 20 min | Side-by-side code comparison |
-| **Migration Planning Workshop** | 10 min | Decision framework |
+| **Deployment Planning Workshop** | 10 min | Decision framework |
 
 ---
 
 ## 🗣️ Instructional Script (Minute-by-Minute)
 
-### 11:15-11:35 | LangGraph Migration Context (20 min)
+### 11:15-11:35 | LangGraph on Azure: Multi-Platform Advantage (20 min)
 
-**Instructional Method**: Presentation with AWS comparison
+**Instructional Method**: Presentation with platform comparison
 
 **Opening (2 min)**:
-> "You've now deployed a MAF agent. But many of you already have LangGraph agents running in AWS Lambda or ECS. Today: migration path from AWS to Azure."
+> "You've now deployed a MAF agent. Many of you also have experience with LangGraph. Today we'll deploy LangGraph agents on Azure Foundry—and you'll see how little code changes."
 >
-> "LangGraph is framework-agnostic—it works on AWS, Azure, local. We'll show you how to **lift and shift** existing LangGraph code to Foundry with minimal changes."
+> "LangGraph is framework-agnostic—it works across cloud providers and locally. We'll show you how to run your existing LangGraph code on Foundry with minimal adapter changes."
 
 **Content Delivery (15 min)**:
 
-**Slide 1: The AWS → Azure Migration Story**
+**Slide 1: LangGraph Across Cloud Platforms**
 
-| Component | AWS (Before) | Azure (After) |
-|-----------|--------------|---------------|
+| Component | Other Clouds | Azure Foundry |
+|-----------|-------------|---------------|
 | **Framework** | LangGraph | LangGraph (same!) |
-| **Compute** | Lambda or ECS Fargate | Foundry Hosted Agent |
-| **Model** | Bedrock or OpenAI API | Azure OpenAI via Foundry |
-| **Storage** | DynamoDB for checkpoints | Azure Cosmos DB or Table Storage |
-| **Container** | ECR | Azure Container Registry (ACR) |
-| **Deployment** | CloudFormation/CDK | Bicep or ARM |
-| **Monitoring** | CloudWatch | Application Insights |
+| **Compute** | Various container services | Foundry Hosted Agent |
+| **Model** | Various LLM providers | Azure OpenAI via Foundry |
+| **Storage** | Various databases | Azure Cosmos DB or Table Storage |
+| **Container** | Various registries | Azure Container Registry (ACR) |
+| **Deployment** | Various IaC tools | Bicep or ARM |
+| **Monitoring** | Various solutions | Application Insights |
 
 **Say**:
 > "Core LangGraph code stays the same. What changes: deployment target and model provider."
 >
-> "Your graph definitions, nodes, edges—all unchanged. We just swap AWS services for Azure equivalents."
+> "Your graph definitions, nodes, edges—all unchanged. The adapter pattern handles the platform integration."
 
-**Slide 2: Why Migrate?**
+**Slide 2: Why Deploy LangGraph on Azure Foundry?**
 
-**Ask students**: "Why would you migrate from AWS to Azure?" (collect responses)
+**Ask students**: "What advantages do you see in running LangGraph on Azure Foundry?" (collect responses)
 
 **Instructor provides**:
 - ✅ **Unified platform**: Foundry integrates agents with Copilot, Teams, M365
@@ -76,18 +76,18 @@ By the end of this module, students will be able to:
 - ✅ **Ecosystem**: Native integration with Azure services (Cosmos, KeyVault, etc.)
 
 **Say**:
-> "Migration isn't just 'lift and shift'—it's **strategic positioning** for enterprise AI."
+> "Deploying on Foundry isn't just about hosting—it's **strategic positioning** for enterprise AI."
 
-**Slide 3: AWS Lambda Agent → Foundry Hosted Agent**
+**Slide 3: LangGraph on Foundry vs Other Platforms**
 
 Show before/after architecture:
 
-**Before (AWS Lambda)**:
+**Traditional Deployment (other platforms)**:
 ```
 ┌──────────────────────┐
-│ Lambda Function      │
+│ Container / Function   │
 │  ├─> LangGraph code  │
-│  └─> Bedrock API     │
+│  └─> LLM API client  │
 └─────────┬────────────┘
           │ (triggered by)
           ▼
@@ -111,13 +111,13 @@ Show before/after architecture:
 ```
 
 **Say**:
-> "Lambda was event-driven, short-lived. Foundry hosted agents are **always-on containers**—like ECS Fargate, not Lambda."
+> "Event-driven functions are short-lived. Foundry hosted agents are **always-on containers**—designed for persistent agent workloads."
 >
-> "If you ran LangGraph in ECS, migration is even simpler: containerization is identical."
+> "If you've run LangGraph in containers before, deployment to Foundry is straightforward: containerization is identical."
 
 **Interactive (3 min)**:
 - **Poll**: "How many have LangGraph agents in production?" (count)
-- **Ask those with hands up**: "What's your biggest migration concern?"
+- **Ask those with hands up**: "What's your biggest consideration when deploying to a new platform?"
 - Common answers: Downtime, cost, testing effort
 - **Respond**: "We'll address all three today."
 
@@ -210,16 +210,16 @@ model = AzureChatOpenAI(
 ```
 
 **Narrate carefully**:
-> "This is where AWS migration happens. On AWS you had:"
+> "This is where the platform-specific part lives. If you've used LangGraph with other model providers, the change looks like this:"
 > ```python
-> # AWS (before)
-> from langchain_community.chat_models import BedrockChat
-> model = BedrockChat(model_id="anthropic.claude-v2")
+> # Other providers (before)
+> from langchain_community.chat_models import ChatOpenAI
+> model = ChatOpenAI(model="your-model")
 > ```
 >
 > "On Azure, swap to `AzureChatOpenAI` and use Foundry's endpoint."
 >
-> "Key: **Managed Identity authentication** (`DefaultAzureCredential`)—no API keys!"
+> "Key: **Managed Identity authentication** (`DefaultAzureCredential`)—no API keys in your code!"
 
 **Show graph definition**:
 ```python
@@ -282,7 +282,7 @@ app = workflow.compile()
 **Say**:
 > "This file is the 'glue' between LangGraph and Foundry."
 >
-> "On AWS, you didn't need this—Lambda had its own runtime. Foundry needs explicit config."
+> "Other platforms have their own runtime configs. Foundry uses this explicit config approach—gives you full control."
 
 **Interactive (2 min)**:
 - **Ask**: "Where does `${AZURE_OPENAI_ENDPOINT}` get resolved?" (answer: Foundry injects at runtime)
@@ -631,8 +631,8 @@ assert result["messages"][-1] == expected
 | **State Management** | Abstracted | Explicit TypedDict |
 | **Multi-Agent** | Harder (nested agents) | Natural (graph composition) |
 | **Testing** | HTTP-based | Direct invocation |
-| **Migration Effort** | High (rewrite) | Low (existing LangGraph works) |
-| **Best For** | New projects, simple agents | Complex workflows, migrations |
+| **Adoption Effort** | Moderate (new framework) | Low (existing LangGraph works) |
+| **Best For** | New projects, simple agents | Complex workflows, teams with LangGraph experience |
 
 **Interactive (5 min)**:
 - **Poll**: "Which framework do you prefer?" (MAF / LangGraph / Depends)
@@ -641,32 +641,32 @@ assert result["messages"][-1] == expected
 **Key Takeaway**:
 > "Both are valid. MAF is Azure-native and simpler. LangGraph gives you control and works everywhere."
 >
-> "Pick MAF for greenfield projects with standard patterns. Pick LangGraph for migrations or complex orchestration."
+> "Pick MAF for greenfield projects with standard patterns. Pick LangGraph for complex orchestration or when you already have LangGraph experience."
 
 ---
 
-### 13:05-13:15 | Migration Planning Workshop (10 min)
+### 13:05-13:15 | Deployment Planning Workshop (10 min)
 
 **Instructional Method**: Decision framework exercise
 
-**Activity**: Migration Assessment Checklist
+**Activity**: LangGraph Deployment Assessment Checklist
 
 **Provide worksheet** (students fill out):
 
 ```
-My Current LangGraph Agent Assessment:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+My LangGraph Agent Deployment Assessment:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-1. Where does your agent run today?
-   [ ] AWS Lambda
-   [ ] AWS ECS/Fargate
+1. Where does your agent currently run?
+   [ ] Cloud container service
+   [ ] Serverless function
    [ ] Local/on-prem
    [ ] Other: _____________
 
 2. What model provider do you use?
-   [ ] AWS Bedrock
    [ ] OpenAI API (direct)
-   [ ] Azure OpenAI (already migrated!)
+   [ ] Azure OpenAI (already on Azure!)
+   [ ] Other LLM provider
    [ ] Other: _____________
 
 3. How complex is your graph?
@@ -675,32 +675,32 @@ My Current LangGraph Agent Assessment:
    [ ] Complex (10+ nodes, multiple subgraphs)
 
 4. Do you use LangGraph's checkpointing?
-   [ ] Yes (need migration strategy for storage)
+   [ ] Yes (need to choose Azure storage backend)
    [ ] No (stateless agent)
 
-5. Do you have custom integrations?
-   [ ] AWS-specific services (DynamoDB, S3, etc.)
+5. Do you have platform-specific integrations?
+   [ ] Cloud-specific services (proprietary databases, storage, etc.)
    [ ] Generic APIs (Stripe, Twilio, etc.)
    [ ] None
 
-Migration Effort Estimate:
+Deployment Effort Estimate:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Low Effort (1-2 days):
 - Simple graph
 - OpenAI model already
-- No AWS-specific services
+- No platform-specific services
 - Stateless
 
 Medium Effort (1-2 weeks):
 - Medium complexity
-- Bedrock → Azure OpenAI swap
-- Some AWS services (need Azure equivalents)
-- Checkpoint storage migration
+- Model provider swap needed
+- Some platform-specific services (need Azure equivalents)
+- Checkpoint storage configuration
 
 High Effort (1+ month):
 - Complex multi-agent system
-- Deep AWS integrations
+- Deep platform-specific integrations
 - Custom checkpointing logic
 - Production-critical workload
 ```
@@ -708,28 +708,27 @@ High Effort (1+ month):
 **Instructor leads discussion** (5 min):
 - "Who's in Low Effort category?" (count)
 - "Who's in High Effort?" (count)
-- "For High Effort folks: What's the biggest blocker?"
+- "For High Effort folks: What's the biggest consideration?"
 
-**Provide Migration Decision Tree** (handout):
+**Provide Deployment Decision Tree** (handout):
 ```
-Should I migrate my LangGraph agent to Azure?
+Should I deploy my LangGraph agent on Azure Foundry?
 
-Start: I have a LangGraph agent on AWS
+Start: I have a LangGraph agent I want on Foundry
     ↓
-Is agent business-critical?
-    ├─ No → Low risk, migrate as learning exercise
-    └─ Yes → Is Azure strategically important?
-        ├─ No → Stay on AWS (if it works, don't fix it)
-        └─ Yes → Assess migration effort (above checklist)
-            ├─ Low → Migrate now
-            ├─ Medium → POC first, then migrate
-            └─ High → Gradual migration (run both, validate, switch)
+Does my organization use M365/Azure?
+    ├─ Yes → Strong strategic value → Assess deployment effort
+    │   ├─ Low → Deploy now
+    │   ├─ Medium → POC first, then deploy
+    │   └─ High → Phased approach (run in parallel, validate, switch)
+    └─ No → Evaluate if enterprise features justify the move
+        └─ Consider: Teams delivery, Copilot integration, governance
 ```
 
 **Wrap-Up**:
-> "Migration isn't all-or-nothing. You can run agents on both clouds during transition."
+> "You can run agents on multiple platforms simultaneously. The goal is choosing the best fit for each use case."
 >
-> "Use this decision framework to plan your migration timeline."
+> "Use this decision framework to plan your deployment strategy."
 
 ---
 
@@ -737,21 +736,21 @@ Is agent business-critical?
 
 ### Before Module 3:
 - [ ] All students completed Module 2 (hosted MAF agent working)
-- [ ] Slides loaded (comparison matrices, migration decision tree)
+- [ ] Slides loaded (comparison matrices, deployment decision tree)
 - [ ] VS Code open with both `lesson-2` and `lesson-3` folders (side-by-side)
 - [ ] Test LangGraph deployment (verify adapter works)
-- [ ] Prepare migration worksheet (print or digital)
+- [ ] Prepare deployment worksheet (print or digital)
 
 ### During Module 3:
 - [ ] Confirm students understand MAF vs LangGraph differences
 - [ ] Monitor LangGraph deployments (similar timeline to MAF)
-- [ ] Capture migration questions (for FAQ)
+- [ ] Capture deployment questions (for FAQ)
 - [ ] Track which students have existing LangGraph agents (for follow-up)
 - [ ] Validate comparison discussion is balanced (not biased toward one framework)
 
 ### After Module 3:
-- [ ] Update `7-DELIVERY-LOG.md` with migration-specific issues
-- [ ] Share migration worksheet results (anonymized aggregate)
+- [ ] Update `7-DELIVERY-LOG.md` with deployment-specific issues
+- [ ] Share deployment worksheet results (anonymized aggregate)
 - [ ] Collect feedback: Was comparison valuable?
 - [ ] Verify all students ready for Module 4 (need working hosted agent)
 
@@ -762,12 +761,12 @@ Is agent business-critical?
 ### Learning Theory Applied:
 - **Transfer Learning**: Leverage existing LangGraph knowledge
 - **Comparative Analysis**: Side-by-side frameworks builds schema
-- **Authentic Task**: Migration is real-world problem students face
-- **Self-Assessment**: Migration worksheet encourages reflection
+- **Authentic Task**: Deploying on a new platform is real-world problem students face
+- **Self-Assessment**: Deployment worksheet encourages reflection
 
 ### Adult Learning Principles:
-- **Relevance**: Migration is immediate concern for practitioners
-- **Autonomy**: Students assess their own migration path
+- **Relevance**: Multi-platform deployment is a valuable professional skill
+- **Autonomy**: Students assess their own deployment path
 - **Problem-Centered**: Solve "how do I move to Azure?" question
 - **Experience-Based**: Use students' existing LangGraph projects as examples
 
@@ -824,18 +823,18 @@ app = workflow.compile(checkpointer=checkpointer)
 **Module Completion Indicators**:
 - ✅ 85%+ students deploy LangGraph agent successfully
 - ✅ 90%+ can articulate one difference between MAF and LangGraph
-- ✅ 75%+ complete migration assessment worksheet
+- ✅ 75%+ complete deployment assessment worksheet
 - ✅ 100% understand when to choose each framework
 
 **Learning Evidence**:
 - ✅ Students can explain: adapter role in Foundry
 - ✅ Students can compare: MAF decorators vs LangGraph nodes
-- ✅ Students can assess: migration effort for their agents
+- ✅ Students can assess: deployment effort for their agents
 
 **Engagement Indicators**:
 - ✅ 70%+ participate in framework preference poll
-- ✅ 5+ questions on migration strategy
-- ✅ 60%+ complete migration worksheet
+- ✅ 5+ questions on deployment strategy
+- ✅ 60%+ complete deployment worksheet
 
 ---
 
@@ -844,17 +843,17 @@ app = workflow.compile(checkpointer=checkpointer)
 **For Next Iteration**:
 - If timing runs over → Reduce local testing demo
 - If comparison underwhelming → Add more code examples
-- If migration workshop too fast → Extend with pair discussions
+- If deployment planning workshop too fast → Extend with pair discussions
 - If students prefer MAF overwhelmingly → Emphasize LangGraph benefits more
 
 **Feedback Collection**:
 - Poll: "Was side-by-side comparison helpful?"
-- Track: How many plan to migrate LangGraph agents to Azure?
-- Capture: What migration concerns weren't addressed?
+- Track: How many plan to deploy LangGraph agents on Azure?
+- Capture: What deployment concerns weren't addressed?
 
 **Enhancement Ideas**:
 - **Advanced**: Multi-agent LangGraph patterns
-- **Case Study**: Real-world migration (anonymized)
+- **Case Study**: Real-world multi-platform deployment (anonymized)
 - **Workshop**: Build same agent in both frameworks (compare dev time)
 
 ---
@@ -865,8 +864,8 @@ app = workflow.compile(checkpointer=checkpointer)
 - 📘 LangGraph documentation
 - 📘 Azure LangGraph adapter reference
 - 📘 LangGraph checkpointing guide (Azure storage)
-- 🎥 Video: "Migrating LangGraph from AWS to Azure" (12 min)
-- 💻 Migration guide: AWS → Azure for LangGraph
+- 🎥 Video: "Deploying LangGraph on Azure Foundry" (12 min)
+- 💻 Deployment guide: LangGraph on Azure Foundry
 
 **Self-Paced Practice**:
 - **Challenge 1**: Migrate your existing LangGraph agent

@@ -106,7 +106,7 @@ Azure OpenAI (YOUR endpoint, YOUR keys/MI)
 3. ✅ **Cost**: Optimize compute costs (reserved capacity, spot instances)
 4. ✅ **Existing Infra**: Leverage existing ACA environments (multi-tenant)
 5. ✅ **Custom Networking**: Private endpoints, custom DNS, VPN access
-6. ✅ **Multi-Cloud**: Run agents on AWS ECS, register in Foundry (hybrid)
+6. ✅ **Multi-Cloud**: Run agents on any container platform, register in Foundry (hybrid)
 
 **Reasons to use Foundry Hosted**:
 1. ✅ **Simplicity**: No infrastructure management
@@ -315,7 +315,7 @@ az role assignment create \
 
 **Interactive (3 min)**:
 - **Ask**: "Who's written Bicep or Terraform before?" (gauge familiarity)
-- **Ask**: "What's the Azure equivalent of AWS Security Group?" (answer: NSG, but ACA abstracts it)
+- **Ask**: "What's the Azure equivalent of a cloud security group?" (answer: NSG, but ACA abstracts it)
 
 #### Section 3: FastAPI Server Implementation (5 min)
 
@@ -470,7 +470,7 @@ Next Step: Register as Connected Agent in Foundry (see REGISTER.md)
   2. Azure verifies container identity (via system-assigned MI)
   3. Token issued (scoped to Cognitive Services)
   4. Container uses token to call Azure OpenAI
-- **Compare AWS**: "Like IAM Role for ECS Task, but no credential management"
+- **Compare**: "Like a task execution role in other container platforms, but with no credential management"
 
 **Monitor Progress**:
 - "If you see '✅ Deployment complete', thumbs up in chat"

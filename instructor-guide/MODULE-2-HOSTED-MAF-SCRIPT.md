@@ -121,7 +121,7 @@ Show comparison table:
 >
 > "LangGraph gives you control over orchestration—you define the graph. MAF does orchestration automatically using ReAct pattern."
 >
-> "Both run in containers. Both support custom tools. Key difference: **MAF is integrated with Foundry out of the box**. However, it worth to mention that MAF can be used anywhere, including in AWS, you can host any MAF based agent anywhere (i.e. you can host it in an ECS, EKS, EC2 if you prefer)"
+> "Both run in containers. Both support custom tools. Key difference: **MAF is integrated with Foundry out of the box**. It's also worth mentioning that MAF is platform-agnostic—you can host MAF-based agents anywhere (e.g., any container platform you prefer)"
 
 **Interactive Activity (5 min)**:
 - **Poll**: "Who's built agents with LangGraph before?" (count responses)
@@ -143,7 +143,7 @@ Need multi-agent orchestration?
     └─ No → MAF
 
 Need existing LangGraph code?
-    ├─ Yes → LangGraph (Module 3 - migration path)
+    ├─ Yes → LangGraph (Module 3 - leverage existing skills)
     └─ No → MAF (simpler patterns)
 ```
 
@@ -986,9 +986,9 @@ Is data in Azure (AI Search, Cosmos, Blob)?
 > - Migrate existing LangGraph agents to Foundry
 > - Compare MAF vs LangGraph architecture
 > - Decide which framework fits your use case
-> - See how AWS Lambda agents translate to Azure
+> - See how different agent hosting patterns compare
 >
-> "Many of you have LangGraph experience. Module 3 is your migration guide."
+> "Many of you have LangGraph experience. Module 3 shows you how to bring that expertise to Foundry."
 
 **Transition**:
 > "Break for 15 minutes. Then we tackle LangGraph on Foundry."

@@ -395,8 +395,8 @@ a365 publication unpublish --app-id a1b2c3d4-...
 - **Shared**: "Finance team wants shared agent in #trading channel."
 - **Org-wide**: "All employees access HR benefits agent."
 
-**AWS Comparison**:
-> "AWS Lambda: You deploy function once, all users share same instance."
+**Platform Comparison**:
+> "In traditional serverless: You deploy a function once, all users share the same instance."
 >
 > "M365 Agents: Each user/team creates their own instance with isolated state."
 
