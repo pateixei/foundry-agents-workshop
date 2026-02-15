@@ -4,12 +4,12 @@ Nesta lição, implantamos o mesmo agente LangGraph das lições anteriores em
 infraestrutura própria (**Azure Container Apps**) e o registramos como
 **Connected Agent** no Control Plane do Microsoft Foundry.
 
-Veja detalhes completos em [aca-agent/README.md](../lesson-4-aca-langgraph/aca-agent/README.md).
+Veja detalhes completos em [solution/README.md](solution/README.md).
 
 ## Início Rápido
 
 ```powershell
-cd aca-agent
+cd solution
 .\deploy.ps1
 ```
 

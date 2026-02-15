@@ -131,13 +131,13 @@ Azure OpenAI (YOUR endpoint, YOUR keys/MI)
 
 **Setup**:
 - Share screen with VS Code
-- Open `lesson-4-aca-langgraph/aca-agent/`
+- Open `lesson-4-aca-langgraph/solution/`
 - Show file tree
 
 #### Section 1: File Structure (5 min)
 
 ```
-aca-agent/
+solution/
 ├── aca.bicep                # ACA infrastructure definition
 ├── main.py                  # LangGraph agent (same as Module 3)
 ├── Dockerfile               # Container definition

@@ -2,7 +2,7 @@
 
 Workshop prático para construir, implantar e gerenciar agentes de IA usando o **Microsoft Foundry** com diferentes abordagens: agentes declarativos, agentes hospedados (MAF e LangGraph), agentes no Azure Container Apps e integração com o Microsoft Agent 365.
 
-![Visão Geral da Arquitetura](slides/architecture-diagram.png)
+![Visão Geral da Arquitetura](prereq/media/architecture-diagram.png)
 
 ## Conteúdo
 
@@ -40,10 +40,7 @@ Além do código das lições, este repositório inclui recursos abrangentes de 
 
 ### Referência Técnica
 
-| Recurso | Descrição |
-|---------|-----------|
-| [technical-content/](technical-content/) | Walkthroughs de demonstração e laboratórios práticos |
-| [slides/](slides/) | Diagramas de arquitetura (draw.io / PNG) |
+Cada pasta de lição contém suas próprias subpastas `demos/`, `labs/`, `media/` e `solution/`. Diagramas de arquitetura estão na pasta `media/` de cada lição.
 ## Pré-requisitos
 
 - Azure CLI (`az`) instalado e autenticado
@@ -63,15 +60,15 @@ cd ../lesson-1-declarative
 python create_agent.py
 
 # 3. Implantar agente hospedado MAF (lição 2)
-cd ../lesson-2-hosted-maf/foundry-agent
+cd ../lesson-2-hosted-maf/solution
 .\deploy.ps1
 
 # 4. Implantar agente hospedado LangGraph (lição 3)
-cd ../../lesson-3-hosted-langgraph/langgraph-agent
+cd ../../lesson-3-hosted-langgraph/solution
 .\deploy.ps1
 
 # 5. Implantar agente no ACA (lição 4)
-cd ../../lesson-4-aca-langgraph/aca-agent
+cd ../../lesson-4-aca-langgraph/solution
 .\deploy.ps1
 ```
 
@@ -104,42 +101,42 @@ python test/chat.py --lesson 1 --once "What is the PETR4 stock price?"
 
 Agente definido via `PromptAgentDefinition` e registrado no Foundry. Sem contêiner, sem deploy. Instruções, modelo e ferramentas são editáveis diretamente no portal.
 
-![Arquitetura Lição 1](slides/lesson-1-architecture.png)
+![Arquitetura Lição 1](lesson-1-declarative/media/lesson-1-architecture.png)
 
 ### Lição 2 - Agente Hospedado (Microsoft Agent Framework)
 
 Contêiner Python com Microsoft Agent Framework rodando dentro do Foundry como Hosted Agent. Usa o adaptador `azure-ai-agentserver-agentframework` para expor a Responses API.
 
-![Arquitetura Lição 2](slides/lesson-2-architecture.png)
+![Arquitetura Lição 2](lesson-2-hosted-maf/media/lesson-2-architecture.png)
 
 <details>
 <summary>Fluxo de implantação</summary>
 
-![Implantação Lição 2](slides/lesson-2-deployment.png)
+![Implantação Lição 2](lesson-2-hosted-maf/media/lesson-2-deployment.png)
 </details>
 
 ### Lição 3 - Agente Hospedado (LangGraph)
 
 Mesmo conceito da lição 2, mas usando LangGraph como framework de orquestração. O adaptador `azure-ai-agentserver-langgraph` converte o grafo LangGraph em um servidor HTTP compatível com a Responses API do Foundry.
 
-![Arquitetura Lição 3](slides/lesson-3-architecture.png)
+![Arquitetura Lição 3](lesson-3-hosted-langgraph/media/lesson-3-architecture.png)
 
 <details>
 <summary>Fluxo de implantação</summary>
 
-![Implantação Lição 3](slides/lesson-3-deployment.png)
+![Implantação Lição 3](lesson-3-hosted-langgraph/media/lesson-3-deployment.png)
 </details>
 
 ### Lição 4 - Agente Conectado (Azure Container Apps)
 
 O agente LangGraph roda em infraestrutura própria (ACA) e é registrado como Connected Agent no Control Plane do Foundry. O Foundry roteia requisições via AI Gateway (APIM) para obter observabilidade e governança.
 
-![Arquitetura Lição 4](slides/lesson-4-architecture.png)
+![Arquitetura Lição 4](lesson-4-aca-langgraph/media/lesson-4-architecture.png)
 
 <details>
 <summary>Fluxo de implantação</summary>
 
-![Implantação Lição 4](slides/lesson-4-deployment.png)
+![Implantação Lição 4](lesson-4-aca-langgraph/media/lesson-4-deployment.png)
 </details>
 
 ### Lição 5 - Microsoft Agent 365 (Pré-requisitos)
@@ -197,26 +194,29 @@ Os usuários podem interagir com agentes através da interface de chat do Teams,
 ```
 foundry-agents-workshop/
   prereq/                          # IaC (Bicep) + scripts de infraestrutura
+    media/                         # Diagramas de arquitetura
   lesson-1-declarative/            # Agente declarativo (SDK)
+    demos/ labs/ media/ solution/
   lesson-2-hosted-maf/             # Agente hospedado (Microsoft Agent Framework)
+    demos/ labs/ media/ solution/
   lesson-3-hosted-langgraph/       # Agente hospedado (LangGraph)
+    demos/ labs/ media/ solution/
   lesson-4-aca-langgraph/          # Agente conectado (ACA + FastAPI)
+    demos/ labs/ media/ solution/
   lesson-5-a365-prereq/            # Pré-requisitos do Agent 365
+    solution/
   lesson-6-a365-sdk/               # Integração A365 SDK (observabilidade, Bot Framework)
+    demos/ labs/ solution/
   lesson-7-publish/                # Guia de publicação (M365 Admin Center)
   lesson-8-instances/              # Guia de criação de instâncias (Teams)
   instructional-scripts/           # Scripts de entrega dos módulos para instrutores
-  technical-content/               # Demos e laboratórios práticos
-  student-kit/                 # Guia de setup e links de recursos para estudantes
+  student-kit/                     # Guia de setup e links de recursos para estudantes
   INSTRUCTOR-GUIDE.md              # Guia de facilitação para instrutores
   WORKSHOP-MASTER-AGENDA.md        # Agenda detalhada de 5 dias
   CONTINGENCY-PLAN.md              # Estratégias de fallback
   ROOM-READY-CHECKLIST.md          # Checklist pré-sessão
   test/
     chat.py                        # Cliente unificado para todos os agentes
-  slides/
-    *.drawio                       # Diagramas editáveis (draw.io)
-    *.png                          # Diagramas exportados
 ```
 
 ## Tecnologias

@@ -158,14 +158,14 @@ Need existing LangGraph code?
 
 **Setup**:
 - Share screen with VS Code
-- Open `lesson-2-hosted-maf/foundry-agent/`
+- Open `lesson-2-hosted-maf/solution/`
 - Split view: File tree (left) + code editor (right)
 
 #### Section 1: File Structure Overview (5 min)
 
 **Show directory tree**:
 ```
-foundry-agent/
+solution/
 ├── src/
 │   ├── agent/
 │   │   └── finance_agent.py    # ⭐ MAF agent definition
@@ -1000,7 +1000,7 @@ Is data in Azure (AI Search, Cosmos, Blob)?
 ### Before Module 2 (Day 1):
 - [ ] All students completed Module 1 (declarative agent working)
 - [ ] Docker Desktop running on all machines (verify in Module 0)
-- [ ] VS Code open with `lesson-2-hosted-maf/foundry-agent/`
+- [ ] VS Code open with `lesson-2-hosted-maf/solution/`
 - [ ] Slides loaded (MAF concepts, comparison matrix, decision tree)
 - [ ] ACR accessible (test with `az acr login`)
 - [ ] Backup hosted agent deployed (for students with build failures)

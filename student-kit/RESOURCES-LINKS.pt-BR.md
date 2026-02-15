@@ -124,6 +124,6 @@ opentelemetry-instrumentation-fastapi>=0.48b0
 |------|-------------|
 | Código-Fonte | `https://github.com/<ORG>/a365-workshop` |
 | Problemas Conhecidos & Soluções Alternativas | `context.md` (raiz do repositório) |
-| Diagramas de Arquitetura | Pasta `slides/` |
-| Enunciados dos Laboratórios | `technical-content/labs/` |
+| Diagramas de Arquitetura | Pasta `media/` de cada lição |
+| Enunciados dos Laboratórios | Pasta `labs/` de cada lição |
 | Roteiros do Instrutor | `instructional-scripts/` |

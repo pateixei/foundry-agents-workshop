@@ -17,15 +17,16 @@ Recursos:
 ## Estrutura da Lição
 
 ```
-lesson-1/
+lesson-2-hosted-maf/
   README.md
-  foundry-agent/
+  demos/                 # Walkthrough de demonstração
+  labs/                  # Laboratório prático
+  media/                 # Diagramas de arquitetura
+  solution/
     agent.yaml           # Manifesto do agente
     app.py               # Servidor HTTP
-    # create_hosted_agent.py movido para prereq/
     deploy.ps1           # Script de implantação automatizada
     Dockerfile           # Imagem do contêiner
-    test_agent.py        # Cliente console (testa via backend Foundry)
     requirements.txt     # Dependências
     src/
       main.py            # Ponto de entrada run()
@@ -46,7 +47,7 @@ lesson-1/
 2. Execute a implantação do agente:
 
 ```powershell
-cd lesson-1/foundry-agent
+cd lesson-2-hosted-maf/solution
 .\deploy.ps1
 ```
 

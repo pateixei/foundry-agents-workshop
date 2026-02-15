@@ -4,19 +4,19 @@ In this lesson, we create a hosted agent in Azure AI Foundry using the
 LangGraph framework. The agent specializes in financial markets and
 runs as its own container within Foundry.
 
-See complete details in [langgraph-agent/README.md](langgraph-agent/README.md).
+See complete details in [solution/README.md](solution/README.md).
 
 ## Quick Start
 
 ```powershell
-cd langgraph-agent
+cd solution
 .\deploy.ps1
 ```
 
 ## Quick Test
 
 ```powershell
-cd langgraph-agent
+cd solution
 python test_agent.py
 ```
 

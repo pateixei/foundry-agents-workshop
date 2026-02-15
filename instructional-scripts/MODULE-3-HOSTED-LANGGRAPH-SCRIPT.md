@@ -132,14 +132,14 @@ Show before/after architecture:
 
 **Setup**:
 - Share screen with VS Code
-- Open `lesson-3-hosted-langgraph/langgraph-agent/`
+- Open `lesson-3-hosted-langgraph/solution/`
 - Split view: File tree + code
 
 #### Section 1: File Structure (5 min)
 
 **Show structure**:
 ```
-langgraph-agent/
+solution/
 ├── main.py                        # LangGraph agent definition
 ├── Dockerfile                     # Container (similar to MAF)
 ├── requirements.txt               # Dependencies

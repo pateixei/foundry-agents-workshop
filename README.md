@@ -2,7 +2,7 @@
 
 Practical workshop to build, deploy, and manage AI agents using **Microsoft Foundry** with different approaches: declarative agents, hosted agents (MAF and LangGraph), agents on Azure Container Apps, and integration with Microsoft Agent 365.
 
-![Architecture Overview](slides/architecture-diagram.png)
+![Architecture Overview](prereq/media/architecture-diagram.png)
 
 ## Contents
 
@@ -41,10 +41,7 @@ In addition to lesson code, this repository includes comprehensive facilitation 
 
 ### Technical Reference
 
-| Resource | Description |
-|----------|-------------|
-| [technical-content/](technical-content/) | Demo walkthroughs and hands-on labs |
-| [slides/](slides/) | Architecture diagrams (draw.io / PNG) |
+Each lesson folder contains its own `demos/`, `labs/`, `media/`, and `solution/` subfolders. Architecture diagrams are in each lesson's `media/` folder.
 
 ## Prerequisites
 
@@ -65,15 +62,15 @@ cd ../lesson-1-declarative
 python create_agent.py
 
 # 3. Deploy hosted agent MAF (lesson 2)
-cd ../lesson-2-hosted-maf/foundry-agent
+cd ../lesson-2-hosted-maf/solution
 .\deploy.ps1
 
 # 4. Deploy hosted agent LangGraph (lesson 3)
-cd ../../lesson-3-hosted-langgraph/langgraph-agent
+cd ../../lesson-3-hosted-langgraph/solution
 .\deploy.ps1
 
 # 5. Deploy agent on ACA (lesson 4)
-cd ../../lesson-4-aca-langgraph/aca-agent
+cd ../../lesson-4-aca-langgraph/solution
 .\deploy.ps1
 ```
 
@@ -106,42 +103,42 @@ python test/chat.py --lesson 1 --once "What is the PETR4 stock price?"
 
 Agent defined via `PromptAgentDefinition` and registered in Foundry. No container, no deployment. Instructions, model, and tools are editable directly in the portal.
 
-![Lesson 1 Architecture](slides/lesson-1-architecture.png)
+![Lesson 1 Architecture](lesson-1-declarative/media/lesson-1-architecture.png)
 
 ### Lesson 2 - Hosted Agent (Microsoft Agent Framework)
 
 Python container with Microsoft Agent Framework running inside Foundry as a Hosted Agent. Uses the `azure-ai-agentserver-agentframework` adapter to expose the Responses API.
 
-![Lesson 2 Architecture](slides/lesson-2-architecture.png)
+![Lesson 2 Architecture](lesson-2-hosted-maf/media/lesson-2-architecture.png)
 
 <details>
 <summary>Deployment flow</summary>
 
-![Lesson 2 Deployment](slides/lesson-2-deployment.png)
+![Lesson 2 Deployment](lesson-2-hosted-maf/media/lesson-2-deployment.png)
 </details>
 
 ### Lesson 3 - Hosted Agent (LangGraph)
 
 Same concept as lesson 2, but using LangGraph as the orchestration framework. The `azure-ai-agentserver-langgraph` adapter converts the LangGraph graph into an HTTP server compatible with Foundry's Responses API.
 
-![Lesson 3 Architecture](slides/lesson-3-architecture.png)
+![Lesson 3 Architecture](lesson-3-hosted-langgraph/media/lesson-3-architecture.png)
 
 <details>
 <summary>Deployment flow</summary>
 
-![Lesson 3 Deployment](slides/lesson-3-deployment.png)
+![Lesson 3 Deployment](lesson-3-hosted-langgraph/media/lesson-3-deployment.png)
 </details>
 
 ### Lesson 4 - Connected Agent (Azure Container Apps)
 
 The LangGraph agent runs on its own infrastructure (ACA) and is registered as a Connected Agent in the Foundry Control Plane. Foundry routes requests via AI Gateway (APIM) to gain observability and governance.
 
-![Lesson 4 Architecture](slides/lesson-4-architecture.png)
+![Lesson 4 Architecture](lesson-4-aca-langgraph/media/lesson-4-architecture.png)
 
 <details>
 <summary>Deployment flow</summary>
 
-![Lesson 4 Deployment](slides/lesson-4-deployment.png)
+![Lesson 4 Deployment](lesson-4-aca-langgraph/media/lesson-4-deployment.png)
 </details>
 
 ### Lesson 5 - Microsoft Agent 365 (Prerequisites)
@@ -199,26 +196,29 @@ Users can interact with agents through the Teams chat interface, with support fo
 ```
 foundry-agents-workshop/
   prereq/                          # IaC (Bicep) + infrastructure scripts
+    media/                         # Architecture diagrams
   lesson-1-declarative/            # Declarative agent (SDK)
+    demos/ labs/ media/ solution/
   lesson-2-hosted-maf/             # Hosted agent (Microsoft Agent Framework)
+    demos/ labs/ media/ solution/
   lesson-3-hosted-langgraph/       # Hosted agent (LangGraph)
+    demos/ labs/ media/ solution/
   lesson-4-aca-langgraph/          # Connected agent (ACA + FastAPI)
+    demos/ labs/ media/ solution/
   lesson-5-a365-prereq/            # Agent 365 prerequisites
+    solution/
   lesson-6-a365-sdk/               # A365 SDK integration (observability, Bot Framework)
+    demos/ labs/ solution/
   lesson-7-publish/                # Publishing guide (M365 Admin Center)
   lesson-8-instances/              # Instance creation guide (Teams)
   instructional-scripts/           # Module delivery scripts for instructors
-  technical-content/               # Demos and hands-on labs
-  student-kit/                 # Setup guide and resource links for students
+  student-kit/                     # Setup guide and resource links for students
   INSTRUCTOR-GUIDE.md              # Facilitation guide for instructors
   WORKSHOP-MASTER-AGENDA.md        # Detailed 5-day agenda
   CONTINGENCY-PLAN.md              # Fallback strategies
   ROOM-READY-CHECKLIST.md          # Pre-session checklist
   test/
     chat.py                        # Unified client for all agents
-  slides/
-    *.drawio                       # Editable diagrams (draw.io)
-    *.png                          # Exported diagrams
 ```
 
 ## Technologies

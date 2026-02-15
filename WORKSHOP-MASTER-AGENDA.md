@@ -272,7 +272,7 @@ Each day follows this pattern:
   - Explain ReAct pattern in LangGraph
   - Show adapter integration
 - 🛠️ Student Lab (15 min):
-  - Review LangGraph code: `langgraph-agent/main.py`
+  - Review LangGraph code: `solution/main.py`
   - Identify similarities with their AWS agents
   - Customize agent graph (add node or edge)
   - Prepare for deployment

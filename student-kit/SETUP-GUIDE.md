@@ -182,8 +182,6 @@ a365-workshop/
 ├── lesson-7-publish/         # Publish to M365 Admin Center
 ├── lesson-8-instances/       # Create agent instances in Teams
 ├── test/                     # Test client (chat.py)
-├── slides/                   # Architecture diagrams
-└── context.md                # Known issues & workarounds
 ```
 
 ---

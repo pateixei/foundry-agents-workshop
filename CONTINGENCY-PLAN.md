@@ -21,12 +21,12 @@ This document defines backup plans for the most likely disruptions during a 5-da
 
 ### Immediate Actions (< 5 min)
 1. **Announce**: "We're experiencing connectivity issues. Let's switch to offline mode."
-2. **Switch to architecture walkthrough** using pre-exported PNG diagrams in `slides/`
+2. **Switch to architecture walkthrough** using pre-exported PNG diagrams in each lesson's `media/` folder
 3. **Code review mode**: Walk through source files that are already cloned locally
 4. **Use offline slides**: Instructor presents from local PDF/PPTX backups
 
 ### Mitigation (pre-prepared)
-- [ ] Export all architecture diagrams to PNG before workshop (done — `slides/*.png`)
+- [ ] Export all architecture diagrams to PNG before workshop (done — each lesson's `media/` folder)
 - [ ] Cache Docker base images locally: `docker pull python:3.11-slim` on instructor machine
 - [ ] Pre-download all pip packages as wheels:
   ```powershell

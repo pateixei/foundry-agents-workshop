@@ -1,6 +1,6 @@
 # Demo 4: Azure Container Apps (ACA) Deployment
 
-> **Demo Type**: Instructor-led walkthrough. This demo references source code in `lesson-4-aca-langgraph/aca-agent/`. The instructor walks through the code and Bicep template live on screen.
+> **Demo Type**: Instructor-led walkthrough. This demo references source code in `lesson-4-aca-langgraph/solution/`. The instructor walks through the code and Bicep template live on screen.
 
 ## Overview
 

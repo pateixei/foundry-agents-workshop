@@ -43,9 +43,9 @@
 - [ ] `prereq/deploy.ps1` tested end-to-end on clean subscription
 - [ ] `prereq/validate-deployment.ps1` returns all green
 - [ ] `lesson-1-declarative/create_agent.py` creates agent successfully
-- [ ] `lesson-2-hosted-maf/foundry-agent/deploy.ps1` deploys and agent responds
-- [ ] `lesson-3-hosted-langgraph/langgraph-agent/deploy.ps1` deploys and agent responds
-- [ ] `lesson-4-aca-langgraph/aca-agent/deploy.ps1` deploys, health check passes
+- [ ] `lesson-2-hosted-maf/solution/deploy.ps1` deploys and agent responds
+- [ ] `lesson-3-hosted-langgraph/solution/deploy.ps1` deploys and agent responds
+- [ ] `lesson-4-aca-langgraph/solution/deploy.ps1` deploys, health check passes
 - [ ] `lesson-6-a365-sdk/deploy.ps1` deploys, health + /chat endpoints work
 - [ ] `test/chat.py` can interact with deployed agents
 
@@ -60,7 +60,7 @@
 - [ ] Demo timing validated (scripts fit within allocated time)
 
 ### Slides & Diagrams
-- [ ] Architecture diagrams exported to PNG (8 diagrams in `slides/`)
+- [ ] Architecture diagrams exported to PNG (diagrams in each lesson's `media/` folder)
 - [ ] Diagrams load correctly in presentation software
 - [ ] `capability-host.md` content reviewed
 
@@ -81,7 +81,7 @@
 - [ ] No corporate proxy/firewall blocking workshop endpoints
 
 ### Backup & Contingency
-- [ ] Offline copies of all slides/diagrams available
+- [ ] Offline copies of all diagrams available
 - [ ] Known workarounds reviewed and current
 - [ ] Contingency plan (`CONTINGENCY-PLAN.md`) distributed to co-instructor
 - [ ] Alternative pip mirror URL documented (if primary blocked)

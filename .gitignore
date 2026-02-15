@@ -45,3 +45,6 @@ a365.config.json
 .workshop/
 context.md
 context.pt-BR.md
+
+# Agent definitions (local only)
+.github/agents/

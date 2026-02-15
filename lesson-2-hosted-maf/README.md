@@ -17,15 +17,16 @@ Features:
 ## Lesson Structure
 
 ```
-lesson-1/
+lesson-2-hosted-maf/
   README.md
-  foundry-agent/
+  demos/                 # Demo walkthrough
+  labs/                  # Hands-on lab
+  media/                 # Architecture diagrams
+  solution/
     agent.yaml           # Agent manifest
     app.py               # HTTP server
-    # create_hosted_agent.py moved to prereq/
     deploy.ps1           # Automated deployment script
     Dockerfile           # Container image
-    test_agent.py        # Console client (tests via Foundry backend)
     requirements.txt     # Dependencies
     src/
       main.py            # Entrypoint run()
@@ -46,7 +47,7 @@ lesson-1/
 2. Execute the agent deployment:
 
 ```powershell
-cd lesson-1/foundry-agent
+cd lesson-2-hosted-maf/solution
 .\deploy.ps1
 ```
 
