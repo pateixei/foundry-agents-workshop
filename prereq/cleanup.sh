@@ -1,14 +1,14 @@
 #!/bin/bash
 # Cleanup Script - Workshop Agent365
 # This script removes the resource group and all child resources
-# Optionally purges soft-deleted Cognitive Services (AI Foundry) resources
+# Purges soft-deleted Cognitive Services (AI Foundry) resources by default
 
 set -e
 
 # ─── Defaults ────────────────────────────────────────────────
 RESOURCE_GROUP=""
 PARAMETERS_FILE="main.bicepparam"
-PURGE=false
+PURGE=true
 SKIP_CONFIRM=false
 
 # ─── Colors ──────────────────────────────────────────────────
@@ -29,7 +29,7 @@ while [[ $# -gt 0 ]]; do
     case "$1" in
         --resource-group)     RESOURCE_GROUP="$2"; shift 2 ;;
         --parameters-file)    PARAMETERS_FILE="$2"; shift 2 ;;
-        --purge)              PURGE=true; shift ;;
+        --no-purge)            PURGE=false; shift ;;
         --yes)                SKIP_CONFIRM=true; shift ;;
         -h|--help)
             echo "Usage: $0 [OPTIONS]"
@@ -37,7 +37,7 @@ while [[ $# -gt 0 ]]; do
             echo "Options:"
             echo "  --resource-group NAME   Resource group name (default: from params file)"
             echo "  --parameters-file FILE  Bicep parameters file (default: main.bicepparam)"
-            echo "  --purge                 Also purge soft-deleted Cognitive Services resources"
+            echo "  --no-purge              Skip purging soft-deleted Cognitive Services resources"
             echo "  --yes                   Skip confirmation prompt"
             echo "  -h, --help              Show this help message"
             exit 0
@@ -129,7 +129,7 @@ if [[ "$PURGE" == "true" && -n "$CS_ACCOUNTS" && -n "$LOCATION" ]]; then
             warn "Could not purge '$acct' (may already be purged or not in soft-delete state)"
     done
 else
-    echo -e "\n${YELLOW}[2/2] Skipping Cognitive Services purge (use --purge to enable)${NC}"
+    echo -e "\n${YELLOW}[2/2] Skipping Cognitive Services purge (remove --no-purge to enable)${NC}"
 fi
 
 # ─── Done ────────────────────────────────────────────────────
@@ -140,6 +140,5 @@ echo -e "${GREEN}========================================${NC}"
 echo ""
 if [[ "$PURGE" != "true" ]]; then
     echo -e "${YELLOW}Note: Cognitive Services resources may remain in soft-deleted state for 48 hours.${NC}"
-    echo -e "${YELLOW}To purge them immediately, re-run with: $0 --purge --resource-group $RESOURCE_GROUP${NC}"
-    echo -e "${YELLOW}Or purge manually: az cognitiveservices account purge --name <name> --resource-group $RESOURCE_GROUP --location <location>${NC}"
+    echo -e "${YELLOW}To purge them, re-run without --no-purge${NC}"
 fi

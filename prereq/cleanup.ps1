@@ -1,6 +1,6 @@
 # Script de Limpeza - Workshop Agent365
 # Este script remove o resource group e todos os recursos filhos
-# Opcionalmente purga recursos Cognitive Services (AI Foundry) em soft-delete
+# Purga recursos Cognitive Services (AI Foundry) em soft-delete por padrao
 
 param(
     [Parameter(Mandatory=$false)]
@@ -10,7 +10,7 @@ param(
     [string]$ParametersFile = "main.bicepparam",
 
     [Parameter(Mandatory=$false)]
-    [switch]$Purge,
+    [switch]$NoPurge,
 
     [Parameter(Mandatory=$false)]
     [switch]$Yes
@@ -58,7 +58,7 @@ az resource list --resource-group $ResourceGroupName --query "[].{Name:name, Typ
 
 # Coletar nomes de contas Cognitive Services para purge
 $csAccounts = @()
-if ($Purge) {
+if (-not $NoPurge) {
     $csJson = az resource list --resource-group $ResourceGroupName `
         --query "[?type=='Microsoft.CognitiveServices/accounts'].name" `
         --output json 2>$null
@@ -70,7 +70,7 @@ if ($Purge) {
 # Confirmacao
 Write-Host ""
 Write-Host "ATENCAO: Isso ira excluir permanentemente o resource group '$ResourceGroupName' e TODOS os seus recursos." -ForegroundColor Red
-if ($Purge -and $csAccounts.Count -gt 0) {
+if (-not $NoPurge -and $csAccounts.Count -gt 0) {
     Write-Host "As seguintes contas Cognitive Services tambem serao PURGADAS (irrecuperavel):" -ForegroundColor Red
     foreach ($acct in $csAccounts) {
         Write-Host "  - $acct" -ForegroundColor Red
@@ -93,7 +93,7 @@ az group delete --name $ResourceGroupName --yes 2>$null
 Write-Host "  [OK] Resource Group '$ResourceGroupName' excluido" -ForegroundColor Green
 
 # Purgar Cognitive Services (soft-delete)
-if ($Purge -and $csAccounts.Count -gt 0) {
+if (-not $NoPurge -and $csAccounts.Count -gt 0) {
     Write-Host "`nPurgando contas Cognitive Services em soft-delete..." -ForegroundColor Yellow
     foreach ($acct in $csAccounts) {
         Write-Host "  [i] Purgando '$acct' em '$rgLocation'..." -ForegroundColor Cyan
@@ -104,8 +104,8 @@ if ($Purge -and $csAccounts.Count -gt 0) {
             Write-Host "  [!] Nao foi possivel purgar '$acct' (pode ja ter sido purgado ou nao estar em soft-delete)" -ForegroundColor Yellow
         }
     }
-} elseif (-not $Purge) {
-    Write-Host "`nPurge de Cognitive Services ignorado (use -Purge para habilitar)" -ForegroundColor Yellow
+} elseif ($NoPurge) {
+    Write-Host "`nPurge de Cognitive Services ignorado (remova -NoPurge para habilitar)" -ForegroundColor Yellow
 }
 
 # Finalizar
@@ -113,8 +113,7 @@ Write-Host "`n========================================" -ForegroundColor Green
 Write-Host "   LIMPEZA CONCLUIDA" -ForegroundColor Green
 Write-Host "========================================`n" -ForegroundColor Green
 
-if (-not $Purge) {
+if ($NoPurge) {
     Write-Host "Nota: Recursos Cognitive Services podem permanecer em estado soft-delete por 48 horas." -ForegroundColor Yellow
-    Write-Host "Para purga-los imediatamente, re-execute com: .\cleanup.ps1 -Purge -ResourceGroupName $ResourceGroupName" -ForegroundColor Yellow
-    Write-Host "Ou purge manualmente: az cognitiveservices account purge --name <nome> --resource-group $ResourceGroupName --location <localizacao>" -ForegroundColor Yellow
+    Write-Host "Para purga-los, re-execute sem -NoPurge" -ForegroundColor Yellow
 }
