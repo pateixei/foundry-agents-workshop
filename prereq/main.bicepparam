@@ -1,15 +1,15 @@
 using './main.bicep'
 
-// Parametros de localizacao e nomes dos recursos
-param resourceGroupName = 'rg-ag365sdk'
 param location = 'eastus'
-param aiModelDeployment = 'gpt-4.1'
-param acrName = 'acrag365wkshp02'
-param logAnalyticsName = 'log-ai001'
-param appInsightsName = 'appi-ai001'
-param aiHubName = 'ai-foundry002'
-param aiProjectName = 'ag365-prj002'
+param resourceGroupName = 'rg-ai-agents-workshop'
+// Parametros de localizacao e nomes dos recursos
+param aiHubName = 'aihub-workshop'
+param acrName = 'acrworkshop'
+param logAnalyticsName = 'log-workshp'
+param appInsightsName = 'appi-workshp'
+param aiProjectName = 'aiprj-workshp'
 
 // Configuracoes do modelo
+param aiModelDeployment = 'gpt-4.1'
 param modelVersion = '2024-07-18'
 param modelCapacity = 10
