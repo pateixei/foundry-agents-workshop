@@ -9,6 +9,8 @@ set -euo pipefail
 RESOURCE_GROUP=""
 DEPLOYMENT_NAME="main"
 VALIDATION_TIMEOUT=30
+RETRY_WAIT=30
+MAX_RETRIES=2
 
 # ─── Colors ──────────────────────────────────────────────────
 GREEN='\033[0;32m'
@@ -21,6 +23,30 @@ NC='\033[0m'
 ok()   { echo -e "  ${GREEN}[OK]${NC} $1"; }
 fail() { echo -e "  ${RED}[X]${NC} $1"; }
 warn() { echo -e "  ${YELLOW}[!]${NC} $1"; }
+
+# ─── Retry wrapper for az commands w/ timeout ────────────────
+# Usage: result=$(az_with_retry <timeout_secs> az <args...>)
+# Retries up to MAX_RETRIES times with RETRY_WAIT seconds between attempts on timeout.
+az_with_retry() {
+    local tmout="$1"; shift
+    local attempt
+    for attempt in $(seq 1 $((MAX_RETRIES + 1))); do
+        local output
+        output=$(timeout "$tmout" "$@" 2>/dev/null) && { echo "$output"; return 0; }
+        local rc=$?
+        # rc=124 means timeout killed the process; retry
+        if [[ $rc -eq 124 && $attempt -le $MAX_RETRIES ]]; then
+            echo -e "    ${YELLOW}Timeout on attempt $attempt/$((MAX_RETRIES + 1)). Waiting ${RETRY_WAIT}s before retrying...${NC}" >&2
+            sleep "$RETRY_WAIT"
+            continue
+        fi
+        # Non-timeout failure — return empty
+        echo ""
+        return $rc
+    done
+    echo ""
+    return 124
+}
 
 # ─── Parse arguments ─────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
@@ -118,7 +144,7 @@ get_output() {
 echo -e "\n${YELLOW}[3/9] Validating Azure Container Registry...${NC}"
 ACR_NAME=$(get_output "acrName")
 if [[ -n "$ACR_NAME" ]]; then
-    ACR_JSON=$(timeout "$VALIDATION_TIMEOUT" az acr show --name "$ACR_NAME" --resource-group "$RESOURCE_GROUP" --output json 2>/dev/null) || ACR_JSON=""
+    ACR_JSON=$(az_with_retry "$VALIDATION_TIMEOUT" az acr show --name "$ACR_NAME" --resource-group "$RESOURCE_GROUP" --output json) || ACR_JSON=""
     if [[ -n "$ACR_JSON" ]]; then
         ACR_STATE=$(echo "$ACR_JSON" | jq -r '.provisioningState')
         ACR_SERVER=$(echo "$ACR_JSON" | jq -r '.loginServer')
@@ -149,7 +175,7 @@ fi
 
 # ─── [4/9] Log Analytics Workspace ──────────────────────────
 echo -e "\n${YELLOW}[4/9] Validating Log Analytics Workspace...${NC}"
-LOG_JSON=$(timeout "$VALIDATION_TIMEOUT" az monitor log-analytics workspace list --resource-group "$RESOURCE_GROUP" --output json 2>/dev/null) || LOG_JSON="[]"
+LOG_JSON=$(az_with_retry "$VALIDATION_TIMEOUT" az monitor log-analytics workspace list --resource-group "$RESOURCE_GROUP" --output json) || LOG_JSON="[]"
 LOG_COUNT=$(echo "$LOG_JSON" | jq 'length')
 
 if [[ "$LOG_COUNT" -gt 0 ]]; then
@@ -164,7 +190,7 @@ fi
 
 # ─── [5/9] Application Insights ─────────────────────────────
 echo -e "\n${YELLOW}[5/9] Validating Application Insights...${NC}"
-APPI_JSON=$(timeout "$VALIDATION_TIMEOUT" az monitor app-insights component show --resource-group "$RESOURCE_GROUP" --output json 2>/dev/null) || APPI_JSON=""
+APPI_JSON=$(az_with_retry "$VALIDATION_TIMEOUT" az monitor app-insights component show --resource-group "$RESOURCE_GROUP" --output json) || APPI_JSON=""
 
 if [[ -n "$APPI_JSON" && "$APPI_JSON" != "null" ]]; then
     APPI_NAME=$(echo "$APPI_JSON" | jq -r '.name // empty')
@@ -182,7 +208,7 @@ fi
 
 # ─── [6/9] Container Apps Environment ───────────────────────
 echo -e "\n${YELLOW}[6/9] Validating Container Apps Environment...${NC}"
-CA_ENV_JSON=$(timeout "$VALIDATION_TIMEOUT" az containerapp env list --resource-group "$RESOURCE_GROUP" --output json 2>/dev/null) || CA_ENV_JSON="[]"
+CA_ENV_JSON=$(az_with_retry "$VALIDATION_TIMEOUT" az containerapp env list --resource-group "$RESOURCE_GROUP" --output json) || CA_ENV_JSON="[]"
 CA_ENV_COUNT=$(echo "$CA_ENV_JSON" | jq 'length')
 
 if [[ "$CA_ENV_COUNT" -gt 0 ]]; then
@@ -202,7 +228,7 @@ fi
 
 # ─── [7/9] LangGraph Container App ──────────────────────────
 echo -e "\n${YELLOW}[7/9] Validating LangGraph Container App...${NC}"
-CA_JSON=$(timeout "$VALIDATION_TIMEOUT" az containerapp list --resource-group "$RESOURCE_GROUP" --output json 2>/dev/null) || CA_JSON="[]"
+CA_JSON=$(az_with_retry "$VALIDATION_TIMEOUT" az containerapp list --resource-group "$RESOURCE_GROUP" --output json) || CA_JSON="[]"
 LG_APP=$(echo "$CA_JSON" | jq '[.[] | select(.name | test("langgraph|lg"))] | .[0] // empty')
 
 if [[ -n "$LG_APP" && "$LG_APP" != "null" ]]; then
@@ -226,10 +252,10 @@ AI_FOUNDRY_NAME=$(get_output "aiFoundryName")
 EXPECTED_MODEL=$(get_output "aiModelDeployment")
 
 if [[ -n "$AI_FOUNDRY_NAME" ]]; then
-    AI_JSON=$(timeout "$VALIDATION_TIMEOUT" az cognitiveservices account show \
+    AI_JSON=$(az_with_retry "$VALIDATION_TIMEOUT" az cognitiveservices account show \
         --name "$AI_FOUNDRY_NAME" \
         --resource-group "$RESOURCE_GROUP" \
-        --output json 2>/dev/null) || AI_JSON=""
+        --output json) || AI_JSON=""
 
     if [[ -n "$AI_JSON" ]]; then
         AI_STATE=$(echo "$AI_JSON" | jq -r '.properties.provisioningState')
@@ -239,10 +265,10 @@ if [[ -n "$AI_FOUNDRY_NAME" ]]; then
             add_result "Microsoft Foundry" "Status" "true" "Active: $AI_ENDPOINT"
 
             # Check model deployment
-            DEPLOYS_JSON=$(timeout "$VALIDATION_TIMEOUT" az cognitiveservices account deployment list \
+            DEPLOYS_JSON=$(az_with_retry "$VALIDATION_TIMEOUT" az cognitiveservices account deployment list \
                 --name "$AI_FOUNDRY_NAME" \
                 --resource-group "$RESOURCE_GROUP" \
-                --output json 2>/dev/null) || DEPLOYS_JSON="[]"
+                --output json) || DEPLOYS_JSON="[]"
 
             MODEL_FOUND=$(echo "$DEPLOYS_JSON" | jq -r "[.[] | select(.name==\"$EXPECTED_MODEL\")] | length")
             if [[ "$MODEL_FOUND" -gt 0 ]]; then
@@ -273,7 +299,7 @@ if [[ -n "$AI_PROJECT_NAME" && -n "$AI_FOUNDRY_NAME" ]]; then
     SUB_ID=$(az account show --query id -o tsv)
     PROJECT_RES_ID="/subscriptions/$SUB_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.CognitiveServices/accounts/$AI_FOUNDRY_NAME/projects/$AI_PROJECT_NAME"
     
-    PROJECT_JSON=$(timeout 45 az resource show --ids "$PROJECT_RES_ID" --api-version 2025-06-01 --output json 2>/dev/null) || PROJECT_JSON=""
+    PROJECT_JSON=$(az_with_retry 45 az resource show --ids "$PROJECT_RES_ID" --api-version 2025-06-01 --output json) || PROJECT_JSON=""
 
     if [[ -n "$PROJECT_JSON" ]]; then
         ok "Foundry project active: $AI_PROJECT_NAME"

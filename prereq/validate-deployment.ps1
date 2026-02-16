@@ -12,40 +12,56 @@ param(
 $ErrorActionPreference = "Continue"
 $validationResults = @()
 $ValidationTimeoutSeconds = 30
+$RetryWaitSeconds = 30
+$MaxRetries = 2
 
 function Invoke-AzWithTimeout {
 	param(
 		[string]$AzArguments,
 		[int]$TimeoutSeconds = $ValidationTimeoutSeconds
 	)
-	try {
-		$psi = New-Object System.Diagnostics.ProcessStartInfo
-		$psi.FileName = "cmd.exe"
-		$psi.Arguments = "/c az $AzArguments"
-		$psi.UseShellExecute = $false
-		$psi.RedirectStandardOutput = $true
-		$psi.RedirectStandardError = $true
-		$psi.CreateNoWindow = $true
-		$proc = [System.Diagnostics.Process]::Start($psi)
-		$stdout = $proc.StandardOutput.ReadToEndAsync()
-		$stderr = $proc.StandardError.ReadToEndAsync()
-		$finished = $proc.WaitForExit($TimeoutSeconds * 1000)
-		if (-not $finished) {
-			$proc.Kill()
+
+	for ($attempt = 1; $attempt -le ($MaxRetries + 1); $attempt++) {
+		try {
+			$psi = New-Object System.Diagnostics.ProcessStartInfo
+			$psi.FileName = "cmd.exe"
+			$psi.Arguments = "/c az $AzArguments"
+			$psi.UseShellExecute = $false
+			$psi.RedirectStandardOutput = $true
+			$psi.RedirectStandardError = $true
+			$psi.CreateNoWindow = $true
+			$proc = [System.Diagnostics.Process]::Start($psi)
+			$stdout = $proc.StandardOutput.ReadToEndAsync()
+			$stderr = $proc.StandardError.ReadToEndAsync()
+			$finished = $proc.WaitForExit($TimeoutSeconds * 1000)
+			if (-not $finished) {
+				$proc.Kill()
+				$proc.Dispose()
+				if ($attempt -le $MaxRetries) {
+					Write-Host "    Timeout na tentativa $attempt/$($MaxRetries + 1). Aguardando ${RetryWaitSeconds}s antes de tentar novamente..." -ForegroundColor DarkYellow
+					Start-Sleep -Seconds $RetryWaitSeconds
+					continue
+				}
+				return $null
+			}
+			[System.Threading.Tasks.Task]::WaitAll($stdout, $stderr)
+			$content = $stdout.Result
+			$exitCode = $proc.ExitCode
 			$proc.Dispose()
+			if ($exitCode -eq 0 -and $content) {
+				return ($content | ConvertFrom-Json)
+			}
+			return $null
+		} catch {
+			if ($attempt -le $MaxRetries) {
+				Write-Host "    Erro na tentativa $attempt/$($MaxRetries + 1). Aguardando ${RetryWaitSeconds}s antes de tentar novamente..." -ForegroundColor DarkYellow
+				Start-Sleep -Seconds $RetryWaitSeconds
+				continue
+			}
 			return $null
 		}
-		[System.Threading.Tasks.Task]::WaitAll($stdout, $stderr)
-		$content = $stdout.Result
-		$exitCode = $proc.ExitCode
-		$proc.Dispose()
-		if ($exitCode -eq 0 -and $content) {
-			return ($content | ConvertFrom-Json)
-		}
-		return $null
-	} catch {
-		return $null
 	}
+	return $null
 }
 
 function Add-ValidationResult {
