@@ -66,6 +66,10 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 brew install azure-cli
 ```
 
+**Bicep Upgrade** 
+```bash 
+az bicep upgrade
+```
 **Verify**:
 ```bash
 az version   # Expected: "azure-cli": "2.60.0" or higher
@@ -302,11 +306,10 @@ cd prereq
 ./deploy.ps1
 ```
 
-**Linux / WSL (Bash)**:
+**Linux / WSL (pwsh)**:
 ```bash
 cd prereq
-chmod +x deploy.sh
-./deploy.sh
+pswh ./deploy.ps1
 ```
 
 This provisions:
