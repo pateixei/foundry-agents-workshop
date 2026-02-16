@@ -90,7 +90,7 @@ Write-Host "Resource Group: $ResourceGroupName" -ForegroundColor White
 Write-Host "Deployment: $DeploymentName`n" -ForegroundColor White
 
 # Verificar se o Resource Group existe
-Write-Host "[1/10] Verificando Resource Group..." -ForegroundColor Yellow
+Write-Host "[1/8] Verificando Resource Group..." -ForegroundColor Yellow
 try {
 	$rg = az group show --name $ResourceGroupName --output json 2>$null | ConvertFrom-Json
 	if ($rg) {
@@ -108,7 +108,7 @@ try {
 }
 
 # Obter outputs do deployment
-Write-Host "`n[2/10] Obtendo outputs do deployment..." -ForegroundColor Yellow
+Write-Host "`n[2/8] Obtendo outputs do deployment..." -ForegroundColor Yellow
 try {
 	$deployment = az deployment group show --resource-group $ResourceGroupName --name $DeploymentName --output json 2>$null | ConvertFrom-Json
 	if ($deployment -and $deployment.properties.provisioningState -eq "Succeeded") {
@@ -126,7 +126,7 @@ try {
 }
 
 # Validar Azure Container Registry
-Write-Host "`n[3/9] Validando Azure Container Registry..." -ForegroundColor Yellow
+Write-Host "`n[3/8] Validando Azure Container Registry..." -ForegroundColor Yellow
 try {
 	$acrName = $outputs.acrName.value
 	$rgName = $ResourceGroupName
@@ -156,7 +156,7 @@ try {
 }
 
 # Validar Log Analytics Workspace
-Write-Host "`n[4/9] Validando Log Analytics Workspace..." -ForegroundColor Yellow
+Write-Host "`n[4/8] Validando Log Analytics Workspace..." -ForegroundColor Yellow
 try {
 	$rgName = $ResourceGroupName
 	$logWorkspacesRaw = Invoke-AzWithTimeout -AzArguments "monitor log-analytics workspace list --resource-group $rgName --output json"
@@ -179,7 +179,7 @@ try {
 }
 
 # Validar Application Insights
-Write-Host "`n[5/9] Validando Application Insights..." -ForegroundColor Yellow
+Write-Host "`n[5/8] Validando Application Insights..." -ForegroundColor Yellow
 try {
 	$rgName = $ResourceGroupName
 	$appInsights = Invoke-AzWithTimeout -AzArguments "monitor app-insights component show --resource-group $rgName --output json"
@@ -200,7 +200,7 @@ try {
 }
 
 # Validar Container Apps Environment
-Write-Host "`n[6/9] Validando Container Apps Environment..." -ForegroundColor Yellow
+Write-Host "`n[6/8] Validando Container Apps Environment..." -ForegroundColor Yellow
 try {
 	$rgName = $ResourceGroupName
 	$caEnvsRaw = Invoke-AzWithTimeout -AzArguments "containerapp env list --resource-group $rgName --output json"
@@ -227,39 +227,8 @@ try {
 	Add-ValidationResult -Resource "Container Apps Env" -Check "Validacao" -Passed $false -Message "Erro: $_"
 }
 
-# Validar LangGraph Container App
-Write-Host "`n[7/9] Validando LangGraph Container App..." -ForegroundColor Yellow
-try {
-	$rgName = $ResourceGroupName
-	$containerApps = Invoke-AzWithTimeout -AzArguments "containerapp list --resource-group $rgName --output json"
-
-	if ($null -eq $containerApps) {
-		Write-Host "  [!] Timeout ao validar LangGraph Container App" -ForegroundColor Yellow
-		Add-ValidationResult -Resource "LangGraph App" -Check "Existencia" -Passed $false -Message "Timeout - nao foi possivel confirmar"
-	} else {
-		$langGraphApp = $containerApps | Where-Object { $_.name -like "*langgraph*" -or $_.name -like "*lg*" }
-
-		if ($langGraphApp) {
-			Write-Host "  [OK] LangGraph Container App encontrado: $($langGraphApp.name)" -ForegroundColor Green
-			Add-ValidationResult -Resource "LangGraph App" -Check "Existencia" -Passed $true -Message "Container App criado"
-
-			if ($langGraphApp.properties.configuration.ingress) {
-				$url = "https://$($langGraphApp.properties.configuration.ingress.fqdn)"
-				Write-Host "  [OK] Ingress configurado: $url" -ForegroundColor Green
-				Add-ValidationResult -Resource "LangGraph App" -Check "Ingress" -Passed $true -Message "URL disponivel" -Value $url
-			}
-		} else {
-			Write-Host "  [X] LangGraph Container App nao encontrado" -ForegroundColor Red
-			Add-ValidationResult -Resource "LangGraph App" -Check "Existencia" -Passed $false -Message "Container App nao encontrado"
-		}
-	}
-} catch {
-	Write-Host "  [X] Erro ao validar LangGraph Container App: $_" -ForegroundColor Red
-	Add-ValidationResult -Resource "LangGraph App" -Check "Validacao" -Passed $false -Message "Erro: $_"
-}
-
 # Validar Microsoft Foundry account (AI Foundry)
-Write-Host "`n[8/9] Validando Microsoft Foundry account..." -ForegroundColor Yellow
+Write-Host "`n[7/8] Validando Microsoft Foundry account..." -ForegroundColor Yellow
 try {
 	$aiFoundryName = $outputs.aiFoundryName.value
 	$expectedDeployment = $outputs.aiModelDeployment.value
@@ -298,7 +267,7 @@ try {
 }
 
 # Validar Microsoft Foundry project
-Write-Host "`n[9/9] Validando Microsoft Foundry project..." -ForegroundColor Yellow
+Write-Host "`n[8/8] Validando Microsoft Foundry project..." -ForegroundColor Yellow
 try {
 	$aiProjectName = $outputs.aiProjectName.value
 	$foundryName = $aiFoundryName

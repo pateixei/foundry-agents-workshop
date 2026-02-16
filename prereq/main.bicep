@@ -81,6 +81,21 @@ resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
   }
 }
 
+// Container Apps Environment (para hospedar agentes conectados via ACA)
+resource containerAppsEnv 'Microsoft.App/managedEnvironments@2024-03-01' = {
+  name: 'cae-${resourceGroupName}'
+  location: location
+  properties: {
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: logAnalytics.properties.customerId
+        sharedKey: logAnalytics.listKeys().primarySharedKey
+      }
+    }
+  }
+}
+
 
 
 // Microsoft Foundry account (AI Foundry)
@@ -124,4 +139,6 @@ output aiFoundryEndpoint string = aiFoundry.properties.endpoint
 output aiProjectName string = aiProject.name
 output aiProjectEndpoint string = 'https://${aiFoundry.properties.customSubDomainName}.services.ai.azure.com/api/projects/${aiProject.name}'
 output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey
+output containerAppsEnvName string = containerAppsEnv.name
+output containerAppsEnvId string = containerAppsEnv.id
 output resourceGroupName string = resourceGroupName

@@ -98,8 +98,8 @@ echo -e "Resource Group: ${WHITE}$RESOURCE_GROUP${NC}"
 echo -e "Deployment: ${WHITE}$DEPLOYMENT_NAME${NC}"
 echo ""
 
-# ─── [1/9] Resource Group ────────────────────────────────────
-echo -e "${YELLOW}[1/9] Checking Resource Group...${NC}"
+# ─── [1/8] Resource Group ────────────────────────────────────
+echo -e "${YELLOW}[1/8] Checking Resource Group...${NC}"
 RG_JSON=$(az group show --name "$RESOURCE_GROUP" --output json 2>/dev/null) || {
     fail "Resource Group not found"
     add_result "Resource Group" "Existence" "false" "Not found"
@@ -109,8 +109,8 @@ RG_LOCATION=$(echo "$RG_JSON" | jq -r '.location')
 ok "Resource Group found in: $RG_LOCATION"
 add_result "Resource Group" "Existence" "true" "Found in $RG_LOCATION"
 
-# ─── [2/9] Deployment outputs ────────────────────────────────
-echo -e "\n${YELLOW}[2/9] Getting deployment outputs...${NC}"
+# ─── [2/8] Deployment outputs ────────────────────────────────
+echo -e "\n${YELLOW}[2/8] Getting deployment outputs...${NC}"
 DEPLOY_JSON=$(az deployment group show \
     --resource-group "$RESOURCE_GROUP" \
     --name "$DEPLOYMENT_NAME" \
@@ -140,8 +140,8 @@ get_output() {
     fi
 }
 
-# ─── [3/9] Azure Container Registry ─────────────────────────
-echo -e "\n${YELLOW}[3/9] Validating Azure Container Registry...${NC}"
+# ─── [3/8] Azure Container Registry ─────────────────────────
+echo -e "\n${YELLOW}[3/8] Validating Azure Container Registry...${NC}"
 ACR_NAME=$(get_output "acrName")
 if [[ -n "$ACR_NAME" ]]; then
     ACR_JSON=$(az_with_retry "$VALIDATION_TIMEOUT" az acr show --name "$ACR_NAME" --resource-group "$RESOURCE_GROUP" --output json) || ACR_JSON=""
@@ -173,8 +173,8 @@ else
     add_result "Container Registry" "Status" "false" "Not in outputs"
 fi
 
-# ─── [4/9] Log Analytics Workspace ──────────────────────────
-echo -e "\n${YELLOW}[4/9] Validating Log Analytics Workspace...${NC}"
+# ─── [4/8] Log Analytics Workspace ──────────────────────────
+echo -e "\n${YELLOW}[4/8] Validating Log Analytics Workspace...${NC}"
 LOG_JSON=$(az_with_retry "$VALIDATION_TIMEOUT" az monitor log-analytics workspace list --resource-group "$RESOURCE_GROUP" --output json) || LOG_JSON="[]"
 LOG_COUNT=$(echo "$LOG_JSON" | jq 'length')
 
@@ -188,8 +188,8 @@ else
     add_result "Log Analytics" "Existence" "false" "Not found"
 fi
 
-# ─── [5/9] Application Insights ─────────────────────────────
-echo -e "\n${YELLOW}[5/9] Validating Application Insights...${NC}"
+# ─── [5/8] Application Insights ─────────────────────────────
+echo -e "\n${YELLOW}[5/8] Validating Application Insights...${NC}"
 APPI_JSON=$(az_with_retry "$VALIDATION_TIMEOUT" az monitor app-insights component show --resource-group "$RESOURCE_GROUP" --output json) || APPI_JSON=""
 
 if [[ -n "$APPI_JSON" && "$APPI_JSON" != "null" ]]; then
@@ -206,8 +206,8 @@ else
     add_result "Application Insights" "Existence" "false" "Not found or timeout"
 fi
 
-# ─── [6/9] Container Apps Environment ───────────────────────
-echo -e "\n${YELLOW}[6/9] Validating Container Apps Environment...${NC}"
+# ─── [6/8] Container Apps Environment ───────────────────────
+echo -e "\n${YELLOW}[6/8] Validating Container Apps Environment...${NC}"
 CA_ENV_JSON=$(az_with_retry "$VALIDATION_TIMEOUT" az containerapp env list --resource-group "$RESOURCE_GROUP" --output json) || CA_ENV_JSON="[]"
 CA_ENV_COUNT=$(echo "$CA_ENV_JSON" | jq 'length')
 
@@ -226,28 +226,8 @@ else
     add_result "Container Apps Env" "Existence" "false" "Not found"
 fi
 
-# ─── [7/9] LangGraph Container App ──────────────────────────
-echo -e "\n${YELLOW}[7/9] Validating LangGraph Container App...${NC}"
-CA_JSON=$(az_with_retry "$VALIDATION_TIMEOUT" az containerapp list --resource-group "$RESOURCE_GROUP" --output json) || CA_JSON="[]"
-LG_APP=$(echo "$CA_JSON" | jq '[.[] | select(.name | test("langgraph|lg"))] | .[0] // empty')
-
-if [[ -n "$LG_APP" && "$LG_APP" != "null" ]]; then
-    LG_NAME=$(echo "$LG_APP" | jq -r '.name')
-    ok "LangGraph Container App found: $LG_NAME"
-    add_result "LangGraph App" "Existence" "true" "Found: $LG_NAME"
-
-    LG_FQDN=$(echo "$LG_APP" | jq -r '.properties.configuration.ingress.fqdn // empty')
-    if [[ -n "$LG_FQDN" ]]; then
-        ok "Ingress configured: https://$LG_FQDN"
-        add_result "LangGraph App" "Ingress" "true" "https://$LG_FQDN"
-    fi
-else
-    fail "LangGraph Container App not found"
-    add_result "LangGraph App" "Existence" "false" "Not found"
-fi
-
-# ─── [8/9] Microsoft Foundry account ────────────────────────
-echo -e "\n${YELLOW}[8/9] Validating Microsoft Foundry account...${NC}"
+# ─── [7/8] Microsoft Foundry account ────────────────────────
+echo -e "\n${YELLOW}[7/8] Validating Microsoft Foundry account...${NC}"
 AI_FOUNDRY_NAME=$(get_output "aiFoundryName")
 EXPECTED_MODEL=$(get_output "aiModelDeployment")
 
@@ -291,8 +271,8 @@ else
     add_result "Microsoft Foundry" "Status" "false" "Not in outputs"
 fi
 
-# ─── [9/9] Microsoft Foundry project ────────────────────────
-echo -e "\n${YELLOW}[9/9] Validating Microsoft Foundry project...${NC}"
+# ─── [8/8] Microsoft Foundry project ────────────────────────
+echo -e "\n${YELLOW}[8/8] Validating Microsoft Foundry project...${NC}"
 AI_PROJECT_NAME=$(get_output "aiProjectName")
 
 if [[ -n "$AI_PROJECT_NAME" && -n "$AI_FOUNDRY_NAME" ]]; then
