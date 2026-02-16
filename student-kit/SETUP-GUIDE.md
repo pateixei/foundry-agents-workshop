@@ -280,25 +280,10 @@ a365-workshop/
 
 ## Step 5: Provision Azure Infrastructure
 
-### 5.1 Create a Resource Group
+### 5.1 Deploy Workshop Resources
 
-**Windows (PowerShell)**:
-```powershell
-$RESOURCE_GROUP = "rg-ai-agents-workshop"
-$LOCATION = "eastus2"
-
-az group create --name $RESOURCE_GROUP --location $LOCATION
-```
-
-**Linux / WSL (Bash)**:
-```bash
-RESOURCE_GROUP="rg-ai-agents-workshop"
-LOCATION="eastus2"
-
-az group create --name $RESOURCE_GROUP --location $LOCATION
-```
-
-### 5.2 Deploy Workshop Resources
+**Edit main.bicepparam**
+Open bicep parameters file and ajust the resourceGroupName, location, etc as needed 
 
 **Windows (PowerShell)**:
 ```powershell
@@ -319,7 +304,7 @@ This provisions:
 - **Application Insights** — telemetry
 - **GPT-4o-mini deployment** — LLM model
 
-### 5.3 Validate Deployment
+### 5.2 Validate Deployment
 
 **Windows (PowerShell)**:
 ```powershell
