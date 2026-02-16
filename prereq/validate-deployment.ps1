@@ -182,14 +182,22 @@ try {
 Write-Host "`n[5/8] Validando Application Insights..." -ForegroundColor Yellow
 try {
 	$rgName = $ResourceGroupName
-	$appInsights = Invoke-AzWithTimeout -AzArguments "monitor app-insights component show --resource-group $rgName --output json"
+	$appInsightsRaw = Invoke-AzWithTimeout -AzArguments "monitor app-insights component show --resource-group $rgName --output json"
 
-	if ($null -eq $appInsights) {
+	if ($null -eq $appInsightsRaw) {
 		Write-Host "  [!] Timeout ao validar Application Insights" -ForegroundColor Yellow
 		Add-ValidationResult -Resource "Application Insights" -Check "Existencia" -Passed $false -Message "Timeout - nao foi possivel confirmar"
-	} elseif ($appInsights) {
+	} else {
+		# Response can be a single object or an array — normalize
+		if ($appInsightsRaw -is [System.Collections.IEnumerable] -and $appInsightsRaw -isnot [string]) {
+			$appInsights = $appInsightsRaw | Select-Object -First 1
+		} else {
+			$appInsights = $appInsightsRaw
+		}
+		if ($appInsights -and $appInsights.name) {
 		Write-Host "  [OK] Application Insights encontrado: $($appInsights.name)" -ForegroundColor Green
-		Add-ValidationResult -Resource "Application Insights" -Check "Existencia" -Passed $true -Message "App Insights ativo" -Value $appInsights.instrumentationKey.Substring(0,8)+"..."
+		$instrKey = if ($appInsights.instrumentationKey) { $appInsights.instrumentationKey.Substring(0,8)+"..." } else { "N/A" }
+		Add-ValidationResult -Resource "Application Insights" -Check "Existencia" -Passed $true -Message "App Insights ativo" -Value $instrKey
 	} else {
 		Write-Host "  [X] Application Insights nao encontrado" -ForegroundColor Red
 		Add-ValidationResult -Resource "Application Insights" -Check "Existencia" -Passed $false -Message "App Insights nao encontrado"

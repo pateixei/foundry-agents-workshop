@@ -193,7 +193,12 @@ echo -e "\n${YELLOW}[5/8] Validating Application Insights...${NC}"
 APPI_JSON=$(az_with_retry "$VALIDATION_TIMEOUT" az monitor app-insights component show --resource-group "$RESOURCE_GROUP" --output json) || APPI_JSON=""
 
 if [[ -n "$APPI_JSON" && "$APPI_JSON" != "null" ]]; then
-    APPI_NAME=$(echo "$APPI_JSON" | jq -r '.name // empty')
+    # Response can be a single object or an array — normalize to first element
+    if echo "$APPI_JSON" | jq -e 'type == "array"' >/dev/null 2>&1; then
+        APPI_NAME=$(echo "$APPI_JSON" | jq -r '.[0].name // empty')
+    else
+        APPI_NAME=$(echo "$APPI_JSON" | jq -r '.name // empty')
+    fi
     if [[ -n "$APPI_NAME" ]]; then
         ok "Application Insights found: $APPI_NAME"
         add_result "Application Insights" "Existence" "true" "Active: $APPI_NAME"
