@@ -103,7 +103,7 @@ fi
 
 # ─── [3/8] Check CLI extensions ─────────────────────────────
 echo -e "\n${YELLOW}[3/8] Checking Azure CLI extensions...${NC}"
-REQUIRED_EXTENSIONS=("containerapp" "ml")
+REQUIRED_EXTENSIONS=("containerapp" "ml" "application-insights")
 
 for ext in "${REQUIRED_EXTENSIONS[@]}"; do
     if az extension list --query "[?name=='$ext']" -o tsv 2>/dev/null | grep -q "$ext"; then

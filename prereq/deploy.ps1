@@ -78,7 +78,7 @@ try {
 
 # Verificar extensoes necessarias do Azure CLI
 Write-Host "`n[3/8] Verificando extensoes do Azure CLI..." -ForegroundColor Yellow
-$requiredExtensions = @('containerapp', 'ml')
+$requiredExtensions = @('containerapp', 'ml', 'application-insights')
 
 foreach ($ext in $requiredExtensions) {
     $extensionList = az extension list --output json 2>$null
