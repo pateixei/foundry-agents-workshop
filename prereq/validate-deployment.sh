@@ -73,6 +73,12 @@ if ! command -v jq &>/dev/null; then
     exit 1
 fi
 
+# Ensure the application-insights az CLI extension is installed (required for App Insights validation)
+if ! az extension show --name application-insights &>/dev/null; then
+    echo -e "${YELLOW}Installing required az CLI extension: application-insights...${NC}"
+    az extension add --name application-insights --yes 2>/dev/null
+fi
+
 # ─── Tracking ────────────────────────────────────────────────
 PASSED=0
 TOTAL=0

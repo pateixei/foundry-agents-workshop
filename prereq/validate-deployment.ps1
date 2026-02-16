@@ -82,6 +82,13 @@ function Add-ValidationResult {
 	}
 }
 
+# Ensure the application-insights az CLI extension is installed
+$extCheck = az extension show --name application-insights 2>&1
+if ($LASTEXITCODE -ne 0) {
+	Write-Host "Instalando extensao az CLI necessaria: application-insights..." -ForegroundColor Yellow
+	az extension add --name application-insights --yes 2>&1 | Out-Null
+}
+
 Write-Host "`n========================================" -ForegroundColor Cyan
 Write-Host "   VALIDACAO DE DEPLOYMENT - AGENT365" -ForegroundColor Cyan
 Write-Host "========================================`n" -ForegroundColor Cyan
