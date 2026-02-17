@@ -2,7 +2,7 @@
 param location string = resourceGroup().location
 
 @description('Nome do ACA Environment existente (criado no prereq)')
-param acaEnvironmentName string = 'cae-ai001'
+param acaEnvironmentName string = 'cae-rg-ai-agents-workshop'
 
 @description('Nome do Container App')
 param containerAppName string = 'aca-lg-agent'

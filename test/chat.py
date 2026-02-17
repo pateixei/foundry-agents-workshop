@@ -70,7 +70,7 @@ LESSONS = {
 
 def _resolve_aca_endpoint(app_name: str) -> str:
     """Resolve o FQDN do Container App via az CLI."""
-    rg = os.environ.get("RESOURCE_GROUP", "rg-ag365sdk")
+    rg = os.environ.get("RESOURCE_GROUP", "rg-ai-agents-workshop")
     try:
         cmd = (
             f'az containerapp show --name {app_name} '

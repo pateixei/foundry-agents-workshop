@@ -2,7 +2,8 @@
 #
 # Este script le os outputs do deployment Bicep (prereq/) e atualiza
 # automaticamente os arquivos de configuracao (.env, deploy.ps1, aca.bicep)
-# em cada pasta labs/solution com os endpoints corretos.
+# e os defaults nos arquivos Python em cada pasta labs/solution e solution/
+# com os endpoints corretos.
 #
 # Uso:
 #   pwsh ./configure-labs.ps1
@@ -55,7 +56,7 @@ if (-not $ResourceGroupName) {
 }
 
 # ─── [1/3] Get deployment outputs ───────────────────────────
-Write-Host "[1/3] Reading deployment outputs..." -ForegroundColor Yellow
+Write-Host "[1/4] Reading deployment outputs..." -ForegroundColor Yellow
 
 $outputsJson = az deployment group show `
     --resource-group $ResourceGroupName `
@@ -125,7 +126,7 @@ function Update-FileContent {
 }
 
 # ─── [2/3] Configure lab solutions ──────────────────────────
-Write-Host "[2/3] Configuring lab solutions..." -ForegroundColor Yellow
+Write-Host "[2/4] Configuring lab solutions..." -ForegroundColor Yellow
 
 $updatedFiles = 0
 
@@ -148,6 +149,43 @@ MODEL_DEPLOYMENT_NAME=$aiModelDeployment
         Set-Content -Path $envExFile -Value $envContent -NoNewline
         Write-Host "    [OK] .env.example updated" -ForegroundColor Green
         $updatedFiles++
+    }
+
+    # Update Python files - DEFAULT_ENDPOINT placeholder
+    foreach ($pyFile in @("create_agent.py", "test_agent.py")) {
+        $pyPath = Join-Path $lesson1Dir $pyFile
+        if (Test-Path $pyPath) {
+            $pyContent = Get-Content $pyPath -Raw
+            $pyNew = $pyContent -replace '(os\.environ\.get\(\s*"PROJECT_ENDPOINT",\s*\n?\s*)"https://[^"]*"', "`$1`"$aiProjectEndpoint`""
+            if ($pyNew -ne $pyContent) {
+                Set-Content -Path $pyPath -Value $pyNew -NoNewline
+                Write-Host "    [OK] $pyFile - PROJECT_ENDPOINT default updated" -ForegroundColor Green
+                $updatedFiles++
+            }
+        }
+    }
+}
+
+# --- Lesson 1 solution/ (non-lab) Python files ---
+$lesson1SolDir = Join-Path $WorkspaceRoot "lesson-1-declarative" "solution"
+if (Test-Path $lesson1SolDir) {
+    # Create/update .env
+    $envSol1 = Join-Path $lesson1SolDir ".env"
+    Set-Content -Path $envSol1 -Value $envContent -NoNewline
+    Write-Host "    [OK] solution/.env updated" -ForegroundColor Green
+    $updatedFiles++
+
+    foreach ($pyFile in @("create_agent.py")) {
+        $pyPath = Join-Path $lesson1SolDir $pyFile
+        if (Test-Path $pyPath) {
+            $pyContent = Get-Content $pyPath -Raw
+            $pyNew = $pyContent -replace '(os\.environ\.get\(\s*"PROJECT_ENDPOINT",\s*\n?\s*)"https://[^"]*"', "`$1`"$aiProjectEndpoint`""
+            if ($pyNew -ne $pyContent) {
+                Set-Content -Path $pyPath -Value $pyNew -NoNewline
+                Write-Host "    [OK] solution/$pyFile - PROJECT_ENDPOINT default updated" -ForegroundColor Green
+                $updatedFiles++
+            }
+        }
     }
 }
 
@@ -217,8 +255,8 @@ if (Test-Path $lesson6Dir) {
     }
 }
 
-# ─── [3/3] Also update solution/ (non-lab) deploy scripts ───
-Write-Host "`n[3/3] Updating solution/ deploy scripts..." -ForegroundColor Yellow
+# ─── [3/4] Also update solution/ (non-lab) deploy scripts ───
+Write-Host "`n[3/4] Updating solution/ deploy scripts..." -ForegroundColor Yellow
 
 $solutionDirs = @(
     (Join-Path $WorkspaceRoot "lesson-4-aca-langgraph" "solution"),
@@ -249,6 +287,20 @@ foreach ($solDir in $solutionDirs) {
             Write-Host "  [OK] $lessonName/solution/aca.bicep - ACA env updated" -ForegroundColor Green
             $updatedFiles++
         }
+    }
+}
+
+# ─── [4/4] Update test/ Python files ────────────────────────
+Write-Host "`n[4/4] Updating test/ Python files..." -ForegroundColor Yellow
+
+$chatPy = Join-Path $WorkspaceRoot "test" "chat.py"
+if (Test-Path $chatPy) {
+    $chatContent = Get-Content $chatPy -Raw
+    $chatNew = $chatContent -replace '(os\.environ\.get\(\s*"RESOURCE_GROUP",\s*)"[^"]*"', "`$1`"$ResourceGroupName`""
+    if ($chatNew -ne $chatContent) {
+        Set-Content -Path $chatPy -Value $chatNew -NoNewline
+        Write-Host "  [OK] test/chat.py - RESOURCE_GROUP default updated to '$ResourceGroupName'" -ForegroundColor Green
+        $updatedFiles++
     }
 }
 

@@ -16,8 +16,7 @@ Ref: https://learn.microsoft.com/azure/ai-foundry/quickstarts/get-started-code
 import argparse
 import os
 
-from azure.ai.agents import AIProjectClient
-from azure.ai.agents.models import PromptAgentDefinition
+from azure.ai.agents import AgentsClient
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 
@@ -25,7 +24,7 @@ load_dotenv(override=True)
 
 DEFAULT_ENDPOINT = os.environ.get(
     "PROJECT_ENDPOINT",
-    "https://ai-foundry001.services.ai.azure.com/api/projects/ag365-prj001",
+    "https://aihub-workshop.services.ai.azure.com/api/projects/aiprj-workshp",
 )
 DEFAULT_MODEL = os.environ.get("MODEL_DEPLOYMENT_NAME", "gpt-4.1")
 DEFAULT_AGENT_NAME = "fin-market-declarative"
@@ -52,24 +51,21 @@ SYSTEM_PROMPT = (
 
 
 def create_declarative_agent(endpoint, agent_name, model):
-    """Cria um agente declarativo no Foundry usando PromptAgentDefinition."""
+    """Cria um agente declarativo no Foundry usando o Agents SDK."""
     credential = DefaultAzureCredential()
-    project_client = AIProjectClient(
+    client = AgentsClient(
         endpoint=endpoint,
         credential=credential,
     )
 
-    agent = project_client.agents.create_version(
-        agent_name=agent_name,
-        definition=PromptAgentDefinition(
-            model=model,
-            instructions=SYSTEM_PROMPT,
-        ),
+    agent = client.create_agent(
+        model=model,
+        name=agent_name,
+        instructions=SYSTEM_PROMPT,
     )
 
     print(f"Agente criado com sucesso!")
     print(f"  Nome:    {agent.name}")
-    print(f"  Versao:  {agent.version}")
     print(f"  ID:      {agent.id}")
     print(f"\nO agente esta visivel e editavel no portal do Foundry.")
     print(f"Acesse: https://ai.azure.com/ para editar instructions, model, etc.")

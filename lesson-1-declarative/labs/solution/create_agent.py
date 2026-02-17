@@ -15,7 +15,7 @@ load_dotenv(override=True)
 
 DEFAULT_ENDPOINT = os.environ.get(
     "PROJECT_ENDPOINT",
-    "https://YOUR-FOUNDRY.services.ai.azure.com/api/projects/YOUR-PROJECT",
+    "https://aihub-workshop.services.ai.azure.com/api/projects/aiprj-workshp",
 )
 DEFAULT_MODEL = os.environ.get("MODEL_DEPLOYMENT_NAME", "gpt-4.1")
 DEFAULT_AGENT_NAME = "fin-market-declarative"
