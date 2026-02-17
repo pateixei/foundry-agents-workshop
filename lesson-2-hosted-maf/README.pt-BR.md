@@ -62,3 +62,10 @@ cd lesson-2-hosted-maf/solution
 ```
 
 O script vai automaticamente configurar, testar e implantar o agente no Foundry.
+
+## Referências
+
+- [Documentação do Microsoft Agent Framework](https://learn.microsoft.com/azure/ai-foundry/agents/overview)
+- [Guia de Hosted Agents no Foundry](https://learn.microsoft.com/azure/ai-foundry/agents/how-to/hosted-agents)
+- [Build no Azure Container Registry](https://learn.microsoft.com/azure/container-registry/container-registry-tutorial-quick-task)
+- [Visão geral do Capability Host](../capability-host.pt-BR.md)
