@@ -29,7 +29,7 @@ Write-Host ""
 # -----------------------------------------------------------
 Write-Host "[1/6] Obtendo outputs da infraestrutura..." -ForegroundColor Yellow
 
-$RG = "rg-ag365sdk"
+$RG = "rg-ai-agents-workshop"
 $DEPLOYMENT = "main"
 $SUBSCRIPTION = (az account show --query id -o tsv)
 if (-not $SUBSCRIPTION) { Write-Host "ERRO: Execute 'az login' primeiro." -ForegroundColor Red; exit 1 }

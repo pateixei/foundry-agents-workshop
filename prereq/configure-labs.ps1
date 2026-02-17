@@ -193,13 +193,45 @@ if (Test-Path $lesson1DemoDir) {
     }
 }
 
-# --- Lesson 2: Hosted MAF (no local .env needed, hosted runtime injects vars) ---
+# --- Lesson 2: Hosted MAF (deploy.ps1 needs RG) ---
 Write-Host "`n  Lesson 2 - Hosted MAF Agent" -ForegroundColor White
-Write-Host "    [i] No configuration needed (Foundry hosted runtime injects env vars)" -ForegroundColor Cyan
+$lesson2Dir = Join-Path $WorkspaceRoot "lesson-2-hosted-maf" "labs" "solution"
+if (Test-Path $lesson2Dir) {
+    $deploy2 = Join-Path $lesson2Dir "deploy.ps1"
+    if (Test-Path $deploy2) {
+        $d2Content = Get-Content $deploy2 -Raw
+        $d2New = $d2Content -replace '\$RG\s*=\s*"[^"]*"', "`$RG = `"$ResourceGroupName`""
+        if ($d2New -ne $d2Content) {
+            Set-Content -Path $deploy2 -Value $d2New -NoNewline
+            Write-Host "    [OK] deploy.ps1 - resource group updated to '$ResourceGroupName'" -ForegroundColor Green
+            $updatedFiles++
+        } else {
+            Write-Host "    [i] deploy.ps1 - resource group already correct" -ForegroundColor Cyan
+        }
+    }
+} else {
+    Write-Host "    [i] No labs/solution/ directory found" -ForegroundColor Cyan
+}
 
-# --- Lesson 3: Hosted LangGraph (no local .env needed, hosted runtime injects vars) ---
+# --- Lesson 3: Hosted LangGraph (deploy.ps1 needs RG) ---
 Write-Host "`n  Lesson 3 - Hosted LangGraph" -ForegroundColor White
-Write-Host "    [i] No configuration needed (Foundry hosted runtime injects env vars)" -ForegroundColor Cyan
+$lesson3Dir = Join-Path $WorkspaceRoot "lesson-3-hosted-langgraph" "labs" "solution"
+if (Test-Path $lesson3Dir) {
+    $deploy3 = Join-Path $lesson3Dir "deploy.ps1"
+    if (Test-Path $deploy3) {
+        $d3Content = Get-Content $deploy3 -Raw
+        $d3New = $d3Content -replace '\$RG\s*=\s*"[^"]*"', "`$RG = `"$ResourceGroupName`""
+        if ($d3New -ne $d3Content) {
+            Set-Content -Path $deploy3 -Value $d3New -NoNewline
+            Write-Host "    [OK] deploy.ps1 - resource group updated to '$ResourceGroupName'" -ForegroundColor Green
+            $updatedFiles++
+        } else {
+            Write-Host "    [i] deploy.ps1 - resource group already correct" -ForegroundColor Cyan
+        }
+    }
+} else {
+    Write-Host "    [i] No labs/solution/ directory found" -ForegroundColor Cyan
+}
 
 # --- Lesson 4: ACA LangGraph ---
 Write-Host "`n  Lesson 4 - ACA LangGraph" -ForegroundColor White
@@ -263,6 +295,8 @@ if (Test-Path $lesson6Dir) {
 Write-Host "`n[3/4] Updating labs/solution/ deploy scripts..." -ForegroundColor Yellow
 
 $solutionDirs = @(
+    (Join-Path $WorkspaceRoot "lesson-2-hosted-maf" "labs" "solution"),
+    (Join-Path $WorkspaceRoot "lesson-3-hosted-langgraph" "labs" "solution"),
     (Join-Path $WorkspaceRoot "lesson-4-aca-langgraph" "labs" "solution"),
     (Join-Path $WorkspaceRoot "lesson-6-a365-sdk" "labs" "solution")
 )
@@ -325,6 +359,8 @@ Write-Host ""
 Write-Host "  Next steps:" -ForegroundColor Yellow
 Write-Host "    1. Navigate to each lesson and run the lab" -ForegroundColor White
 Write-Host "    2. Lesson 1: cd lesson-1-declarative/labs/solution && python create_agent.py" -ForegroundColor White
-Write-Host "    3. Lesson 4: cd lesson-4-aca-langgraph/labs/solution && ./deploy.ps1" -ForegroundColor White
-Write-Host "    4. Lesson 6: cd lesson-6-a365-sdk/labs/solution && ./deploy.ps1" -ForegroundColor White
+Write-Host "    3. Lesson 2: cd lesson-2-hosted-maf/labs/solution && ./deploy.ps1" -ForegroundColor White
+Write-Host "    4. Lesson 3: cd lesson-3-hosted-langgraph/labs/solution && ./deploy.ps1" -ForegroundColor White
+Write-Host "    5. Lesson 4: cd lesson-4-aca-langgraph/labs/solution && ./deploy.ps1" -ForegroundColor White
+Write-Host "    6. Lesson 6: cd lesson-6-a365-sdk/labs/solution && ./deploy.ps1" -ForegroundColor White
 Write-Host ""
