@@ -172,32 +172,7 @@ Write-Host "  Docs (Swagger): $ACA_URL/docs" -ForegroundColor Cyan
 Write-Host ""
 
 Write-Host "--------------------------------------" -ForegroundColor Yellow
-Write-Host " Registrar como Connected Agent"
-Write-Host "--------------------------------------" -ForegroundColor Yellow
-Write-Host ""
-Write-Host "Para registrar o agente no Foundry Control Plane:" -ForegroundColor White
-Write-Host ""
-Write-Host "  1. Acesse o portal do Microsoft Foundry:" -ForegroundColor White
-Write-Host "     https://ai.azure.com" -ForegroundColor Cyan
-Write-Host "     (Certifique-se que o toggle 'Foundry (new)' esta ativado)"
-Write-Host ""
-Write-Host "  2. Navegue para: Operate > Overview > Register agent" -ForegroundColor White
-Write-Host ""
-Write-Host "  3. Preencha os dados do agente:" -ForegroundColor White
-Write-Host "     - Agent URL:  $ACA_URL" -ForegroundColor Cyan
-Write-Host "     - Protocol:   HTTP" -ForegroundColor Cyan
-Write-Host "     - Project:    $PROJECT_NAME" -ForegroundColor Cyan
-Write-Host "     - Agent name: aca-lg-agent" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "  4. Salve. O Foundry criara uma URL proxy (via AI Gateway/APIM)." -ForegroundColor White
-Write-Host "     Copie essa URL em: Assets > selecione o agente > Agent URL" -ForegroundColor White
-Write-Host ""
-Write-Host "  Pre-requisito: AI Gateway deve estar configurado no recurso Foundry." -ForegroundColor DarkGray
-Write-Host "  (Operate > Admin console > AI Gateway)" -ForegroundColor DarkGray
-Write-Host ""
-
-Write-Host "--------------------------------------" -ForegroundColor Yellow
-Write-Host " Testar o agente"
+Write-Host " Testar o agente (acesso direto)"
 Write-Host "--------------------------------------" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "  # Via chat.py (chamada direta ao ACA)" -ForegroundColor White
@@ -205,4 +180,59 @@ Write-Host "  python ../../test/chat.py --lesson 4" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "  # Via curl" -ForegroundColor White
 Write-Host "  curl -X POST $ACA_URL/chat -H 'Content-Type: application/json' -d '{""message"":""Qual a cotacao da PETR4?""}'" -ForegroundColor Cyan
+Write-Host ""
+
+Write-Host "======================================" -ForegroundColor Magenta
+Write-Host " IMPORTANTE: Passos Manuais no Portal" -ForegroundColor Magenta
+Write-Host "======================================" -ForegroundColor Magenta
+Write-Host ""
+Write-Host "O registro de agentes externos (Container Apps) no Foundry requer" -ForegroundColor White
+Write-Host "configuracao manual do AI Gateway (APIM) e registro do agente via portal." -ForegroundColor White
+Write-Host "Estas etapas NAO podem ser automatizadas via SDK/CLI no momento." -ForegroundColor White
+Write-Host ""
+Write-Host "--------------------------------------" -ForegroundColor Yellow
+Write-Host " Passo 1: Habilitar AI Gateway (APIM)"
+Write-Host "--------------------------------------" -ForegroundColor Yellow
+Write-Host ""
+Write-Host "  1. Acesse o portal do Microsoft Foundry:" -ForegroundColor White
+Write-Host "     https://ai.azure.com" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "  2. Selecione seu projeto: $PROJECT_NAME" -ForegroundColor White
+Write-Host ""
+Write-Host "  3. Navegue para:" -ForegroundColor White
+Write-Host "     Manage > AI services and API Gateways > Deploy API Gateway" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "  4. Selecione a opcao 'Deploy a new API Management resource'" -ForegroundColor White
+Write-Host "     - Escolha o SKU 'Consumption' (menor custo, sem cobranca em idle)" -ForegroundColor White
+Write-Host "     - Associe ao recurso Foundry: $FOUNDRY_NAME" -ForegroundColor White
+Write-Host ""
+Write-Host "  NOTA: O deploy do APIM pode levar 30-45 minutos." -ForegroundColor DarkYellow
+Write-Host "  Aguarde a conclusao antes de prosseguir para o Passo 2." -ForegroundColor DarkYellow
+Write-Host ""
+Write-Host "--------------------------------------" -ForegroundColor Yellow
+Write-Host " Passo 2: Registrar Connected Agent"
+Write-Host "--------------------------------------" -ForegroundColor Yellow
+Write-Host ""
+Write-Host "  1. No portal Foundry, navegue para:" -ForegroundColor White
+Write-Host "     Agents > + New agent > Container App agent" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "  2. Preencha os dados do agente:" -ForegroundColor White
+Write-Host "     - Agent name:    aca-lg-agent" -ForegroundColor Cyan
+Write-Host "     - Agent URL:     $ACA_URL" -ForegroundColor Cyan
+Write-Host "     - Protocol:      Responses (v1)" -ForegroundColor Cyan
+Write-Host "     - Project:       $PROJECT_NAME" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "  3. O Foundry criara uma URL gerenciada (via AI Gateway/APIM)" -ForegroundColor White
+Write-Host "     que roteia as chamadas do portal para seu Container App." -ForegroundColor White
+Write-Host ""
+Write-Host "  4. Teste o agente diretamente no Playground do Foundry." -ForegroundColor White
+Write-Host ""
+Write-Host "======================================" -ForegroundColor Magenta
+Write-Host " Dados para referencia:" -ForegroundColor Magenta
+Write-Host "======================================" -ForegroundColor Magenta
+Write-Host "  ACA URL:        $ACA_URL" -ForegroundColor Cyan
+Write-Host "  ACA FQDN:       $ACA_FQDN" -ForegroundColor Cyan
+Write-Host "  Foundry:        $FOUNDRY_NAME" -ForegroundColor Cyan
+Write-Host "  Project:        $PROJECT_NAME" -ForegroundColor Cyan
+Write-Host "  ACA Principal:  $ACA_PRINCIPAL" -ForegroundColor Cyan
 Write-Host ""

@@ -305,43 +305,44 @@ Invoke-RestMethod -Uri "https://$fqdn/chat" -Method Post -Body $body -ContentTyp
 - ✅ Chat endpoint processes requests
 - ✅ Agent responses are correct
 
-### Task 5: Register as Connected Agent (15 minutes)
+### Task 5: Enable AI Gateway and Register as Connected Agent (20 minutes)
 
-**5.1 - Navigate to Foundry Control Plane**
+> **IMPORTANT**: Registering an external Container App agent in Foundry requires the **AI Gateway (APIM)** to be configured on your Foundry resource. This is a **manual step** that must be done through the portal — it cannot be automated via SDK, CLI, or Bicep at this time.
 
-1. Go to [Azure AI Foundry Portal](https://ai.azure.com/)
-2. Select your project
-3. Go to **Agents** → **Register Connected Agent**
+**5.1 - Enable AI Gateway (APIM)**
 
-**5.2 - Fill registration form**
+1. Go to [Azure AI Foundry Portal](https://ai.azure.com/) and select your project
+2. Navigate to **Manage** → **AI services and API Gateways**
+3. Click **Deploy API Gateway**
+4. Select **Deploy a new API Management resource**
+   - Choose the **Consumption** SKU (lowest cost, no charge when idle)
+   - Associate it with your Foundry resource
+5. **Wait for provisioning** — APIM deployment takes **30–45 minutes**
 
-- **Name**: financial-advisor-aca
-- **Description**: Financial advisor agent on ACA infrastructure
-- **Endpoint URL**: `https://aca-financial-agent.nicebeach-abc123.eastus.azurecontainerapps.io`
-- **Authentication**: None (public endpoint) or Managed Identity
-- **Protocol**: HTTP REST
+> ⏱️ While APIM deploys, you can proceed with Task 6 (comparison exercise) and come back to complete Task 5.
 
-**5.3 - Test via Foundry**
+**5.2 - Register the Connected Agent**
 
-```python
-# Use Foundry SDK to call Connected Agent
-from azure.ai.agents import AIProjectClient
-from azure.identity import DefaultAzureCredential
+Once the AI Gateway is active:
 
-client = AIProjectClient(
-    endpoint="FOUNDRY_ENDPOINT",
-    credential=DefaultAzureCredential()
-)
+1. In the Foundry portal, navigate to **Agents** → **+ New agent** → **Container App agent**
+2. Fill in the registration form:
+   - **Agent name**: `aca-lg-agent`
+   - **Agent URL**: the ACA URL printed by `deploy.ps1` (e.g., `https://aca-lg-agent.xxxxx.eastus.azurecontainerapps.io`)
+   - **Protocol**: Responses (v1)
+3. Save. Foundry will create a managed proxy URL via the AI Gateway that routes requests to your Container App.
 
-# Foundry routes request through AI Gateway to your ACA
-response = client.agents.invoke_connected_agent(
-    agent_name="financial-advisor-aca",
-    message="How is the Brazilian market today?"
-)
-print(response)
-```
+**5.3 - Test via Foundry Playground**
+
+1. In the Foundry portal, go to **Agents** and select your registered agent
+2. Click **Try in Playground**
+3. Send a test message: `"What is the current price of PETR4?"`
+4. Verify the response comes through the Foundry AI Gateway to your ACA
+
+> **Note**: You can always test the agent **directly** (bypassing Foundry) via its ACA URL — this was validated in Task 4.
 
 **Success Criteria**:
+- ✅ AI Gateway (APIM) provisioned and active in Foundry
 - ✅ Agent registered in Foundry
 - ✅ Visible in Agents list (shows "Connected" badge)
 - ✅ Invocations route through Foundry to ACA
