@@ -1,5 +1,5 @@
 """
-Cria um agente declarativo (prompt-based) no Azure AI Foundry.
+Cria um agente declarativo (prompt-based) no Azure AI Foundry (new experience).
 
 Agentes declarativos sao definidos via PromptAgentDefinition e ficam
 registrados no Foundry. Suas instructions, model e tools podem ser
@@ -16,7 +16,8 @@ Ref: https://learn.microsoft.com/azure/ai-foundry/quickstarts/get-started-code
 import argparse
 import os
 
-from azure.ai.agents import AgentsClient
+from azure.ai.projects import AIProjectClient
+from azure.ai.projects.models import PromptAgentDefinition
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 
@@ -51,21 +52,24 @@ SYSTEM_PROMPT = (
 
 
 def create_declarative_agent(endpoint, agent_name, model):
-    """Cria um agente declarativo no Foundry usando o Agents SDK."""
+    """Cria um agente declarativo no Foundry usando PromptAgentDefinition (new experience)."""
     credential = DefaultAzureCredential()
-    client = AgentsClient(
+    project_client = AIProjectClient(
         endpoint=endpoint,
         credential=credential,
     )
 
-    agent = client.create_agent(
-        model=model,
-        name=agent_name,
-        instructions=SYSTEM_PROMPT,
+    agent = project_client.agents.create_version(
+        agent_name=agent_name,
+        definition=PromptAgentDefinition(
+            model=model,
+            instructions=SYSTEM_PROMPT,
+        ),
     )
 
     print(f"Agente criado com sucesso!")
     print(f"  Nome:    {agent.name}")
+    print(f"  Versao:  {agent.version}")
     print(f"  ID:      {agent.id}")
     print(f"\nO agente esta visivel e editavel no portal do Foundry.")
     print(f"Acesse: https://ai.azure.com/ para editar instructions, model, etc.")

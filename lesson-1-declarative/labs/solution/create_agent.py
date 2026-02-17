@@ -1,13 +1,15 @@
 """
 Lab 1 Solution - Create a Declarative Agent
 
-Creates a declarative financial advisor agent in Azure AI Foundry.
+Creates a declarative financial advisor agent in Azure AI Foundry (new experience).
+Uses azure-ai-projects 2.x with PromptAgentDefinition.
 """
 
 import argparse
 import os
 
-from azure.ai.agents import AgentsClient
+from azure.ai.projects import AIProjectClient
+from azure.ai.projects.models import PromptAgentDefinition
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 
@@ -42,23 +44,25 @@ SYSTEM_PROMPT = (
 
 
 def create_declarative_agent(endpoint, agent_name, model):
-    """Create a declarative agent in Foundry using the Agents SDK."""
+    """Create a declarative agent in Foundry using PromptAgentDefinition (new experience)."""
     credential = DefaultAzureCredential()
-    client = AgentsClient(
+    project_client = AIProjectClient(
         endpoint=endpoint,
         credential=credential,
     )
 
-    agent = client.create_agent(
-        model=model,
-        name=agent_name,
-        instructions=SYSTEM_PROMPT,
+    agent = project_client.agents.create_version(
+        agent_name=agent_name,
+        definition=PromptAgentDefinition(
+            model=model,
+            instructions=SYSTEM_PROMPT,
+        ),
     )
 
     print(f"Agente criado com sucesso!")
     print(f"  Nome:    {agent.name}")
+    print(f"  Versao:  {agent.version}")
     print(f"  ID:      {agent.id}")
-    print(f"  Modelo:  {agent.model}")
     print(f"\nO agente esta visivel e editavel no portal do Foundry.")
     print(f"Acesse: https://ai.azure.com/ para editar instructions, model, etc.")
 

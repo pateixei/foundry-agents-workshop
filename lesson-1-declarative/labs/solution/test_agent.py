@@ -2,14 +2,14 @@
 Lab 1 Solution - Test Agent Client
 
 Interactive console client for testing the declarative agent.
+Uses the new Foundry experience (azure-ai-projects 2.x + OpenAI Responses API).
 """
 
 import argparse
 import os
 import sys
 
-from azure.ai.agents import AgentsClient
-from azure.ai.agents.models import MessageRole
+from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 
@@ -23,38 +23,20 @@ DEFAULT_AGENT_NAME = "fin-market-declarative"
 
 
 def test_agent(endpoint, agent_name):
-    """Test the declarative agent via SDK."""
+    """Test the declarative agent via the new Foundry Responses API."""
     credential = DefaultAzureCredential()
-    client = AgentsClient(
+    project_client = AIProjectClient(
         endpoint=endpoint,
         credential=credential,
     )
 
-    # Find agent by name
-    try:
-        agents = client.list_agents()
-        agent = None
-        for a in agents:
-            if a.name == agent_name:
-                agent = a
-                break
+    # Get OpenAI client from the project
+    openai_client = project_client.get_openai_client()
 
-        if not agent:
-            print(f"Agent '{agent_name}' not found")
-            agents = client.list_agents()
-            print(f"\nAvailable agents:")
-            for a in agents:
-                print(f"  - {a.name}")
-            sys.exit(1)
-
-        print(f"Connected to agent: {agent.name} (ID: {agent.id})")
-    except Exception as e:
-        print(f"Error finding agent '{agent_name}': {e}")
-        sys.exit(1)
-
-    # Create conversation thread
-    thread = client.threads.create()
-    print(f"Thread created: {thread.id}")
+    # Create a conversation for multi-turn chat
+    conversation = openai_client.conversations.create()
+    print(f"Conversation created: {conversation.id}")
+    print(f"Agent: {agent_name}")
     print(f"\nType your questions (or 'sair' to exit):\n")
 
     while True:
@@ -70,33 +52,18 @@ def test_agent(endpoint, agent_name):
         print("\nAgente: ", end="", flush=True)
 
         try:
-            client.messages.create(
-                thread_id=thread.id,
-                role="user",
-                content=user_input,
+            response = openai_client.responses.create(
+                conversation=conversation.id,
+                extra_body={
+                    "agent": {
+                        "name": agent_name,
+                        "type": "agent_reference",
+                    }
+                },
+                input=user_input,
             )
 
-            run = client.runs.create_and_process(
-                thread_id=thread.id,
-                agent_id=agent.id,
-            )
-
-            if run.status != "completed":
-                print(f"Run failed with status: {run.status}")
-                if run.last_error:
-                    print(f"Error: {run.last_error}")
-                print()
-                continue
-
-            response = client.messages.get_last_message_text_by_role(
-                thread_id=thread.id,
-                role=MessageRole.AGENT,
-            )
-            if response:
-                print(response.text.value)
-            else:
-                print("(no response)")
-
+            print(response.output_text)
             print("\n" + "-" * 60 + "\n")
 
         except Exception as e:
