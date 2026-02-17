@@ -85,8 +85,25 @@ Write-Host ""
 
 # -----------------------------------------------------------
 # 3. Deploy do Container App no ACA Environment existente
+#
+#    Se o Container App ja existir, remove antes de recriar
+#    para evitar conflito de deployment (erro
+#    "The content for this response was already consumed").
 # -----------------------------------------------------------
-Write-Host "[3/5] Deployando Container App no ACA Environment existente (cae-ai001)..." -ForegroundColor Yellow
+Write-Host "[3/5] Deployando Container App no ACA Environment existente..." -ForegroundColor Yellow
+
+# Remover Container App existente (idempotente)
+$ErrorActionPreference = "SilentlyContinue"
+$existingApp = az containerapp show --name $AGENT_NAME --resource-group $RG --query "name" -o tsv 2>$null
+$ErrorActionPreference = "Stop"
+
+if ($existingApp) {
+    Write-Host "  Container App '$AGENT_NAME' ja existe. Removendo para recriar..."
+    az containerapp delete --name $AGENT_NAME --resource-group $RG --yes 2>$null | Out-Null
+    Write-Host "  Removido."
+}
+
+Push-Location $PSScriptRoot
 
 $ACA_OUTPUTS = az deployment group create `
     --resource-group $RG `

@@ -50,10 +50,16 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
       registries: [
         {
           server: acr.properties.loginServer
-          identity: 'system'
+          username: acr.listCredentials().username
+          passwordSecretRef: 'acr-password'
         }
       ]
-      secrets: []
+      secrets: [
+        {
+          name: 'acr-password'
+          value: acr.listCredentials().passwords[0].value
+        }
+      ]
     }
     template: {
       containers: [
@@ -107,6 +113,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
 }
 
 // RBAC: Grant ACA Managed Identity permission to pull images from ACR
+// (Backup — admin creds used above for initial pull reliability)
 resource acrPullRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(containerApp.id, acr.id, 'AcrPull')
   scope: acr
@@ -116,22 +123,6 @@ resource acrPullRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-
     principalType: 'ServicePrincipal'
   }
 }
-
-// CRITICAL: RBAC Role Assignment for Azure OpenAI Access
-// The Managed Identity created above needs the "Cognitive Services OpenAI User" role
-// to call Azure OpenAI. This must be assigned AFTER deployment.
-//
-// Run this command AFTER deployment completes:
-// 
-// az role assignment create \
-//   --assignee <managed-identity-principal-id> \
-//   --role "Cognitive Services OpenAI User" \
-//   --scope <azure-openai-resource-id>
-//
-// Example:
-// MI_PRINCIPAL_ID=$(az containerapp show --name aca-lg-agent --resource-group $RG_NAME --query identity.principalId -o tsv)
-// OPENAI_ID=$(az cognitiveservices account show --name <openai-account-name> --resource-group $RG_NAME --query id -o tsv)
-// az role assignment create --assignee $MI_PRINCIPAL_ID --role "Cognitive Services OpenAI User" --scope $OPENAI_ID
 
 // Outputs
 output acaFqdn string = containerApp.properties.configuration.ingress.fqdn
