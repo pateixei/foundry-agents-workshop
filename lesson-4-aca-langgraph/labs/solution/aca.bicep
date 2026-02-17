@@ -112,21 +112,8 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
   }
 }
 
-// RBAC: Grant ACA Managed Identity permission to pull images from ACR
-// (Backup — admin creds used above for initial pull reliability)
-resource acrPullRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(containerApp.id, acr.id, 'AcrPull')
-  scope: acr
-  properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')  // AcrPull role
-    principalId: containerApp.identity.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
-
 // Outputs
 output acaFqdn string = containerApp.properties.configuration.ingress.fqdn
 output acaUrl string = 'https://${containerApp.properties.configuration.ingress.fqdn}'
 output acaPrincipalId string = containerApp.identity.principalId
 output containerAppName string = containerApp.name
-output rbacInstructions string = 'CRITICAL: Run RBAC role assignment command from comments above using MI Principal ID: ${containerApp.identity.principalId}'
