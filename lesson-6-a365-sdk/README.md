@@ -2,6 +2,14 @@
 
 > 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
 
+## Navigation
+
+| Resource | Description |
+|----------|-------------|
+| [📖 Demo Walkthrough](demos/README.md) | Code walkthrough and demo instructions |
+| [🔬 Lab Exercise](labs/LAB-STATEMENT.md) | Hands-on lab with tasks and success criteria |
+| [📝 Agent Registration](REGISTER.md) | How to register the A365 agent |
+
 ## Overview
 
 This lesson enhances the LangGraph agent from Lesson 4 with Microsoft Agent 365 SDK features for observability, adaptive cards, and native M365 integration.

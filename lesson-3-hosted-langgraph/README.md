@@ -2,6 +2,17 @@
 
 > 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
 
+## Navigation
+
+| Resource | Description |
+|----------|-------------|
+| [📖 Demo Walkthrough](demos/README.md) | Code walkthrough and demo instructions |
+| [🔬 Lab Exercise](labs/LAB-STATEMENT.md) | Hands-on lab with tasks and success criteria |
+| [📐 Architecture Diagram](media/lesson-3-architecture.png) | Architecture overview |
+| [🛠️ Deployment Diagram](media/lesson-3-deployment.png) | Deployment flow |
+| [📁 Solution Notes](solution/README.md) | Solution code and deployment details |
+| [📚 LangGraph Foundry Guide](langgraph-foundry-guide.md) | Deep-dive on LangGraph + Foundry integration |
+
 In this lesson, we create a hosted agent in Azure AI Foundry using the
 LangGraph framework. The agent specializes in financial markets and
 runs as its own container within Foundry.

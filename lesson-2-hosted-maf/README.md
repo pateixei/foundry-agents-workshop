@@ -2,6 +2,16 @@
 
 > 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
 
+## Navigation
+
+| Resource | Description |
+|----------|-------------|
+| [📖 Demo Walkthrough](demos/README.md) | Code walkthrough and demo instructions |
+| [🔬 Lab Exercise](labs/LAB-STATEMENT.md) | Hands-on lab with tasks and success criteria |
+| [📐 Architecture Diagram](media/lesson-2-architecture.png) | Architecture overview |
+| [🛠️ Deployment Diagram](media/lesson-2-deployment.png) | Deployment flow |
+| [📁 Solution Notes](solution/README.md) | Solution code and deployment details |
+
 ## Objective
 In this lesson, you will learn how to create and deploy an AI agent on Microsoft Foundry using the **Microsoft Agent Framework**, focused on answering questions about the financial market.
 

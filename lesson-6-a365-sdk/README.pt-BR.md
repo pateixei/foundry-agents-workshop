@@ -1,5 +1,13 @@
 # Lição 6: Integração com o SDK do Microsoft Agent 365
 
+## Navegação
+
+| Recurso | Descrição |
+|---------|----------|
+| [📖 Walkthrough da Demo](demos/README.pt-BR.md) | Explicação do código e instruções da demo |
+| [🔬 Exercício de Lab](labs/LAB-STATEMENT.pt-BR.md) | Lab prático com tarefas e critérios de sucesso |
+| [📝 Registro do Agente](REGISTER.pt-BR.md) | Como registrar o agente A365 |
+
 ## Visão Geral
 
 Esta lição aprimora o agente LangGraph da Lição 4 com recursos do SDK do Microsoft Agent 365 para observabilidade, adaptive cards e integração nativa com o M365.

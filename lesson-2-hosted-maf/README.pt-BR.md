@@ -1,5 +1,15 @@
 # Lição 2: Implantando um Agente de IA no Microsoft Foundry
 
+## Navegação
+
+| Recurso | Descrição |
+|---------|----------|
+| [📖 Walkthrough da Demo](demos/README.pt-BR.md) | Explicação do código e instruções da demo |
+| [🔬 Exercício de Lab](labs/LAB-STATEMENT.pt-BR.md) | Lab prático com tarefas e critérios de sucesso |
+| [📐 Diagrama de Arquitetura](media/lesson-2-architecture.png) | Visão geral da arquitetura |
+| [🛠️ Diagrama de Deployment](media/lesson-2-deployment.png) | Fluxo de implantação |
+| [📁 Notas da Solução](solution/README.pt-BR.md) | Código da solução e detalhes de deployment |
+
 ## Objetivo
 Nesta lição, você aprenderá a criar e implantar um agente de IA no Microsoft Foundry usando o **Microsoft Agent Framework**, focado em responder perguntas sobre o mercado financeiro.
 

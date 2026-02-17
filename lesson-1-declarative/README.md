@@ -2,6 +2,15 @@
 
 > 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
 
+## Navigation
+
+| Resource | Description |
+|----------|-------------|
+| [📖 Demo Walkthrough](demos/README.md) | Code walkthrough, expected output, and troubleshooting |
+| [🔬 Lab Exercise](labs/LAB-STATEMENT.md) | Hands-on lab with tasks and success criteria |
+| [📐 Architecture Diagram](media/lesson-1-architecture.png) | Architecture overview |
+| [🛠️ Deployment Diagram](media/lesson-1-deployment.png) | Deployment flow |
+
 Creates a **declarative** financial agent in Azure AI Foundry using the `azure-ai-projects` SDK (new Foundry experience).
 
 ## What is a declarative agent?
@@ -21,10 +30,17 @@ Declarative agents are defined via `PromptAgentDefinition` and registered direct
 
 ```
 lesson-1-declarative/
-  create_agent.py      # Creates the agent in Foundry
-  test_agent.py        # Console client to test the agent
-  requirements.txt     # Python dependencies
-  README.md            # This file
+  README.md              # This file (theory + navigation)
+  demos/                 # Demo walkthrough
+    create_agent.py      # Demo: creates the agent
+    test_agent.py        # Demo: tests the agent
+    README.md            # Code walkthrough & troubleshooting
+  labs/                  # Hands-on lab
+    LAB-STATEMENT.md     # Lab exercise statement
+    starter/             # Starter code (TODOs)
+    solution/            # Reference solution
+  media/                 # Architecture diagrams
+  solution/              # Standalone solution code
 ```
 
 ## Prerequisites

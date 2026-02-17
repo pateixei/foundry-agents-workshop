@@ -1,10 +1,21 @@
 # Lição 4 - Agente LangGraph no Azure Container Apps
 
+## Navegação
+
+| Recurso | Descrição |
+|---------|----------|
+| [📖 Walkthrough da Demo](demos/README.pt-BR.md) | Explicação do código e instruções da demo |
+| [🔬 Exercício de Lab](labs/LAB-STATEMENT.pt-BR.md) | Lab prático com tarefas e critérios de sucesso |
+| [📐 Diagrama de Arquitetura](media/lesson-4-architecture.png) | Visão geral da arquitetura |
+| [🛠️ Diagrama de Deployment](media/lesson-4-deployment.png) | Fluxo de implantação |
+| [📁 Notas da Solução](solution/README.pt-BR.md) | Código da solução e detalhes de deployment |
+| [📝 Registro do Agente](REGISTER.pt-BR.md) | Como registrar agente como Connected Agent no Foundry |
+
 Nesta lição, implantamos o mesmo agente LangGraph das lições anteriores em
 infraestrutura própria (**Azure Container Apps**) e o registramos como
 **Connected Agent** no Control Plane do Microsoft Foundry.
 
-Veja detalhes completos em [solution/README.md](solution/README.md).
+Veja detalhes completos em [solution/README.pt-BR.md](solution/README.pt-BR.md).
 
 ## Início Rápido
 

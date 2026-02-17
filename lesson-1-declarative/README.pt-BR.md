@@ -1,5 +1,14 @@
 # Lição 1 - Agente Declarativo (Baseado em Prompt)
 
+## Navegação
+
+| Recurso | Descrição |
+|---------|----------|
+| [📖 Walkthrough da Demo](demos/README.pt-BR.md) | Explicação do código, saída esperada e troubleshooting |
+| [🔬 Exercício de Lab](labs/LAB-STATEMENT.pt-BR.md) | Lab prático com tarefas e critérios de sucesso |
+| [📐 Diagrama de Arquitetura](media/lesson-1-architecture.png) | Visão geral da arquitetura |
+| [🛠️ Diagrama de Deployment](media/lesson-1-deployment.png) | Fluxo de implantação |
+
 Cria um agente financeiro **declarativo** no Azure AI Foundry usando o SDK `azure-ai-projects` (nova experiência Foundry).
 
 ## O que é um agente declarativo?
@@ -19,10 +28,17 @@ Agentes declarativos são definidos via `PromptAgentDefinition` e registrados di
 
 ```
 lesson-1-declarative/
-  create_agent.py      # Cria o agente no Foundry
-  test_agent.py        # Cliente console para testar o agente
-  requirements.txt     # Dependências Python
-  README.md            # Este arquivo
+  README.md              # Este arquivo (teoria + navegação)
+  demos/                 # Walkthrough da demo
+    create_agent.py      # Demo: cria o agente
+    test_agent.py        # Demo: testa o agente
+    README.md            # Explicação do código & troubleshooting
+  labs/                  # Lab prático
+    LAB-STATEMENT.md     # Enunciado do exercício
+    starter/             # Código inicial (TODOs)
+    solution/            # Solução de referência
+  media/                 # Diagramas de arquitetura
+  solution/              # Código da solução standalone
 ```
 
 ## Pré-requisitos
