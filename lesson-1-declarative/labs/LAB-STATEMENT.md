@@ -4,7 +4,7 @@
 
 ## Objective
 
-Build a declarative agent in Azure AI Foundry using the `azure-ai-agents` SDK. The agent will answer questions about Brazilian and international financial markets without requiring custom code or containers.
+Build a declarative agent in Azure AI Foundry using the `azure-ai-projects` SDK (new Foundry experience). The agent will answer questions about Brazilian and international financial markets without requiring custom code or containers.
 
 ## Scenario
 
@@ -81,17 +81,16 @@ After completing this lab, you will be able to:
 
 1. Open `test_agent.py` in the `starter/` directory
 2. Implement the chat loop:
-   - Get agent by name
-   - Create conversation thread
-   - Send messages with streaming responses
+   - Get OpenAI client from the project
+   - Create a conversation for multi-turn chat
+   - Send messages via the Responses API with `agent_reference`
    - Handle user input loop
 
 **Hints**:
-- Use `client.list_agents()` to list all agents, then find by name
-- Use `client.threads.create()` to create a conversation context
-- Use `client.messages.create(thread_id=..., role="user", content=...)` to send a message
-- Use `client.runs.create_and_process(thread_id=..., agent_id=...)` to run the agent
-- Use `client.messages.get_last_message_text_by_role(thread_id=..., role=MessageRole.AGENT)` to get the response
+- Use `project_client.get_openai_client()` to get an OpenAI-compatible client
+- Use `openai_client.conversations.create()` to create a conversation context
+- Use `openai_client.responses.create(conversation=..., extra_body={"agent": {"name": agent_name, "type": "agent_reference"}}, input=...)` to send messages
+- Access the response text via `response.output_text`
 
 3. Run the test client:
    ```powershell
@@ -151,7 +150,7 @@ Test the agent with these questions:
 
 2. Modify `create_agent.py` to include Bing tool:
    ```python
-   from azure.ai.agents.models import (
+   from azure.ai.projects.models import (
        BingGroundingAgentTool,
        BingGroundingSearchToolParameters,
    )
@@ -196,7 +195,7 @@ Test the agent with these questions:
 |-----------|--------|-------------|
 | **Agent Creation** | 25 pts | Agent created successfully via SDK |
 | **System Prompt Quality** | 20 pts | Appropriate domain knowledge and guidelines |
-| **Test Client** | 25 pts | Functional conversation loop with streaming |
+| **Test Client** | 25 pts | Functional conversation loop with Responses API |
 | **Testing** | 15 pts | Tested multiple scenarios, verified behavior |
 | **Portal Modification** | 10 pts | Successfully modified and tested changes |
 | **Code Quality** | 5 pts | Clean, documented, follows Python conventions |

@@ -2,14 +2,14 @@
 Lab 1 - Task 2: Create a Declarative Agent
 
 Complete the TODOs to create a declarative financial advisor agent
-in Azure AI Foundry using the azure-ai-agents SDK.
+in Azure AI Foundry using the azure-ai-projects SDK (new Foundry experience).
 """
 
 import argparse
 import os
 
-# TODO: Import AIProjectClient from azure.ai.agents
-# TODO: Import PromptAgentDefinition from azure.ai.agents.models
+# TODO: Import AIProjectClient from azure.ai.projects
+# TODO: Import PromptAgentDefinition from azure.ai.projects.models
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 

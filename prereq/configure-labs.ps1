@@ -189,6 +189,29 @@ if (Test-Path $lesson1SolDir) {
     }
 }
 
+# --- Lesson 1 demos/ Python files ---
+$lesson1DemoDir = Join-Path $WorkspaceRoot "lesson-1-declarative" "demos"
+if (Test-Path $lesson1DemoDir) {
+    # Create/update .env
+    $envDemo1 = Join-Path $lesson1DemoDir ".env"
+    Set-Content -Path $envDemo1 -Value $envContent -NoNewline
+    Write-Host "    [OK] demos/.env updated" -ForegroundColor Green
+    $updatedFiles++
+
+    foreach ($pyFile in @("create_agent.py", "test_agent.py")) {
+        $pyPath = Join-Path $lesson1DemoDir $pyFile
+        if (Test-Path $pyPath) {
+            $pyContent = Get-Content $pyPath -Raw
+            $pyNew = $pyContent -replace '(os\.environ\.get\(\s*"PROJECT_ENDPOINT",\s*\n?\s*)"https://[^"]*"', "`$1`"$aiProjectEndpoint`""
+            if ($pyNew -ne $pyContent) {
+                Set-Content -Path $pyPath -Value $pyNew -NoNewline
+                Write-Host "    [OK] demos/$pyFile - PROJECT_ENDPOINT default updated" -ForegroundColor Green
+                $updatedFiles++
+            }
+        }
+    }
+}
+
 # --- Lesson 2: Hosted MAF (no local .env needed, hosted runtime injects vars) ---
 Write-Host "`n  Lesson 2 - Hosted MAF Agent" -ForegroundColor White
 Write-Host "    [i] No configuration needed (Foundry hosted runtime injects env vars)" -ForegroundColor Cyan

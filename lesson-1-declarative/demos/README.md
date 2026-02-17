@@ -4,7 +4,7 @@
 
 ## Overview
 
-This demo showcases creating a **declarative (prompt-based) financial advisor agent** in Azure AI Foundry using the `azure-ai-agents` SDK. Declarative agents are the simplest pattern—they run server-side in Foundry without requiring custom containers.
+This demo showcases creating a **declarative (prompt-based) financial advisor agent** in Azure AI Foundry using the `azure-ai-projects` SDK (new Foundry experience). Declarative agents are the simplest pattern—they run server-side in Foundry without requiring custom containers.
 
 ## What This Demonstrates
 
@@ -62,7 +62,7 @@ This demo showcases creating a **declarative (prompt-based) financial advisor ag
 
 Create a `.env` file:
 ```bash
-PROJECT_ENDPOINT=https://ai-foundry001.services.ai.azure.com/api/projects/ag365-prj001
+PROJECT_ENDPOINT=https://YOUR-FOUNDRY.services.ai.azure.com/api/projects/YOUR-PROJECT
 MODEL_DEPLOYMENT_NAME=gpt-4.1
 ```
 
@@ -80,14 +80,14 @@ python create_agent.py
 
 **Expected Output**:
 ```
-Endpoint: https://ai-foundry001.services.ai.azure.com/api/projects/ag365-prj001
+Endpoint: https://YOUR-FOUNDRY.services.ai.azure.com/api/projects/YOUR-PROJECT
 Agente:   fin-market-declarative
 Modelo:   gpt-4.1
 
 Agente criado com sucesso!
   Nome:    fin-market-declarative
   Versao:  1
-  ID:      agt-abc123xyz
+  ID:      fin-market-declarative:1
   
 O agente esta visivel e editavel no portal do Foundry.
 Acesse: https://ai.azure.com/ para editar instructions, model, etc.
@@ -144,8 +144,8 @@ demo-1-declarative-agent/
 ### create_agent.py
 
 ```python
-from azure.ai.agents import AIProjectClient
-from azure.ai.agents.models import PromptAgentDefinition
+from azure.ai.projects import AIProjectClient
+from azure.ai.projects.models import PromptAgentDefinition
 from azure.identity import DefaultAzureCredential
 
 # Authenticate using Azure CLI credentials
@@ -189,7 +189,7 @@ print(f"✅ Agent created: {agent.name} (version {agent.version})")
 ### test_agent.py
 
 ```python
-from azure.ai.agents import AIProjectClient
+from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 
 credential = DefaultAzureCredential()
@@ -198,11 +198,11 @@ project_client = AIProjectClient(
     credential=credential,
 )
 
-# Get the agent by name
-agent = project_client.agents.get_agent("fin-market-declarative")
+# Get OpenAI client from the project
+openai_client = project_client.get_openai_client()
 
-# Create a conversation thread
-thread = project_client.agents.create_thread()
+# Create a conversation for multi-turn chat
+conversation = openai_client.conversations.create()
 
 # Chat loop
 while True:
@@ -210,22 +210,27 @@ while True:
     if user_input.lower() == "quit":
         break
     
-    # Send message and stream response
-    for chunk in project_client.agents.send_message_stream(
-        agent_id=agent.id,
-        thread_id=thread.id,
-        message=user_input,
-    ):
-        if chunk.text:
-            print(chunk.text, end="", flush=True)
-    
+    # Send message via Responses API with agent_reference
+    response = openai_client.responses.create(
+        conversation=conversation.id,
+        extra_body={
+            "agent": {
+                "name": "fin-market-declarative",
+                "type": "agent_reference",
+            }
+        },
+        input=user_input,
+    )
+
+    print(response.output_text)
     print("\n" + "─" * 40 + "\n")
 ```
 
 **Key Points**:
-- `create_thread()`: Maintains conversation context
-- `send_message_stream()`: Sends messages and streams responses
-- Thread persists across multiple messages (conversation memory)
+- `get_openai_client()`: Gets an OpenAI-compatible client from the project
+- `conversations.create()`: Creates a multi-turn conversation context
+- `responses.create()`: Sends messages via the Responses API using `agent_reference`
+- Conversation persists across multiple messages (conversation memory)
 
 ## Understanding Declarative Agents
 
@@ -262,7 +267,7 @@ while True:
 To add tools like Bing Search or Code Interpreter:
 
 ```python
-from azure.ai.agents.models import (
+from azure.ai.projects.models import (
     PromptAgentDefinition,
     BingGroundingAgentTool,
     BingGroundingSearchToolParameters,
@@ -344,17 +349,12 @@ az account show  # Verify correct subscription
 
 ### Issue: "Agent version already exists"
 **Cause**: Rerunning `create_agent.py` with same name  
-**Fix**:
+**Fix**: Each run of `create_version()` creates a new version (v1, v2, etc.). If you want to start fresh, delete the agent in the Foundry Portal or use a different `agent_name`:
 ```python
-# Option 1: Delete existing agent first
-project_client.agents.delete_agent("fin-market-declarative")
-
-# Option 2: Use a different name
+# Option 1: Use a different name
 agent_name="fin-market-declarative-v2"
 
-# Option 3: Update existing agent
-agent = project_client.agents.get_agent("fin-market-declarative")
-# Then use update_version() instead of create_version()
+# Option 2: Delete the agent in the Foundry Portal and recreate
 ```
 
 ## Next Steps
@@ -369,7 +369,7 @@ After mastering declarative agents, proceed to:
 
 - [Azure AI Foundry Documentation](https://learn.microsoft.com/azure/ai-studio/)
 - [Prompt Engineering Guide](https://learn.microsoft.com/azure/ai-services/openai/concepts/prompt-engineering)
-- [PromptAgentDefinition API Reference](https://learn.microsoft.com/python/api/azure-ai-agents/)
+- [PromptAgentDefinition API Reference](https://learn.microsoft.com/python/api/azure-ai-projects/)
 - [Foundry Tools Catalog](https://learn.microsoft.com/azure/ai-studio/how-to/tools-catalog)
 
 ---

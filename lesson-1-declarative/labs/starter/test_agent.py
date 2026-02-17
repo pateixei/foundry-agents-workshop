@@ -2,15 +2,14 @@
 Lab 1 - Task 3: Create Test Client
 
 Complete the TODOs to implement an interactive chat client
-that tests the declarative agent you created.
+that tests the declarative agent using the OpenAI Responses API.
 """
 
 import argparse
 import os
 import sys
 
-# TODO: Import AgentsClient from azure.ai.agents
-# TODO: Import MessageRole from azure.ai.agents.models
+# TODO: Import AIProjectClient from azure.ai.projects
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 
@@ -24,26 +23,20 @@ DEFAULT_AGENT_NAME = "fin-market-declarative"
 
 
 def test_agent(endpoint, agent_name):
-    """Test the declarative agent via SDK."""
+    """Test the declarative agent via the Responses API."""
     credential = DefaultAzureCredential()
 
-    # TODO: Create AgentsClient with endpoint and credential
-    client = None
+    # TODO: Create AIProjectClient with endpoint and credential
+    project_client = None
 
-    # TODO: List agents and find the one matching agent_name
-    # Use client.list_agents() and iterate to find by name
-    agent = None
+    # TODO: Get OpenAI client from the project using project_client.get_openai_client()
+    openai_client = None
 
-    if not agent:
-        print(f"Agent '{agent_name}' not found")
-        sys.exit(1)
+    # TODO: Create a conversation using openai_client.conversations.create()
+    conversation = None
 
-    print(f"Connected to agent: {agent.name} (ID: {agent.id})")
-
-    # TODO: Create a conversation thread using client.threads.create()
-    thread = None
-
-    print(f"Thread created: {thread.id}")
+    print(f"Agent: {agent_name}")
+    print(f"Conversation: {conversation.id}")
     print(f"\nType your questions (or 'sair' to exit):\n")
 
     while True:
@@ -59,18 +52,15 @@ def test_agent(endpoint, agent_name):
         print("\nAgente: ", end="", flush=True)
 
         try:
-            # TODO: Send message using client.messages.create()
-            # Parameters: thread_id, role="user", content=user_input
-
-            # TODO: Run the agent using client.runs.create_and_process()
-            # Parameters: thread_id, agent_id=agent.id
-
-            # TODO: Get response using client.messages.get_last_message_text_by_role()
-            # Parameters: thread_id, role=MessageRole.AGENT
+            # TODO: Send message using openai_client.responses.create()
+            # Parameters:
+            #   conversation=conversation.id,
+            #   extra_body={"agent": {"name": agent_name, "type": "agent_reference"}},
+            #   input=user_input,
             response = None
 
             if response:
-                print(response.text.value)
+                print(response.output_text)
             else:
                 print("(no response)")
 

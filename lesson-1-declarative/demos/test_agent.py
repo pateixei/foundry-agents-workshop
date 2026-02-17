@@ -1,6 +1,8 @@
 """
 Cliente de console para testar o agente declarativo criado.
 
+Usa a nova experiencia Foundry (azure-ai-projects 2.x + OpenAI Responses API).
+
 Uso:
     python test_agent.py
     python test_agent.py --agent-name fin-market-declarative
@@ -15,8 +17,7 @@ import argparse
 import os
 import sys
 
-from azure.ai.agents import AgentsClient
-from azure.ai.agents.models import MessageRole
+from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 
@@ -24,44 +25,26 @@ load_dotenv(override=True)
 
 DEFAULT_ENDPOINT = os.environ.get(
     "PROJECT_ENDPOINT",
-    "https://ai-foundry001.services.ai.azure.com/api/projects/ag365-prj001",
+    "https://YOUR-FOUNDRY.services.ai.azure.com/api/projects/YOUR-PROJECT",
 )
 DEFAULT_AGENT_NAME = "fin-market-declarative"
 
 
 def test_agent(endpoint, agent_name):
-    """Testa o agente declarativo via SDK."""
+    """Testa o agente declarativo via Responses API."""
     credential = DefaultAzureCredential()
-    client = AgentsClient(
+    project_client = AIProjectClient(
         endpoint=endpoint,
         credential=credential,
     )
 
-    # Obter o agente pelo nome
-    try:
-        agents = client.list_agents()
-        agent = None
-        for a in agents:
-            if a.name == agent_name:
-                agent = a
-                break
+    # Obter OpenAI client a partir do projeto
+    openai_client = project_client.get_openai_client()
 
-        if not agent:
-            print(f"❌ Agente '{agent_name}' nao encontrado")
-            print(f"\nAgentes disponiveis:")
-            for a in agents:
-                print(f"  - {a.name}")
-            sys.exit(1)
-
-        print(f"🤖 Conectado ao agente: {agent.name} (ID: {agent.id})")
-    except Exception as e:
-        print(f"❌ Erro ao buscar agente '{agent_name}': {e}")
-        print(f"\nVerifique se o agente foi criado com create_agent.py")
-        sys.exit(1)
-
-    # Criar thread de conversa
-    thread = client.threads.create()
-    print(f"💬 Thread criada: {thread.id}")
+    # Criar conversa para chat multi-turn
+    conversation = openai_client.conversations.create()
+    print(f"🤖 Agente: {agent_name}")
+    print(f"💬 Conversa criada: {conversation.id}")
     print(f"\nDigite suas perguntas (ou 'sair' para encerrar):\n")
 
     # Loop de conversa
@@ -77,39 +60,20 @@ def test_agent(endpoint, agent_name):
 
         print("\nAgente: ", end="", flush=True)
 
-        # Enviar mensagem e obter resposta
         try:
-            # Criar mensagem na thread
-            client.messages.create(
-                thread_id=thread.id,
-                role="user",
-                content=user_input,
+            # Enviar mensagem via Responses API com agent_reference
+            response = openai_client.responses.create(
+                conversation=conversation.id,
+                extra_body={
+                    "agent": {
+                        "name": agent_name,
+                        "type": "agent_reference",
+                    }
+                },
+                input=user_input,
             )
 
-            # Executar o agente na thread
-            run = client.runs.create_and_process(
-                thread_id=thread.id,
-                agent_id=agent.id,
-            )
-
-            # Verificar se run completou com sucesso
-            if run.status != "completed":
-                print(f"❌ Run falhou com status: {run.status}")
-                if run.last_error:
-                    print(f"Erro: {run.last_error}")
-                print()
-                continue
-
-            # Obter ultima resposta do assistente
-            response = client.messages.get_last_message_text_by_role(
-                thread_id=thread.id,
-                role=MessageRole.AGENT,
-            )
-            if response:
-                print(response.text.value)
-            else:
-                print("(sem resposta)")
-
+            print(response.output_text)
             print("\n" + "─" * 60 + "\n")
 
         except Exception as e:

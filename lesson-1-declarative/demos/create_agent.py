@@ -16,8 +16,8 @@ Ref: https://learn.microsoft.com/azure/ai-foundry/quickstarts/get-started-code
 import argparse
 import os
 
-from azure.ai.agents import AIProjectClient
-from azure.ai.agents.models import PromptAgentDefinition
+from azure.ai.projects import AIProjectClient
+from azure.ai.projects.models import PromptAgentDefinition
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 
@@ -25,7 +25,7 @@ load_dotenv(override=True)
 
 DEFAULT_ENDPOINT = os.environ.get(
     "PROJECT_ENDPOINT",
-    "https://ai-foundry001.services.ai.azure.com/api/projects/ag365-prj001",
+    "https://YOUR-FOUNDRY.services.ai.azure.com/api/projects/YOUR-PROJECT",
 )
 DEFAULT_MODEL = os.environ.get("MODEL_DEPLOYMENT_NAME", "gpt-4.1")
 DEFAULT_AGENT_NAME = "fin-market-declarative"

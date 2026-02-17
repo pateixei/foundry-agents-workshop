@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Criar e implantar um **Agente Declarativo** no Azure AI Foundry usando o SDK `azure-ai-agents`. Você criará um agente que pode responder sobre mercados financeiros brasileiros usando apenas configuração de prompt — sem contêineres, sem infraestrutura.
+Criar e implantar um **Agente Declarativo** no Azure AI Foundry usando o SDK `azure-ai-projects` (nova experiência Foundry). Você criará um agente que pode responder sobre mercados financeiros brasileiros usando apenas configuração de prompt — sem contêineres, sem infraestrutura.
 
 ## Cenário
 
@@ -62,8 +62,8 @@ Abra `starter/create_agent.py` e implemente:
 
 1. **Importar módulos necessários**:
 ```python
-from azure.ai.agents import AIProjectClient
-from azure.ai.agents.models import PromptAgentDefinition
+from azure.ai.projects import AIProjectClient
+from azure.ai.projects.models import PromptAgentDefinition
 from azure.identity import DefaultAzureCredential
 ```
 
@@ -102,31 +102,34 @@ agent = project_client.agents.create_version(
 
 Abra `starter/test_agent.py` e implemente:
 
-1. **Conectar ao agente existente**:
+1. **Obter OpenAI client a partir do projeto**:
 ```python
-agent = project_client.agents.get_agent("fin-market-declarative")
+openai_client = project_client.get_openai_client()
 ```
 
-2. **Criar thread de conversa**:
+2. **Criar conversa para chat multi-turn**:
 ```python
-thread = project_client.agents.create_thread()
+conversation = openai_client.conversations.create()
 ```
 
-3. **Implementar loop de chat com streaming**:
+3. **Implementar loop de chat via Responses API**:
 ```python
 while True:
     user_input = input("You: ")
     if user_input.lower() == "quit":
         break
     
-    for chunk in project_client.agents.send_message_stream(
-        agent_id=agent.id,
-        thread_id=thread.id,
-        message=user_input,
-    ):
-        if chunk.text:
-            print(chunk.text, end="", flush=True)
-    print()
+    response = openai_client.responses.create(
+        conversation=conversation.id,
+        extra_body={
+            "agent": {
+                "name": "fin-market-declarative",
+                "type": "agent_reference",
+            }
+        },
+        input=user_input,
+    )
+    print(response.output_text)
 ```
 
 **Critérios de Sucesso**:
@@ -182,7 +185,7 @@ Teste o agente com estas perguntas:
 
 2. Modifique `create_agent.py` para incluir a tool Bing:
    ```python
-   from azure.ai.agents.models import (
+   from azure.ai.projects.models import (
        BingGroundingAgentTool,
        BingGroundingSearchToolParameters,
    )
@@ -227,7 +230,7 @@ Teste o agente com estas perguntas:
 |-----------|--------|-------------|
 | **Criação do Agente** | 25 pts | Agente criado com sucesso via SDK |
 | **Qualidade do System Prompt** | 20 pts | Conhecimento de domínio e diretrizes apropriadas |
-| **Cliente de Teste** | 25 pts | Loop de conversa funcional com streaming |
+| **Cliente de Teste** | 25 pts | Loop de conversa funcional com Responses API |
 | **Testes** | 15 pts | Múltiplos cenários testados, comportamento verificado |
 | **Modificação no Portal** | 10 pts | Alterações e testes realizados com sucesso |
 | **Qualidade do Código** | 5 pts | Limpo, documentado, segue convenções Python |
