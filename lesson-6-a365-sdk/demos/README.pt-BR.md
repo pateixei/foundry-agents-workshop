@@ -1,5 +1,7 @@
 # Demo 5: Integração com Microsoft Agent 365 SDK
 
+> 🇺🇸 **[Read in English](README.md)**
+
 > **Tipo de Demo**: Demonstração guiada pelo instrutor. Esta demo referencia o código-fonte em `lesson-6-a365-sdk/`. O instrutor percorre a configuração do A365 CLI, integração com Bot Framework e implantação ao vivo na tela.
 
 ## Visão Geral

@@ -31,7 +31,7 @@ Write-Host "[1/5] Obtendo outputs da infraestrutura..." -ForegroundColor Yellow
 
 $RG = "rg-ai-agents-workshop"
 $DEPLOYMENT = "main"
-$SUBSCRIPTION = (az account show --query id -o tsv)
+$SUBSCRIPTION = (az account show --query id -o tsv 2>$null)
 if (-not $SUBSCRIPTION) { Write-Host "ERRO: Execute 'az login' primeiro." -ForegroundColor Red; exit 1 }
 
 $outputs = az deployment group show `

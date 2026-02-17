@@ -1,5 +1,7 @@
 # Lição 4 - Agente LangGraph no Azure Container Apps (Connected Agent)
 
+> 🇺🇸 **[Read in English](README.md)**
+
 Nesta lição, implantamos um agente LangGraph no **Azure Container Apps (ACA)** —
 infraestrutura gerenciada pelo usuário — e o registramos como um **Connected Agent**
 no Control Plane do Microsoft Foundry para governança e monitoramento.

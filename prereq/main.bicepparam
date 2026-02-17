@@ -9,6 +9,9 @@ param logAnalyticsName = 'log-workshp'
 param appInsightsName = 'appi-workshp'
 param aiProjectName = 'aiprj-workshp'
 
+// Storage Account para Capability Host
+param storageAccountName = 'stworkshopagents'
+
 // Configuracoes do modelo
 param aiModelDeployment = 'gpt-4.1'
 param modelVersion = '2024-07-18'

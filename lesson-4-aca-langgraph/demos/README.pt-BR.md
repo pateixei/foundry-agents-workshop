@@ -1,5 +1,7 @@
 # Demo 4: Implantação no Azure Container Apps (ACA)
 
+> 🇺🇸 **[Read in English](README.md)**
+
 > **Tipo de Demo**: Demonstração guiada pelo instrutor. Esta demo referencia o código-fonte em `lesson-4-aca-langgraph/labs/solution/`. O instrutor percorre o código e o template Bicep ao vivo na tela.
 
 ## Visão Geral

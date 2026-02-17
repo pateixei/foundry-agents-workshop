@@ -28,6 +28,9 @@ param modelVersion string = '2025-01-15'
 @description('Capacidade do deployment (TPM em milhares)')
 param modelCapacity int = 100
 
+@description('Nome da Storage Account para o Capability Host (hosted agents)')
+param storageAccountName string
+
 // Log Analytics Workspace
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   name: logAnalyticsName
@@ -128,6 +131,37 @@ resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = 
   properties: {}
 }
 
+// Storage Account para o Capability Host (dados de agentes, threads, vector stores)
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {
+    supportsHttpsTrafficOnly: true
+    minimumTlsVersion: 'TLS1_2'
+  }
+}
+
+// Capability Host (habilita hosted agents no Foundry - necessario para lessons 2 e 3)
+// Cria no nivel da conta (account-level). O Foundry propaga para os projetos automaticamente.
+// IMPORTANTE: enablePublicHostingEnvironment é OBRIGATÓRIO para hosted agents funcionarem.
+// Sem esta propriedade, o agente fica preso em "Starting" e falha após 15 minutos.
+resource capabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-10-01-preview' = {
+  name: 'default'
+  parent: aiFoundry
+  properties: {
+    capabilityHostKind: 'Agents'
+    enablePublicHostingEnvironment: true
+  }
+  dependsOn: [
+    aiProject
+    storageAccount
+  ]
+}
+
 // Outputs
 output openAIEndpoint string = aiFoundry.properties.endpoint
 output openAIServiceName string = aiFoundry.name
@@ -142,4 +176,6 @@ output appInsightsInstrumentationKey string = appInsights.properties.Instrumenta
 output appInsightsConnectionString string = appInsights.properties.ConnectionString
 output containerAppsEnvName string = containerAppsEnv.name
 output containerAppsEnvId string = containerAppsEnv.id
+output storageAccountName string = storageAccount.name
+output storageAccountId string = storageAccount.id
 output resourceGroupName string = resourceGroupName

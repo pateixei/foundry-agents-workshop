@@ -2,9 +2,23 @@
 
 > 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
 
+## 🎯 Learning Objectives
+
+By the end of this lesson, you will be able to:
+1. **Create** agent instances in Microsoft Teams (personal and shared)
+2. **Understand** the difference between personal, shared, and org-wide instances
+3. **Test** end-user experience with multi-turn conversations in Teams
+4. **Manage** instance lifecycle (create, suspend, resume, delete)
+5. **Configure** instance settings and customize behavior
+6. **Troubleshoot** common instance creation and interaction issues
+
+---
+
 ## Overview
 
 After publishing your agent to the M365 Admin Center (Lesson 7), users can create **instances** of your agent in Microsoft Teams. An agent instance is a dedicated deployment of your agent that users interact with through the Teams interface.
+
+> **Think of it this way**: Published agent = App in the app store. Instance = App installed on your phone.
 
 In this lesson, you'll learn how to:
 - Create personal and shared agent instances
@@ -12,6 +26,18 @@ In this lesson, you'll learn how to:
 - Test your agent in Teams
 - Manage instance lifecycle (suspend, resume, delete)
 - Troubleshoot common instance creation issues
+
+---
+
+## Instance Types
+
+| Type | Scope | Use Case | Who Creates | Isolation |
+|------|-------|----------|-------------|-----------|
+| **Personal** | Individual user | Private research, personal tasks | End user | Fully isolated conversation history |
+| **Shared** | Team/Channel | Collaborative workflows, team visibility | Team owner | Shared context across team members |
+| **Org-wide** | All users | Company-wide services (IT helpdesk, HR) | M365 Admin | Organization-level access |
+
+> Each instance is **isolated**—separate conversation history, separate identity. A personal instance doesn't know about channel conversations, and vice versa.
 
 ## Prerequisites
 
@@ -639,6 +665,95 @@ Congratulations! You've completed the Azure AI Foundry Agents Workshop. 🎉
    - [Azure AI Foundry Documentation](https://learn.microsoft.com/en-us/azure/ai-services/)
    - [Bot Framework Documentation](https://learn.microsoft.com/en-us/azure/bot-service/)
    - [Teams App Development](https://learn.microsoft.com/en-us/microsoftteams/platform/)
+
+---
+
+---
+
+## End-User Testing Scenarios
+
+After creating instances, simulate real-world usage to validate the full workflow.
+
+### Scenario 1: Personal Research Workflow
+
+Test multi-step research in your personal instance:
+
+```
+You: I'm considering investing in cloud computing stocks.
+     Can you provide prices for MSFT, GOOGL, and AMZN?
+
+Agent: [Calls tools for each stock, returns prices]
+
+You: Which has the best growth potential?
+
+Agent: [Provides comparative analysis using context from previous question]
+```
+
+**Verify**: Agent retrieves multiple prices, provides comparison, and maintains conversation context.
+
+### Scenario 2: Team Collaboration
+
+In a shared channel instance, have multiple team members interact:
+
+```
+Member 1: @Financial Advisor What are the top 3 tech stocks by market cap?
+Member 2: @Financial Advisor What's the PE ratio for these stocks?
+Member 3: @Financial Advisor Based on current trends, which would you recommend?
+```
+
+**Verify**: Agent responds to different members and maintains shared context.
+
+### Scenario 3: Error Handling
+
+Test agent robustness with edge cases:
+
+| Input | Expected Behavior |
+|-------|-------------------|
+| Invalid stock symbol (`INVALID`) | Graceful error: "I couldn't find that symbol" |
+| Ambiguous request (`Is it good?`) | Clarifying question: "What stock are you asking about?" |
+| Out-of-scope (`Tell me a joke`) | Redirect: "I specialize in financial information" |
+| Empty message | Graceful handling without crash |
+
+### Scenario 4: Adaptive Cards (if implemented in Lesson 6)
+
+```
+You: Show me a dashboard for AAPL
+```
+
+**Verify**: Agent returns Adaptive Card with stock ticker, price, change %, and action buttons.
+
+---
+
+## ❓ Frequently Asked Questions
+
+**Q: What's the difference between deleting an instance and unpublishing?**
+A: Deleting an instance removes one user's/team's deployment (conversation history lost). Unpublishing removes the agent from the catalog globally (no new instances, existing ones keep working).
+
+**Q: Can I update my agent code without affecting instances?**
+A: Yes! Instances point to the messaging endpoint. When you redeploy ACA with new code (same FQDN), all instances automatically get the new version.
+
+**Q: How long does it take for a new instance to appear in Teams?**
+A: Personal instances appear within 1-2 minutes. Shared instances may take 5-10 minutes due to M365 directory sync. If not visible after 15 minutes, try signing out and back into Teams.
+
+**Q: Can team members see my personal instance conversations?**
+A: No. Personal instances are fully isolated. Only you can see your conversation history. Shared instances are visible to all team members.
+
+**Q: How many instances can I create?**
+A: There's no hard limit per user, but organizational policies may restrict the number. Each instance consumes minimal resources—the heavy lifting is on the ACA backend.
+
+**Q: What happens when ACA scales to zero?**
+A: If your ACA has `minReplicas: 0`, the first request will experience a cold start (5-15 seconds). Configure `minReplicas: 1` for always-on availability.
+
+---
+
+## 🏆 Self-Paced Challenges
+
+1. **Org-Wide Instance**: If you have admin rights, create an org-wide instance and verify all users in your tenant can discover it
+2. **Instance Comparison**: Create both a personal and shared instance with the same blueprint. Send the same question to both and document how context isolation works
+3. **Lifecycle Drill**: Create → Test → Suspend → Resume → Delete → Re-create an instance. Document the state at each step and what data persists
+4. **Channel Customization**: Create shared instances in 3 different channels with different display names. Verify each maintains independent context
+5. **Performance Profiling**: Send 10 rapid-fire questions to your instance and monitor response times in Application Insights. Identify if ACA scaling triggers
+6. **User Guide**: Write a 1-page end-user guide explaining how to find, install, and interact with the Financial Advisor Agent in Teams—as if for a non-technical colleague
 
 ---
 

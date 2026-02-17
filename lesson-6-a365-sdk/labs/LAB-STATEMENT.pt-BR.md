@@ -1,5 +1,7 @@
 # Lab 5: Integração Microsoft Agent 365 e Implantação no M365
 
+> 🇺🇸 **[Read in English](LAB-STATEMENT.md)**
+
 ## Objetivo
 
 Aprimorar seu agente com o **Microsoft Agent 365 (A365) SDK**, registrar Agent Blueprint no Microsoft 365 e implantar no Teams para acesso dos usuários finais. Este laboratório completa o ciclo completo de implantação corporativa.

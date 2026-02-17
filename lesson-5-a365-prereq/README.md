@@ -2,9 +2,54 @@
 
 > 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
 
+## 🎯 Learning Objectives
+
+By the end of this lesson, you will be able to:
+1. **Configure** Agent 365 (A365) CLI and authentication for cross-tenant scenarios
+2. **Register** Agent Blueprint in Microsoft 365 Entra ID
+3. **Understand** cross-tenant architecture (Azure Tenant A + M365 Tenant B)
+4. **Publish** agent Blueprint to M365 Admin Center for admin approval
+5. **Create** agent instances in Microsoft Teams (personal and shared)
+6. **Manage** the full Agent 365 development lifecycle (config → blueprint → publish → instances)
+
+---
+
+## Overview
+
 This lesson covers the complete setup and deployment of agents to **Microsoft Agent 365** (A365), from configuration to publishing and creating agent instances in Microsoft 365.
 
 > **IMPORTANT**: Agent 365 requires participation in the [Frontier preview program](https://adoption.microsoft.com/copilot/frontier-program/).
+
+---
+
+## Architecture: Cross-Tenant Flow
+
+```
+User in M365 Tenant (Tenant B)
+    ↓ (invokes agent via Teams)
+Microsoft Graph (Tenant B)
+    ↓ (authenticates using Agent User)
+Agent Blueprint (Tenant B Entra ID)
+    ↓ (routes request to)
+Messaging Endpoint (ACA in Tenant A)
+    ↓ (agent executes)
+Response flows back through Graph
+```
+
+> **Key insight**: Agent identity lives in M365 Tenant, but agent code runs in Azure Tenant. A365 CLI bridges them by registering the endpoint URL in M365's Entra ID.
+
+---
+
+## A365 Development Lifecycle
+
+| Step | Phase | Where | This Lesson? |
+|------|-------|-------|:------------:|
+| 1 | Build and run agent | Azure Tenant A | ❌ (Lesson 4) |
+| 2 | Setup A365 config | M365 Tenant B | ✅ |
+| 3 | Setup agent blueprint | M365 Tenant B | ✅ |
+| 4 | Deploy infrastructure | Azure Tenant A | ❌ (Lesson 4) |
+| 5 | Publish to M365 admin center | M365 Tenant B | ✅ |
+| 6 | Create agent instances | M365 (Teams/Outlook) | ✅ |
 
 ---
 
@@ -625,6 +670,38 @@ With the complete A365 setup done, you can now:
 - **Multi-language Support**: Localized agent responses
 - **Analytics & Telemetry**: Detailed usage tracking and performance metrics
 - **Lifecycle Management**: Automated testing, staging, and production deployments
+
+---
+
+## ❓ Frequently Asked Questions
+
+**Q: Why do we use `needDeployment: false` instead of letting A365 create infrastructure?**
+A: Our agent is already deployed to ACA (Lesson 4). A365 only needs to register the blueprint identity in M365 Entra ID and point to the existing ACA endpoint. Setting `needDeployment: true` would create duplicate App Service infrastructure.
+
+**Q: Can Azure Tenant (A) and M365 Tenant (B) be the same tenant?**
+A: Yes! Single-tenant is simpler. The cross-tenant scenario is common in enterprises that separate Azure subscriptions from M365 for governance, cost allocation, or acquisition history.
+
+**Q: What if `AgentIdentityBlueprint.*` permissions don't appear in Entra portal?**
+A: These are beta permissions. Use the Graph API method (Option B in step 3.3) to add them programmatically. Do NOT click "Grant admin consent" in the portal afterwards—it will overwrite the beta permissions.
+
+**Q: What role do I need in the M365 Tenant?**
+A: Global Administrator, Agent ID Administrator, or Agent ID Developer. For the full workshop flow (including admin consent), Global Administrator is easiest.
+
+**Q: How long does admin approval take after publishing?**
+A: In the workshop, approval is near-instant (same person). In production, it depends on your organization's approval workflow—hours to days.
+
+**Q: What happens to instances if I redeploy ACA?**
+A: Instances point to the messaging endpoint URL. As long as the FQDN stays the same after redeployment, instances continue working with the new version automatically.
+
+---
+
+## 🏆 Self-Paced Challenges
+
+1. **Multi-Tenant Investigation**: Document your organization's tenant topology. Are Azure and M365 in the same tenant? Map which A365 config fields change for each scenario.
+2. **Permission Audit**: Use Graph Explorer to list all permissions granted to your agent's service principal. Compare delegated vs application permissions.
+3. **Endpoint Failover**: Configure a secondary ACA deployment and update the messaging endpoint. Test switching between primary and secondary.
+4. **Instance Governance**: Create both personal and shared instances, then write a governance policy defining who should use which type and why.
+5. **Automation Script**: Write a PowerShell script that automates the entire A365 setup (steps 2-6) from a single config file, including error handling and validation.
 
 ---
 

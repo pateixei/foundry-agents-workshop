@@ -1,5 +1,7 @@
 # Lab 1: Criar Agente Declarativo de Consultoria Financeira
 
+> 🇺🇸 **[Read in English](LAB-STATEMENT.md)**
+
 ## Objetivo
 
 Criar e implantar um **Agente Declarativo** no Azure AI Foundry usando o SDK `azure-ai-projects` (nova experiência Foundry). Você criará um agente que pode responder sobre mercados financeiros brasileiros usando apenas configuração de prompt — sem contêineres, sem infraestrutura.

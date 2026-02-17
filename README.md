@@ -24,6 +24,13 @@ Practical workshop to build, deploy, and manage AI agents using **Microsoft Foun
 
 In addition to lesson code, this repository includes comprehensive facilitation and student resources:
 
+### For Students
+
+| Resource | Description |
+|----------|-------------|
+| [SETUP GUIDE](student-kit/SETUP-GUIDE.md) | Step-by-step environment setup (Azure subscription, CLI, Python, Docker) |
+| [RESOURCES LINKS](student-kit/RESOURCES-LINKS.md) | Curated links to documentation, learning paths, and reference materials |
+
 ### For Instructors
 
 All instructor materials are in the [instructor-guide/](instructor-guide/) folder:
@@ -35,13 +42,6 @@ All instructor materials are in the [instructor-guide/](instructor-guide/) folde
 | [CONTINGENCY PLAN](instructor-guide/CONTINGENCY-PLAN.md) | Fallback strategies for outages, environment issues, and pacing problems |
 | [ROOM READY CHECKLIST](instructor-guide/ROOM-READY-CHECKLIST.md) | Pre-session environment and logistics checklist |
 | Module Scripts | `MODULE-*-SCRIPT.md` — module-by-module delivery scripts with talking points, demo steps, and timing cues |
-
-### For Students
-
-| Resource | Description |
-|----------|-------------|
-| [SETUP GUIDE](student-kit/SETUP-GUIDE.md) | Step-by-step environment setup (Azure subscription, CLI, Python, Docker) |
-| [RESOURCES LINKS](student-kit/RESOURCES-LINKS.md) | Curated links to documentation, learning paths, and reference materials |
 
 ### Technical Reference
 
@@ -107,43 +107,17 @@ python test/chat.py --lesson 1 --once "What is the PETR4 stock price?"
 
 Agent defined via `PromptAgentDefinition` and registered in Foundry. No container, no deployment. Instructions, model, and tools are editable directly in the portal.
 
-![Lesson 1 Architecture](lesson-1-declarative/media/lesson-1-architecture.png)
-
 ### Lesson 2 - Hosted Agent (Microsoft Agent Framework)
 
 Python container with Microsoft Agent Framework running inside Foundry as a Hosted Agent. Uses the `azure-ai-agentserver-agentframework` adapter to expose the Responses API.
-
-![Lesson 2 Architecture](lesson-2-hosted-maf/media/lesson-2-architecture.png)
-
-<details>
-<summary>Deployment flow</summary>
-
-![Lesson 2 Deployment](lesson-2-hosted-maf/media/lesson-2-deployment.png)
-</details>
 
 ### Lesson 3 - Hosted Agent (LangGraph)
 
 Same concept as lesson 2, but using LangGraph as the orchestration framework. The `azure-ai-agentserver-langgraph` adapter converts the LangGraph graph into an HTTP server compatible with Foundry's Responses API.
 
-![Lesson 3 Architecture](lesson-3-hosted-langgraph/media/lesson-3-architecture.png)
-
-<details>
-<summary>Deployment flow</summary>
-
-![Lesson 3 Deployment](lesson-3-hosted-langgraph/media/lesson-3-deployment.png)
-</details>
-
 ### Lesson 4 - Connected Agent (Azure Container Apps)
 
 The LangGraph agent runs on its own infrastructure (ACA) and is registered as a Connected Agent in the Foundry Control Plane. Foundry routes requests via AI Gateway (APIM) to gain observability and governance.
-
-![Lesson 4 Architecture](lesson-4-aca-langgraph/media/lesson-4-architecture.png)
-
-<details>
-<summary>Deployment flow</summary>
-
-![Lesson 4 Deployment](lesson-4-aca-langgraph/media/lesson-4-deployment.png)
-</details>
 
 ### Lesson 5 - Microsoft Agent 365 (Prerequisites)
 

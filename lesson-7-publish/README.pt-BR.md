@@ -1,8 +1,54 @@
 # Lição 7: Publicação do Agente no Microsoft 365 Admin Center
 
+> 🇺🇸 **[Read in English](README.md)**
+
+## 🎯 Objetivos de Aprendizagem
+
+Ao final desta lição, você será capaz de:
+1. **Publicar** o Agent Blueprint no Microsoft 365 Admin Center
+2. **Navegar** pelo fluxo de aprovação do administrador (envio → validação → aprovação → publicação)
+3. **Configurar** o escopo de implantação (usuários específicos, grupos ou toda a organização)
+4. **Monitorar** o uso e a saúde do agente publicado por meio de análises
+5. **Gerenciar** o ciclo de vida do agente (atualizar, despublicar, reverter)
+6. **Compreender** o modelo de governança (controles administrativos, descoberta por usuários, aplicação de políticas)
+
+---
+
 ## Visão Geral
 
 Esta lição orienta você na publicação do seu Agent Blueprint registrado no Microsoft 365 Admin Center, tornando-o disponível para implantação a usuários e grupos na sua organização.
+
+---
+
+## Arquitetura: Fluxo de Publicação
+
+```
+Desenvolvedor                M365 Admin                  Usuários Finais
+   |                           |                            |
+   | 1. a365 publish           |                            |
+   |-------------------------->|                            |
+   |                           |                            |
+   |                      2. Revisão no                     |
+   |                      Admin Center                      |
+   |                           |                            |
+   |                      3. Aprovar/Rejeitar               |
+   |                           |                            |
+   |                      4. Publicar no Catálogo           |
+   |                           |--------------------------->|
+   |                           |                            |
+   |                           |                       5. Descobrir
+   |                           |                       & Instalar
+```
+
+### Papéis de Governança
+
+| Papel | Capacidade |
+|-------|------------|
+| **Agent Developer** | Registrar Blueprint, enviar para publicação |
+| **M365 Administrator** | Revisar, aprovar/rejeitar, definir políticas de descoberta |
+| **End User** | Descobrir agentes publicados, criar instâncias, interagir |
+
+> **A aprovação do administrador garante**: Nenhum agente não autorizado, conformidade com a política da empresa, branding adequado e validação de segurança.
 
 ## Pré-requisitos
 
@@ -228,6 +274,15 @@ Para telemetria detalhada:
 
 ## Despublicação / Remoção do Agente
 
+### Quando Despublicar
+
+| Cenário | Ação | Efeito |
+|---------|------|--------|
+| Bug crítico (conselho incorreto) | Despublicar imediatamente | Novas instâncias bloqueadas, existentes continuam |
+| Vulnerabilidade de segurança | Despublicar + notificar admin | Interromper todo o acesso o mais rápido possível |
+| Violação de política (tratamento de PII) | Despublicar + auditoria | Revisar o tratamento de dados |
+| Manutenção planejada | Despublicação opcional | Pode manter publicado se o endpoint permanecer ativo |
+
 ### Despublicar do M365
 
 ```powershell
@@ -282,6 +337,38 @@ a365 blueprint delete
    - Documente alterações
    - Teste antes de atualizar o endpoint
    - Comunique atualizações aos usuários
+
+## ❓ Perguntas Frequentes
+
+**P: Quanto tempo leva a aprovação do administrador?**
+R: No workshop, a aprovação é praticamente instantânea (você é o administrador). Em produção, depende da política organizacional — de horas a dias. Acompanhe pelo Admin Center se demorar mais de 30 minutos.
+
+**P: O que acontece com as instâncias existentes quando eu despublico?**
+R: As instâncias existentes continuam funcionando (não são excluídas). NOVAS instâncias não podem ser criadas. Os usuários não percebem interrupção até que o administrador remova explicitamente as instâncias.
+
+**P: Posso publicar na loja pública de apps do Teams?**
+R: No workshop, usamos `isPrivate: true` (somente organização). A publicação na loja pública requer revisão pela Microsoft e verificações de conformidade adicionais.
+
+**P: Quais permissões o administrador revisa?**
+R: O administrador valida: permissões do Microsoft Graph (User.Read, Conversations.Send), segurança do endpoint de mensagens (HTTPS obrigatório), links de política de privacidade e práticas de tratamento de dados.
+
+**P: Posso atualizar um agente publicado sem nova aprovação?**
+R: Atualizações de endpoint (nova URL do ACA) exigem nova publicação. Alterações de código por trás do mesmo endpoint não — as instâncias recebem automaticamente a nova versão.
+
+**P: E se vários agentes forem publicados?**
+R: Os usuários veem todos os agentes publicados na loja de apps do Teams (seção da organização). Cada um tem seu próprio status de aprovação e escopo de implantação.
+
+---
+
+## 🏆 Desafios Autoguiados
+
+1. **Manifesto de Publicação**: Crie um `publication-manifest.json` completo com ícone personalizado, informações do desenvolvedor, URL de privacidade e termos de uso para seu agente
+2. **Implantação com Escopo**: Implante o agente para um grupo de segurança específico (não para toda a organização) e verifique que apenas membros do grupo podem descobri-lo
+3. **Simulação de Rollback**: Publique, despublique e depois republique seu agente. Documente o estado exato em cada etapa — o que acontece com as instâncias existentes?
+4. **Painel de Análises**: Após publicar, gere tráfego de teste e explore as Análises de Uso no M365 Admin Center. Documente as métricas disponíveis.
+5. **Política de Governança**: Escreva uma política de governança de uma página para sua organização definindo: quem pode enviar agentes, critérios de aprovação, campos obrigatórios no manifesto e SLA para revisão do administrador
+
+---
 
 ## Próximos Passos
 

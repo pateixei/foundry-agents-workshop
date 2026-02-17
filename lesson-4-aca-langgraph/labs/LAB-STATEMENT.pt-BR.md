@@ -1,5 +1,7 @@
 # Lab 4: Implantar Agente no Azure Container Apps (ACA) com Bicep
 
+> 🇺🇸 **[Read in English](LAB-STATEMENT.md)**
+
 ## Objetivo
 
 Implantar infraestrutura usando **Bicep IaC** e registrar o agente como **Connected Agent (Agente Conectado)** no Foundry, proporcionando controle total de infraestrutura enquanto mantém a integração de governança do Foundry.

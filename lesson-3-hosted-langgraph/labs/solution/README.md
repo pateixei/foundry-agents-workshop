@@ -58,25 +58,28 @@ adapter.run()                  # Starts server on port 8088
 
 ## Prerequisites
 
-- Infrastructure from the `prereq/` folder already deployed
-- Azure CLI with `cognitiveservices` extension (`az extension add --name cognitiveservices --upgrade`)
+- Infrastructure from the `prereq/` folder already deployed (includes **Capability Host** and Storage Account)
+- Azure CLI installed and authenticated (`az login`)
 - Python 3.12+
-- `az login` completed
+
+> **Note**: The Capability Host is a critical infrastructure component that enables hosted agents.
+> It is automatically provisioned by `prereq/main.bicep`. See [capability-host.md](../../../capability-host.md) for details.
 
 ## Step-by-Step Deployment
 
 The `deploy.ps1` script automates the steps below, but if you need to do it
 manually or understand what happens, follow the sequence:
 
-### 1. Capability Host (once per account)
+### 1. Verify Capability Host
 
 Hosted agents require a **Capability Host** at the account level.
-If not yet created, run:
+It is automatically provisioned by `prereq/main.bicep`. Verify with:
 
 ```powershell
-az rest --method put `
-    --url "https://management.azure.com/subscriptions/<SUB_ID>/resourceGroups/<RG>/providers/Microsoft.CognitiveServices/accounts/<FOUNDRY_NAME>/capabilityHosts/accountcaphost?api-version=2025-04-01-preview" `
-    --body '{\"properties\":{\"capabilityHostKind\":\"Agents\",\"enablePublicHostingEnvironment\":true}}'
+az rest --method GET `
+    --uri "https://management.azure.com/subscriptions/<SUB_ID>/resourceGroups/<RG>/providers/Microsoft.CognitiveServices/accounts/<FOUNDRY_NAME>/capabilityHosts/default?api-version=2025-04-01-preview" `
+    --query "properties.provisioningState" -o tsv
+# Expected output: Succeeded
 ```
 
 ### 2. Build Image in ACR

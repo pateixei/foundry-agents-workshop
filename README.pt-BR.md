@@ -1,5 +1,7 @@
 # Workshop de Agentes Microsoft Foundry
 
+> 🇺🇸 **[Read in English](README.md)**
+
 Workshop prático para construir, implantar e gerenciar agentes de IA usando o **Microsoft Foundry** com diferentes abordagens: agentes declarativos, agentes hospedados (MAF e LangGraph), agentes no Azure Container Apps e integração com o Microsoft Agent 365.
 
 ![Visão Geral da Arquitetura](prereq/media/architecture-diagram.png)

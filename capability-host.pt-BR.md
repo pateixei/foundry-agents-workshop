@@ -1,5 +1,7 @@
 # Capability Host no Microsoft Foundry
 
+> 🇺🇸 **[Read in English](capability-host.md)**
+
 O **Capability Host** é um recurso de infraestrutura do Microsoft Foundry que habilita a execução de **Hosted Agents** (agentes em contêineres) dentro de um projeto Foundry.
 
 ## O que ele faz
@@ -12,41 +14,55 @@ Funciona como uma "ponte" entre o projeto Foundry e os recursos de computação 
 | **Roteamento de requisições** | Recebe chamadas da Responses API e as encaminha para o contêiner correto |
 | **Conexão ACR** | Permite que o projeto faça pull de imagens do Azure Container Registry |
 | **Managed Identity** | Fornece identidade gerenciada para que o contêiner acesse outros serviços (ex.: endpoint OpenAI) |
-| **Armazenamento** | Associa uma conta de armazenamento para persistência de dados do agente |
+| **Armazenamento** | Associa uma conta de armazenamento para persistência de dados do agente, threads e vector stores |
 
-## Como é criado
+## Como é criado (Bicep)
 
-```bash
-az cognitiveservices account capability-host create \
-    --account-name <foundry-account> \
-    --project-name <project> \
-    --capability-host-name default \
-    --capability-host-kind Agents \
-    --storage-connections "[{resource-id: <storage-id>}]" \
-    --ai-service-connections "[{resource-id: <foundry-account-id>}]" \
-    --acr-connections "[{resource-id: <acr-id>}]"
+Neste workshop, o Capability Host é provisionado como parte da infraestrutura compartilhada via `prereq/main.bicep`:
+
+```bicep
+resource capabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-10-01-preview' = {
+  name: 'default'
+  parent: aiFoundry
+  properties: {
+    capabilityHostKind: 'Agents'
+    enablePublicHostingEnvironment: true
+  }
+  dependsOn: [
+    aiProject
+    storageAccount
+  ]
+}
 ```
+
+> ⚠️ **Crítico**: A propriedade `enablePublicHostingEnvironment: true` é **obrigatória** para hosted agents. Sem ela, o agente ficará preso no estado "Starting" e falhará após ~15 minutos com timeout de provisionamento. Esta propriedade instrui o Foundry a criar o ambiente de computação gerenciado para executar contêineres de agentes.
+
+O Foundry provisiona e gerencia automaticamente as conexões de armazenamento e serviço de AI quando `enablePublicHostingEnvironment` está habilitado. Uma Storage Account deve existir no resource group (usada para threads, vector stores e dados do agente).
 
 ## Hierarquia
 
 ```
 Foundry Account (hub)
   +-- Project
-        +-- Capability Host (kind: Agents)
-              |-- Conexão de armazenamento
-              |-- Conexão AI Service (endpoint OpenAI)
-              +-- Conexão ACR (imagens de contêiner)
-                    +-- Hosted Agent v1, v2, ...
+  +-- Capability Host (kind: Agents)   <- nível da conta
+        |-- enablePublicHostingEnvironment: true
+        |-- Armazenamento auto-provisionado (threads, vector stores)
+        |-- Conexão AI Service auto-provisionada
+        +-- Hosted Agent v1, v2, ...
 ```
 
 ## Pontos importantes
 
 - É **obrigatório** para executar hosted agents — sem ele, você só pode criar agentes via Agent Service (sem contêiner customizado).
-- Precisa ser criado **tanto no nível da conta quanto no nível do projeto** (dois níveis).
-- Atualmente em **preview** — requer `az cli >= 2.73.0` com a extensão `cognitiveservices` mais recente.
-- Cada projeto precisa de apenas **um** capability host (normalmente chamado `default`).
+- **`enablePublicHostingEnvironment: true`** é obrigatório — sem ele, o provisionamento do ambiente gerenciado expirará por timeout.
+- Criado no **nível da conta** via Bicep. O Foundry propaga as capacidades para os projetos automaticamente.
+- Atualmente em **preview** — usa API version `2025-10-01-preview`.
+- Cada conta precisa de apenas **um** capability host (chamado `default`).
+- Requer uma **Storage Account** no resource group para persistência de dados (threads, vector stores, dados do agente).
+- O Capability Host **não pode ser atualizado** — se precisar alterar propriedades, você deve deletar e recriar.
 
 ## Contexto no Workshop
 
-- **Lição 1**: Não utiliza capability host porque o agente roda nativamente no Agent Service.
-- **Lição 2**: Capability host é necessário porque o agente LangGraph roda em um contêiner customizado.
+- **Lição 1**: Não utiliza capability host porque o agente roda nativamente no Agent Service (declarativo).
+- **Lições 2 e 3**: Capability host é **obrigatório** porque os agentes rodam em contêineres customizados (hosted agents).
+- **Lições 4 e 6**: Não utilizam capability host porque os agentes rodam no Azure Container Apps (auto-hospedado).

@@ -1,5 +1,7 @@
 # Lab 3: Implantar Agente LangGraph como Hosted Agent no Azure Foundry
 
+> 🇺🇸 **[Read in English](LAB-STATEMENT.md)**
+
 ## Objetivo
 
 Implantar um **agente LangGraph como Hosted Agent (Agente Hospedado)** no Azure Foundry, demonstrando como equipes com expertise em LangGraph podem aproveitar a infraestrutura gerenciada do Azure com alterações mínimas de código.

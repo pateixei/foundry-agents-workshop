@@ -44,21 +44,24 @@ lesson-2-hosted-maf/labs/solution/
 
 ## Prerequisites
 
-1. Infrastructure provisioned via `prereq/deploy.ps1`
+1. Infrastructure provisioned via `prereq/deploy.ps1` (includes Capability Host and Storage Account)
 2. Azure CLI (`az`) installed and authenticated
 3. Python 3.10+
 4. Docker (for image build)
 5. Agent published as Hosted Agent in Foundry (for tests via `test_agent.py`)
 
+> **Note**: The Capability Host is a critical infrastructure component that enables hosted agents.
+> It is automatically provisioned by `prereq/main.bicep`. See [capability-host.md](../../../capability-host.md) for details.
+
 ## Quick Deploy
 
 ```powershell
-cd lesson-1/foundry-agent
+cd lesson-2-hosted-maf/labs/solution
 .\deploy.ps1
 ```
 
 The script automatically:
-1. Gets outputs from Bicep deployment (endpoint, model, ACR)
+1. Gets outputs from Bicep deployment and **verifies the Capability Host** is provisioned
 2. Builds Docker image in ACR
 3. Assigns RBAC roles (AcrPull + Cognitive Services OpenAI User)
 4. Creates new hosted agent version via `az cognitiveservices agent`

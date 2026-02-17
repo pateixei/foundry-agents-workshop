@@ -3,11 +3,12 @@
 #
 # Pre-requisitos:
 #   - Infraestrutura do prereq/ ja deployada (main.bicep)
+#     Isso inclui: ACR, Foundry account/project, Capability Host e Storage Account
 #   - az login realizado
-#   - az extension add --name cognitiveservices --upgrade
 #
 # O que este script faz:
 #   1. Obtem outputs do Bicep (ACR, endpoint, model, nomes de recursos)
+#      e verifica se o Capability Host esta provisionado
 #   2. Faz build da imagem no ACR (cloud build, --no-logs para Windows)
 #   3. Atribui roles RBAC a managed identity do projeto:
 #      - AcrPull no Container Registry
@@ -20,7 +21,7 @@ $ErrorActionPreference = "Stop"
 
 Write-Host ""
 Write-Host "======================================" -ForegroundColor Cyan
-Write-Host " Lesson 2 - LangGraph Hosted Agent"
+Write-Host " Lesson 3 - LangGraph Hosted Agent"
 Write-Host "======================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -31,7 +32,7 @@ Write-Host "[1/6] Obtendo outputs da infraestrutura..." -ForegroundColor Yellow
 
 $RG = "rg-ai-agents-workshop"
 $DEPLOYMENT = "main"
-$SUBSCRIPTION = (az account show --query id -o tsv)
+$SUBSCRIPTION = (az account show --query id -o tsv 2>$null)
 if (-not $SUBSCRIPTION) { Write-Host "ERRO: Execute 'az login' primeiro." -ForegroundColor Red; exit 1 }
 
 $outputs = az deployment group show `
@@ -56,6 +57,23 @@ Write-Host "  OpenAI Endpoint: $OPENAI_ENDPOINT"
 Write-Host "  Model:           $MODEL_DEPLOYMENT"
 Write-Host "  Foundry:         $FOUNDRY_NAME"
 Write-Host "  Project:         $PROJECT_NAME"
+
+# Verificar se o Capability Host esta provisionado (necessario para hosted agents)
+$ErrorActionPreference = "SilentlyContinue"
+$capHostStatus = az rest --method GET `
+    --uri "https://management.azure.com/subscriptions/$SUBSCRIPTION/resourceGroups/$RG/providers/Microsoft.CognitiveServices/accounts/$FOUNDRY_NAME/capabilityHosts/default?api-version=2025-04-01-preview" `
+    --query "properties.provisioningState" `
+    -o tsv 2>$null
+$ErrorActionPreference = "Stop"
+
+if ($capHostStatus -eq "Succeeded") {
+    Write-Host "  Capability Host: OK" -ForegroundColor Green
+} else {
+    Write-Host "  ERRO: Capability Host nao encontrado ou nao provisionado (status=$capHostStatus)." -ForegroundColor Red
+    Write-Host "  Execute 'prereq/deploy.ps1' primeiro para provisionar a infraestrutura completa." -ForegroundColor Red
+    Write-Host "  O Capability Host e obrigatorio para hosted agents (lessons 2 e 3)." -ForegroundColor Red
+    exit 1
+}
 Write-Host ""
 
 # -----------------------------------------------------------

@@ -1,8 +1,24 @@
 # Lição 8: Criando Instâncias de Agente no Microsoft Teams
 
+> 🇺🇸 **[Read in English](README.md)**
+
+## 🎯 Objetivos de Aprendizagem
+
+Ao final desta lição, você será capaz de:
+1. **Criar** instâncias de agente no Microsoft Teams (pessoal e compartilhada)
+2. **Compreender** a diferença entre instâncias pessoal, compartilhada e organizacional
+3. **Testar** a experiência do usuário final com conversas multi-turno no Teams
+4. **Gerenciar** o ciclo de vida da instância (criar, suspender, retomar, excluir)
+5. **Configurar** definições da instância e personalizar o comportamento
+6. **Resolver problemas** comuns de criação e interação de instâncias
+
+---
+
 ## Visão Geral
 
 Após publicar seu agente no M365 Admin Center (Lição 7), os usuários podem criar **instâncias** do seu agente no Microsoft Teams. Uma instância de agente é uma implantação dedicada do seu agente com a qual os usuários interagem por meio da interface do Teams.
+
+> **Pense assim**: Agente publicado = App na loja de aplicativos. Instância = App instalado no seu celular.
 
 Nesta lição, você aprenderá como:
 - Criar instâncias de agente pessoais e compartilhadas
@@ -10,6 +26,18 @@ Nesta lição, você aprenderá como:
 - Testar seu agente no Teams
 - Gerenciar o ciclo de vida da instância (suspender, retomar, excluir)
 - Resolver problemas comuns na criação de instâncias
+
+---
+
+## Tipos de Instância
+
+| Tipo | Escopo | Caso de Uso | Quem Cria | Isolamento |
+|------|--------|-------------|-----------|------------|
+| **Personal** | Usuário individual | Pesquisa privada, tarefas pessoais | Usuário final | Histórico de conversas totalmente isolado |
+| **Shared** | Equipe/Canal | Fluxos de trabalho colaborativos, visibilidade da equipe | Proprietário da equipe | Contexto compartilhado entre membros da equipe |
+| **Org-wide** | Todos os usuários | Serviços de toda a empresa (helpdesk de TI, RH) | Administrador M365 | Acesso em nível organizacional |
+
+> Cada instância é **isolada** — histórico de conversas separado, identidade separada. Uma Personal instance não sabe sobre conversas do canal, e vice-versa.
 
 ## Pré-requisitos
 
@@ -637,6 +665,93 @@ Parabéns! Você concluiu o Workshop de Agentes do Azure AI Foundry. 🎉
    - [Azure AI Foundry Documentation](https://learn.microsoft.com/en-us/azure/ai-services/)
    - [Bot Framework Documentation](https://learn.microsoft.com/en-us/azure/bot-service/)
    - [Teams App Development](https://learn.microsoft.com/en-us/microsoftteams/platform/)
+
+---
+
+## Cenários de Teste para Usuário Final
+
+Após criar instâncias, simule o uso real para validar o fluxo completo.
+
+### Cenário 1: Fluxo de Pesquisa Pessoal
+
+Teste pesquisa em múltiplos passos na sua Personal instance:
+
+```
+You: I'm considering investing in cloud computing stocks.
+     Can you provide prices for MSFT, GOOGL, and AMZN?
+
+Agent: [Calls tools for each stock, returns prices]
+
+You: Which has the best growth potential?
+
+Agent: [Provides comparative analysis using context from previous question]
+```
+
+**Verificar**: O agente recupera múltiplos preços, fornece comparação e mantém o contexto da conversa.
+
+### Cenário 2: Colaboração em Equipe
+
+Em uma Shared instance de canal, faça múltiplos membros da equipe interagirem:
+
+```
+Member 1: @Financial Advisor What are the top 3 tech stocks by market cap?
+Member 2: @Financial Advisor What's the PE ratio for these stocks?
+Member 3: @Financial Advisor Based on current trends, which would you recommend?
+```
+
+**Verificar**: O agente responde a diferentes membros e mantém o contexto compartilhado.
+
+### Cenário 3: Tratamento de Erros
+
+Teste a robustez do agente com casos extremos:
+
+| Entrada | Comportamento Esperado |
+|---------|------------------------|
+| Símbolo de ação inválido (`INVALID`) | Erro gracioso: "I couldn't find that symbol" |
+| Solicitação ambígua (`Is it good?`) | Pergunta de esclarecimento: "What stock are you asking about?" |
+| Fora do escopo (`Tell me a joke`) | Redirecionamento: "I specialize in financial information" |
+| Mensagem vazia | Tratamento gracioso sem falha |
+
+### Cenário 4: Adaptive Cards (se implementado na Lição 6)
+
+```
+You: Show me a dashboard for AAPL
+```
+
+**Verificar**: O agente retorna Adaptive Card com ticker da ação, preço, variação % e botões de ação.
+
+---
+
+## ❓ Perguntas Frequentes
+
+**P: Qual a diferença entre excluir uma instância e despublicar?**
+R: Excluir uma instância remove a implantação de um usuário/equipe (histórico de conversas é perdido). Despublicar remove o agente do catálogo globalmente (nenhuma nova instância pode ser criada, as existentes continuam funcionando).
+
+**P: Posso atualizar o código do meu agente sem afetar as instâncias?**
+R: Sim! As instâncias apontam para o endpoint de mensagens. Quando você reimplanta o ACA com novo código (mesmo FQDN), todas as instâncias recebem automaticamente a nova versão.
+
+**P: Quanto tempo leva para uma nova instância aparecer no Teams?**
+R: Instâncias pessoais aparecem em 1-2 minutos. Instâncias compartilhadas podem levar de 5 a 10 minutos devido à sincronização do diretório M365. Se não estiver visível após 15 minutos, tente sair e entrar novamente no Teams.
+
+**P: Membros da equipe podem ver as conversas da minha Personal instance?**
+R: Não. Instâncias pessoais são totalmente isoladas. Apenas você pode ver seu histórico de conversas. Instâncias compartilhadas são visíveis para todos os membros da equipe.
+
+**P: Quantas instâncias posso criar?**
+R: Não há limite fixo por usuário, mas políticas organizacionais podem restringir a quantidade. Cada instância consome recursos mínimos — o trabalho pesado fica no backend do ACA.
+
+**P: O que acontece quando o ACA escala para zero?**
+R: Se seu ACA tem `minReplicas: 0`, a primeira requisição terá um cold start (5-15 segundos). Configure `minReplicas: 1` para disponibilidade sempre ativa.
+
+---
+
+## 🏆 Desafios Autônomos
+
+1. **Instância Org-Wide**: Se você tem direitos de administrador, crie uma instância org-wide e verifique se todos os usuários do seu tenant podem descobri-la
+2. **Comparação de Instâncias**: Crie uma instância pessoal e uma compartilhada com o mesmo blueprint. Envie a mesma pergunta para ambas e documente como o isolamento de contexto funciona
+3. **Exercício de Ciclo de Vida**: Criar → Testar → Suspender → Retomar → Excluir → Recriar uma instância. Documente o estado em cada etapa e quais dados persistem
+4. **Personalização por Canal**: Crie instâncias compartilhadas em 3 canais diferentes com nomes de exibição distintos. Verifique se cada uma mantém contexto independente
+5. **Perfil de Desempenho**: Envie 10 perguntas em sequência rápida para sua instância e monitore os tempos de resposta no Application Insights. Identifique se o escalonamento do ACA é acionado
+6. **Guia do Usuário**: Escreva um guia de 1 página para o usuário final explicando como encontrar, instalar e interagir com o Financial Advisor Agent no Teams — como se fosse para um colega não técnico
 
 ---
 

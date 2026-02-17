@@ -1,5 +1,7 @@
 # Registrar Agente ACA no Microsoft Foundry Control Plane
 
+> 🇺🇸 **[Read in English](REGISTER.md)**
+
 Este guia detalha o processo passo a passo para registrar o agente LangGraph (executando no Azure Container Apps) como um **Agente Personalizado** no Microsoft Foundry Control Plane.
 
 ## Pré-requisitos

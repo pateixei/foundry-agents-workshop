@@ -1,5 +1,7 @@
 # Lição 2 - Agente Hospedado com LangGraph no Azure AI Foundry
 
+> 🇺🇸 **[Read in English](README.md)**
+
 Nesta lição, criamos um **agente hospedado** no Azure AI Foundry
 usando o framework **LangGraph** do LangChain.
 
@@ -56,25 +58,28 @@ adapter.run()                  # Inicia servidor na porta 8088
 
 ## Pré-requisitos
 
-- Infraestrutura da pasta `prereq/` já implantada
-- Azure CLI com extensão `cognitiveservices` (`az extension add --name cognitiveservices --upgrade`)
+- Infraestrutura da pasta `prereq/` já implantada (inclui **Capability Host** e Storage Account)
+- Azure CLI instalado e autenticado (`az login`)
 - Python 3.12+
-- `az login` completado
+
+> **Nota**: O Capability Host é um componente de infraestrutura crítico que habilita hosted agents.
+> Ele é provisionado automaticamente pelo `prereq/main.bicep`. Veja [capability-host.pt-BR.md](../../../capability-host.pt-BR.md) para detalhes.
 
 ## Implantação Passo a Passo
 
 O script `deploy.ps1` automatiza os passos abaixo, mas se você precisar fazer
 manualmente ou entender o que acontece, siga a sequência:
 
-### 1. Capability Host (uma vez por conta)
+### 1. Verificar Capability Host
 
 Agentes hospedados requerem um **Capability Host** no nível da conta.
-Se ainda não criado, execute:
+Ele é provisionado automaticamente pelo `prereq/main.bicep`. Verifique com:
 
 ```powershell
-az rest --method put `
-    --url "https://management.azure.com/subscriptions/<SUB_ID>/resourceGroups/<RG>/providers/Microsoft.CognitiveServices/accounts/<FOUNDRY_NAME>/capabilityHosts/accountcaphost?api-version=2025-04-01-preview" `
-    --body '{\"properties\":{\"capabilityHostKind\":\"Agents\",\"enablePublicHostingEnvironment\":true}}'
+az rest --method GET `
+    --uri "https://management.azure.com/subscriptions/<SUB_ID>/resourceGroups/<RG>/providers/Microsoft.CognitiveServices/accounts/<FOUNDRY_NAME>/capabilityHosts/default?api-version=2025-04-01-preview" `
+    --query "properties.provisioningState" -o tsv
+# Output esperado: Succeeded
 ```
 
 ### 2. Construir Imagem no ACR

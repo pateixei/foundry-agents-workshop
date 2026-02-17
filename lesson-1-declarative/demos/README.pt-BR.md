@@ -1,5 +1,7 @@
 # Demo 1: Padrão de Agente Declarativo
 
+> 🇺🇸 **[Read in English](README.md)**
+
 ## Visão Geral
 
 Esta demo apresenta a criação de um **agente declarativo (baseado em prompt) de consultoria financeira** no Azure AI Foundry utilizando o SDK `azure-ai-projects` (nova experiência Foundry). Agentes declarativos são o padrão mais simples — executam no lado do servidor no Foundry sem necessidade de contêineres personalizados.

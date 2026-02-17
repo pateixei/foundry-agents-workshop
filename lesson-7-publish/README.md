@@ -2,9 +2,53 @@
 
 > 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
 
+## 🎯 Learning Objectives
+
+By the end of this lesson, you will be able to:
+1. **Publish** Agent Blueprint to Microsoft 365 Admin Center
+2. **Navigate** the admin approval workflow (submission → validation → approval → publication)
+3. **Configure** deployment scope (specific users, groups, or entire organization)
+4. **Monitor** published agent usage and health analytics
+5. **Manage** agent lifecycle (update, unpublish, rollback)
+6. **Understand** the governance model (admin controls, user discovery, policy enforcement)
+
+---
+
 ## Overview
 
 This lesson guides you through publishing your registered Agent Blueprint to the Microsoft 365 Admin Center, making it available for deployment to users and groups in your organization.
+
+---
+
+## Architecture: Publication Workflow
+
+```
+Developer                   M365 Admin                  End Users
+   |                           |                            |
+   | 1. a365 publish           |                            |
+   |-------------------------->|                            |
+   |                           |                            |
+   |                      2. Review in                      |
+   |                      Admin Center                      |
+   |                           |                            |
+   |                      3. Approve/Reject                 |
+   |                           |                            |
+   |                      4. Publish to Catalog             |
+   |                           |--------------------------->|
+   |                           |                            |
+   |                           |                       5. Discover
+   |                           |                       & Install
+```
+
+### Governance Roles
+
+| Role | Capability |
+|------|------------|
+| **Agent Developer** | Register Blueprint, submit for publication |
+| **M365 Administrator** | Review, approve/reject, set discovery policies |
+| **End User** | Discover published agents, create instances, interact |
+
+> **Admin approval ensures**: No rogue agents, compliance with company policy, proper branding, and security validation.
 
 ## Prerequisites
 
@@ -230,6 +274,15 @@ For detailed telemetry:
 
 ## Unpublishing / Removing Agent
 
+### When to Unpublish
+
+| Scenario | Action | Effect |
+|----------|--------|--------|
+| Critical bug (incorrect advice) | Unpublish immediately | New instances blocked, existing continue |
+| Security vulnerability | Unpublish + notify admin | Stop all access ASAP |
+| Policy violation (PII handling) | Unpublish + audit | Review data handling |
+| Planned maintenance | Optional unpublish | Can keep published if endpoint stays up |
+
 ### Unpublish from M365
 
 ```powershell
@@ -285,13 +338,45 @@ a365 blueprint delete
    - Test before updating endpoint
    - Communicate updates to users
 
+## ❓ Frequently Asked Questions
+
+**Q: How long does admin approval take?**
+A: In the workshop, approval is near-instant (you are the admin). In production, it depends on organizational policy—hours to days. Follow up via the Admin Center if stuck >30 minutes.
+
+**Q: What happens to existing instances when I unpublish?**
+A: Existing instances continue to work (not deleted). No NEW instances can be created. Users see no disruption until admin explicitly removes instances.
+
+**Q: Can I publish to the public Teams app store?**
+A: In the workshop, we use `isPrivate: true` (organization-only). Public store publication requires Microsoft review and additional compliance checks.
+
+**Q: What permissions does the admin review?**
+A: Admin validates: Microsoft Graph permissions (User.Read, Conversations.Send), messaging endpoint security (HTTPS required), privacy policy links, and data handling practices.
+
+**Q: Can I update a published agent without re-approval?**
+A: Endpoint updates (new ACA URL) require re-publishing. Code changes behind the same endpoint don't—instances automatically get the new version.
+
+**Q: What if multiple agents are published?**
+A: Users see all published agents in the Teams app store (organization section). Each has its own approval status and deployment scope.
+
+---
+
+## 🏆 Self-Paced Challenges
+
+1. **Publication Manifest**: Create a complete `publication-manifest.json` with custom icon, developer info, privacy URL, and terms of use for your agent
+2. **Scoped Deployment**: Deploy the agent to a specific security group (not entire org) and verify only group members can discover it
+3. **Rollback Drill**: Publish, unpublish, then re-publish your agent. Document the exact state at each step—what happens to existing instances?
+4. **Analytics Dashboard**: After publishing, generate test traffic and explore the Usage Analytics in M365 Admin Center. Document available metrics.
+5. **Governance Policy**: Write a one-page governance policy for your organization defining: who can submit agents, approval criteria, mandatory fields in the manifest, and SLA for admin review
+
+---
+
 ## Next Steps
 
 - **Lesson 8**: Creating agent instances in Teams for users
 - Learn about instance lifecycle management
 - Explore personal vs shared instances
 
-##References
+## References
 
 - [M365 Admin Center](https://admin.microsoft.com)
 - [Microsoft Agent 365 Publishing](https://learn.microsoft.com/microsoft-agent-365/developer/)

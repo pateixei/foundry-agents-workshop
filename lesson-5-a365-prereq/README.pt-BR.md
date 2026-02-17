@@ -1,8 +1,55 @@
 # Lição 5 - Configuração Completa do Microsoft Agent 365
 
+> 🇺🇸 **[Read in English](README.md)**
+
+## 🎯 Objetivos de Aprendizagem
+
+Ao final desta lição, você será capaz de:
+1. **Configurar** o CLI e a autenticação do Agent 365 (A365) para cenários cross-tenant
+2. **Registrar** Agent Blueprint no Entra ID do Microsoft 365
+3. **Compreender** a arquitetura cross-tenant (Azure Tenant A + M365 Tenant B)
+4. **Publicar** o Agent Blueprint no M365 Admin Center para aprovação administrativa
+5. **Criar** instâncias de agente no Microsoft Teams (pessoal e compartilhada)
+6. **Gerenciar** o ciclo de vida completo de desenvolvimento do Agent 365 (config → blueprint → publicar → instâncias)
+
+---
+
+## Visão Geral
+
 Esta lição cobre a configuração e implantação completa de agentes no **Microsoft Agent 365** (A365), desde a configuração até a publicação e criação de instâncias de agente no Microsoft 365.
 
 > **IMPORTANTE**: O Agent 365 requer participação no [programa Frontier preview](https://adoption.microsoft.com/copilot/frontier-program/).
+
+---
+
+## Arquitetura: Fluxo Cross-Tenant
+
+```
+Usuário no Tenant M365 (Tenant B)
+    ↓ (invoca agente via Teams)
+Microsoft Graph (Tenant B)
+    ↓ (autentica usando Agent User)
+Agent Blueprint (Entra ID do Tenant B)
+    ↓ (roteia requisição para)
+Messaging Endpoint (ACA no Tenant A)
+    ↓ (agente executa)
+Resposta retorna via Graph
+```
+
+> **Insight chave**: A identidade do agente vive no Tenant M365, mas o código do agente roda no Tenant Azure. O A365 CLI faz a ponte ao registrar a URL do endpoint no Entra ID do M365.
+
+---
+
+## Ciclo de Vida de Desenvolvimento do A365
+
+| Etapa | Fase | Onde | Esta Lição? |
+|-------|------|------|:-----------:|
+| 1 | Construir e executar o agente | Azure Tenant A | ❌ (Lição 4) |
+| 2 | Configurar o A365 | M365 Tenant B | ✅ |
+| 3 | Configurar o agent blueprint | M365 Tenant B | ✅ |
+| 4 | Implantar infraestrutura | Azure Tenant A | ❌ (Lição 4) |
+| 5 | Publicar no M365 admin center | M365 Tenant B | ✅ |
+| 6 | Criar instâncias de agente | M365 (Teams/Outlook) | ✅ |
 
 ---
 
@@ -602,6 +649,38 @@ Ao final desta lição, você terá:
 | Agente responde com erro | Acesso ao Azure OpenAI | Verifique que a managed identity do ACA tem RBAC no Foundry OpenAI |
 | Respostas lentas | Cold start | O ACA pode estar escalando de 0 réplicas, chamadas subsequentes serão mais rápidas |
 | Instância não aparece no Outlook | Não implantado no Outlook | Use a flag `--deploy-to-outlook` ao criar a instância |
+
+---
+
+## ❓ Perguntas Frequentes
+
+**P: Por que usamos `needDeployment: false` em vez de deixar o A365 criar a infraestrutura?**
+R: Nosso agente já está implantado no ACA (Lição 4). O A365 precisa apenas registrar a identidade do blueprint no Entra ID do M365 e apontar para o endpoint ACA existente. Configurar `needDeployment: true` criaria infraestrutura duplicada de App Service.
+
+**P: O Tenant Azure (A) e o Tenant M365 (B) podem ser o mesmo tenant?**
+R: Sim! Tenant único é mais simples. O cenário cross-tenant é comum em empresas que separam assinaturas Azure do M365 por governança, alocação de custos ou histórico de aquisições.
+
+**P: E se as permissões `AgentIdentityBlueprint.*` não aparecerem no portal do Entra?**
+R: Essas são permissões beta. Use o método via Graph API (Opção B na etapa 3.3) para adicioná-las programaticamente. NÃO clique em "Grant admin consent" no portal depois — isso sobrescreverá as permissões beta.
+
+**P: Qual role eu preciso no Tenant M365?**
+R: Global Administrator, Agent ID Administrator ou Agent ID Developer. Para o fluxo completo do workshop (incluindo consentimento admin), Global Administrator é o mais fácil.
+
+**P: Quanto tempo leva a aprovação administrativa após a publicação?**
+R: No workshop, a aprovação é quase instantânea (mesma pessoa). Em produção, depende do fluxo de aprovação da sua organização — horas a dias.
+
+**P: O que acontece com as instâncias se eu reimplantar o ACA?**
+R: As instâncias apontam para a URL do messaging endpoint. Desde que o FQDN permaneça o mesmo após a reimplantação, as instâncias continuam funcionando com a nova versão automaticamente.
+
+---
+
+## 🏆 Desafios Autoguiados
+
+1. **Investigação Multi-Tenant**: Documente a topologia de tenants da sua organização. Azure e M365 estão no mesmo tenant? Mapeie quais campos do A365 config mudam para cada cenário.
+2. **Auditoria de Permissões**: Use o Graph Explorer para listar todas as permissões concedidas ao service principal do seu agente. Compare permissões delegadas vs permissões de aplicativo.
+3. **Failover de Endpoint**: Configure uma implantação secundária do ACA e atualize o messaging endpoint. Teste a alternância entre primário e secundário.
+4. **Governança de Instâncias**: Crie instâncias pessoais e compartilhadas, depois escreva uma política de governança definindo quem deve usar qual tipo e por quê.
+5. **Script de Automação**: Escreva um script PowerShell que automatize toda a configuração do A365 (etapas 2-6) a partir de um único arquivo de configuração, incluindo tratamento de erros e validação.
 
 ---
 

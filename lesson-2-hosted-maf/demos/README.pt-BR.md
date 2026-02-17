@@ -1,5 +1,7 @@
 # Demo 2: Hosted Agent com MAF e Tools Personalizadas
 
+> 🇺🇸 **[Read in English](README.md)**
+
 ## Visão Geral
 
 Esta demo apresenta um **Hosted Agent (Agente Hospedado)** utilizando o **Microsoft Agent Framework (MAF)** com tools Python personalizadas. Diferente dos agentes declarativos (Demo 1), agentes hospedados executam em seu próprio contêiner e podem executar qualquer código Python como tools.

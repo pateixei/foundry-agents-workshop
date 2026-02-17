@@ -1,5 +1,7 @@
 # Lição 1: Agente de Mercado Financeiro com Microsoft Agent Framework
 
+> 🇺🇸 **[Read in English](README.md)**
+
 ## Objetivo
 
 Nesta lição, você criará e implantará um agente de IA usando o **Microsoft Agent Framework** (MAF) no Microsoft Foundry. O agente é especializado em mercados financeiros e expõe ferramentas Python para consultar cotações, taxas de câmbio e resumos de mercado.
@@ -42,21 +44,24 @@ lesson-2-hosted-maf/labs/solution/
 
 ## Pré-requisitos
 
-1. Infraestrutura provisionada via `prereq/deploy.ps1`
+1. Infraestrutura provisionada via `prereq/deploy.ps1` (inclui Capability Host e Storage Account)
 2. Azure CLI (`az`) instalado e autenticado
 3. Python 3.10+
 4. Docker (para construção da imagem)
 5. Agente publicado como Hosted Agent no Foundry (para testes via `test_agent.py`)
 
+> **Nota**: O Capability Host é um componente de infraestrutura crítico que habilita hosted agents.
+> Ele é provisionado automaticamente pelo `prereq/main.bicep`. Veja [capability-host.pt-BR.md](../../../capability-host.pt-BR.md) para detalhes.
+
 ## Deploy Rápido
 
 ```powershell
-cd lesson-1/foundry-agent
+cd lesson-2-hosted-maf/labs/solution
 .\deploy.ps1
 ```
 
 O script automaticamente:
-1. Obtém outputs da implantação Bicep (endpoint, modelo, ACR)
+1. Obtém outputs da implantação Bicep e **verifica se o Capability Host** está provisionado
 2. Constrói imagem Docker no ACR
 3. Atribui roles RBAC (AcrPull + Cognitive Services OpenAI User)
 4. Cria nova versão de hosted agent via `az cognitiveservices agent`

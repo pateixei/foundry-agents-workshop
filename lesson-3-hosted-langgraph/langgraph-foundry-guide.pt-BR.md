@@ -1,5 +1,7 @@
 ## Como Hospedar um Agente LangGraph no Azure AI Foundry
 
+> 🇺🇸 **[Read in English](langgraph-foundry-guide.md)**
+
 ### Pré-requisitos de Infraestrutura Azure
 
 1. **Azure AI Foundry (account + projeto)** — O Foundry fornece o API gateway (Responses API), o Capability Host que gerencia o contêiner e acesso ao modelo.
