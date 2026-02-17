@@ -33,15 +33,7 @@ In addition to lesson code, this repository includes comprehensive facilitation 
 
 ### For Instructors
 
-All instructor materials are in the [instructor-guide/](instructor-guide/) folder:
-
-| Resource | Description |
-|----------|-------------|
-| [INSTRUCTOR GUIDE](instructor-guide/INSTRUCTOR-GUIDE.md) | Complete facilitation guide — preparation checklists, daily plans, techniques, troubleshooting |
-| [WORKSHOP AGENDA](instructor-guide/WORKSHOP-MASTER-AGENDA.md) | Detailed minute-by-minute agenda for all 5 days (20 hours) |
-| [CONTINGENCY PLAN](instructor-guide/CONTINGENCY-PLAN.md) | Fallback strategies for outages, environment issues, and pacing problems |
-| [ROOM READY CHECKLIST](instructor-guide/ROOM-READY-CHECKLIST.md) | Pre-session environment and logistics checklist |
-| Module Scripts | `MODULE-*-SCRIPT.md` — module-by-module delivery scripts with talking points, demo steps, and timing cues |
+All instructor materials are in the [instructor-guide/](instructor-guide/INSTRUCTOR-GUIDE.md) folder:
 
 ### Technical Reference
 

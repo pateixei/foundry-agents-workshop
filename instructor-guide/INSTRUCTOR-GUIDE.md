@@ -8,6 +8,14 @@
 **Audience**: Workshop instructors and teaching assistants  
 
 ---
+| Resource | Description |
+|----------|-------------|
+| [INSTRUCTOR GUIDE](./INSTRUCTOR-GUIDE.md) | Complete facilitation guide — preparation checklists, daily plans, techniques, troubleshooting (this document) |
+| [WORKSHOP AGENDA](./WORKSHOP-MASTER-AGENDA.md) | Detailed minute-by-minute agenda for all 5 days (20 hours) |
+| [CONTINGENCY PLAN](./CONTINGENCY-PLAN.md) | Fallback strategies for outages, environment issues, and pacing problems |
+| [ROOM READY CHECKLIST](./ROOM-READY-CHECKLIST.md) | Pre-session environment and logistics checklist |
+| Module Scripts | `MODULE-*-SCRIPT.md` — module-by-module delivery scripts with talking points, demo steps, and timing cues |
+
 
 ## Table of Contents
 1. [Instructor Role & Responsibilities](#instructor-role--responsibilities)
