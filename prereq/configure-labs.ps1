@@ -2,7 +2,7 @@
 #
 # Este script le os outputs do deployment Bicep (prereq/) e atualiza
 # automaticamente os arquivos de configuracao (.env, deploy.ps1, aca.bicep)
-# e os defaults nos arquivos Python em cada pasta labs/solution e solution/
+# e os defaults nos arquivos Python em cada pasta labs/solution/
 # com os endpoints corretos.
 #
 # Uso:
@@ -166,28 +166,9 @@ MODEL_DEPLOYMENT_NAME=$aiModelDeployment
     }
 }
 
-# --- Lesson 1 solution/ (non-lab) Python files ---
-$lesson1SolDir = Join-Path $WorkspaceRoot "lesson-1-declarative" "solution"
-if (Test-Path $lesson1SolDir) {
-    # Create/update .env
-    $envSol1 = Join-Path $lesson1SolDir ".env"
-    Set-Content -Path $envSol1 -Value $envContent -NoNewline
-    Write-Host "    [OK] solution/.env updated" -ForegroundColor Green
-    $updatedFiles++
-
-    foreach ($pyFile in @("create_agent.py")) {
-        $pyPath = Join-Path $lesson1SolDir $pyFile
-        if (Test-Path $pyPath) {
-            $pyContent = Get-Content $pyPath -Raw
-            $pyNew = $pyContent -replace '(os\.environ\.get\(\s*"PROJECT_ENDPOINT",\s*\n?\s*)"https://[^"]*"', "`$1`"$aiProjectEndpoint`""
-            if ($pyNew -ne $pyContent) {
-                Set-Content -Path $pyPath -Value $pyNew -NoNewline
-                Write-Host "    [OK] solution/$pyFile - PROJECT_ENDPOINT default updated" -ForegroundColor Green
-                $updatedFiles++
-            }
-        }
-    }
-}
+# --- Lesson 1 labs/solution/ Python files (additional) ---
+# Note: labs/solution/ .env and Python files are already handled in the main loop above.
+# This section is kept as a placeholder for any additional lesson-1 specific config.
 
 # --- Lesson 1 demos/ Python files ---
 $lesson1DemoDir = Join-Path $WorkspaceRoot "lesson-1-declarative" "demos"
@@ -278,12 +259,12 @@ if (Test-Path $lesson6Dir) {
     }
 }
 
-# ─── [3/4] Also update solution/ (non-lab) deploy scripts ───
-Write-Host "`n[3/4] Updating solution/ deploy scripts..." -ForegroundColor Yellow
+# ─── [3/4] Also update labs/solution/ deploy scripts ───
+Write-Host "`n[3/4] Updating labs/solution/ deploy scripts..." -ForegroundColor Yellow
 
 $solutionDirs = @(
-    (Join-Path $WorkspaceRoot "lesson-4-aca-langgraph" "solution"),
-    (Join-Path $WorkspaceRoot "lesson-6-a365-sdk" "solution")
+    (Join-Path $WorkspaceRoot "lesson-4-aca-langgraph" "labs" "solution"),
+    (Join-Path $WorkspaceRoot "lesson-6-a365-sdk" "labs" "solution")
 )
 
 foreach ($solDir in $solutionDirs) {
@@ -296,7 +277,7 @@ foreach ($solDir in $solutionDirs) {
         $dNew = $dContent -replace '\$RG\s*=\s*"[^"]*"', "`$RG = `"$ResourceGroupName`""
         if ($dNew -ne $dContent) {
             Set-Content -Path $deployFile -Value $dNew -NoNewline
-            Write-Host "  [OK] $lessonName/solution/deploy.ps1 - RG updated" -ForegroundColor Green
+            Write-Host "  [OK] $lessonName/labs/solution/deploy.ps1 - RG updated" -ForegroundColor Green
             $updatedFiles++
         }
     }
@@ -307,7 +288,7 @@ foreach ($solDir in $solutionDirs) {
         $bNew = $bContent -replace "param acaEnvironmentName string = '[^']*'", "param acaEnvironmentName string = '$containerAppsEnvName'"
         if ($bNew -ne $bContent) {
             Set-Content -Path $bicepFile -Value $bNew -NoNewline
-            Write-Host "  [OK] $lessonName/solution/aca.bicep - ACA env updated" -ForegroundColor Green
+            Write-Host "  [OK] $lessonName/labs/solution/aca.bicep - ACA env updated" -ForegroundColor Green
             $updatedFiles++
         }
     }

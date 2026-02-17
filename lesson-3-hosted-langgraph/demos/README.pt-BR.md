@@ -1,6 +1,6 @@
 # Demo 3: Hosted Agent com LangGraph no Azure Foundry
 
-> **Tipo de Demo**: Demonstração guiada pelo instrutor. Esta demo referencia o código-fonte em `lesson-3-hosted-langgraph/solution/`. O instrutor percorre o código ao vivo na tela.
+> **Tipo de Demo**: Demonstração guiada pelo instrutor. Esta demo referencia o código-fonte em `lesson-3-hosted-langgraph/labs/solution/`. O instrutor percorre o código ao vivo na tela.
 
 ## Visão Geral
 

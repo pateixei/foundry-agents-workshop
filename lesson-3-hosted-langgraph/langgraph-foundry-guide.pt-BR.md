@@ -72,7 +72,7 @@ O Foundry injeta essas variáveis de ambiente ao iniciar o contêiner:
 
 #### 5. Monkey-patch necessário (bug conhecido)
 
-O pacote `azure-ai-agentserver-core` v1.0.0b10 não aceita o campo `id` que o Foundry envia em `AgentReference`. Você precisa fazer patch em `_deserialize_agent_reference` para ignorar campos extras — como implementado em [main.py](solution/main.py#L211-L245).
+O pacote `azure-ai-agentserver-core` v1.0.0b10 não aceita o campo `id` que o Foundry envia em `AgentReference`. Você precisa fazer patch em `_deserialize_agent_reference` para ignorar campos extras — como implementado em [main.py](labs/solution/main.py#L211-L245).
 
 #### 6. Dockerfile
 

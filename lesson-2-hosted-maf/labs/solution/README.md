@@ -22,7 +22,7 @@ Foundry Project (ag365-prj001)
 ## Project Structure
 
 ```
-lesson-2-hosted-maf/solution/
+lesson-2-hosted-maf/labs/solution/
   agent.yaml           # Agent manifest (name, runtime, model, tools, otel)
   app.py               # HTTP server (agentserver-agentframework)
   Dockerfile           # Container image for deployment

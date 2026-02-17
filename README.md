@@ -45,7 +45,7 @@ All instructor materials are in the [instructor-guide/](instructor-guide/) folde
 
 ### Technical Reference
 
-Each lesson folder contains its own `demos/`, `labs/`, `media/`, and `solution/` subfolders. Architecture diagrams are in each lesson's `media/` folder.
+Each lesson folder contains its own `demos/`, `labs/` (with `starter/`, `solution/`, and `LAB-STATEMENT.md`), and `media/` subfolders. Architecture diagrams are in each lesson's `media/` folder.
 
 ## Prerequisites
 
@@ -202,17 +202,17 @@ foundry-agents-workshop/
   prereq/                          # IaC (Bicep) + infrastructure scripts
     media/                         # Architecture diagrams
   lesson-1-declarative/            # Declarative agent (SDK)
-    demos/ labs/ media/ solution/
+    demos/ labs/ media/
   lesson-2-hosted-maf/             # Hosted agent (Microsoft Agent Framework)
-    demos/ labs/ media/ solution/
+    demos/ labs/ media/
   lesson-3-hosted-langgraph/       # Hosted agent (LangGraph)
-    demos/ labs/ media/ solution/
+    demos/ labs/ media/
   lesson-4-aca-langgraph/          # Connected agent (ACA + FastAPI)
-    demos/ labs/ media/ solution/
+    demos/ labs/ media/
   lesson-5-a365-prereq/            # Agent 365 prerequisites
     solution/
   lesson-6-a365-sdk/               # A365 SDK integration (observability, Bot Framework)
-    demos/ labs/ solution/
+    demos/ labs/
   lesson-7-publish/                # Publishing guide (M365 Admin Center)
   lesson-8-instances/              # Instance creation guide (Teams)
   instructor-guide/                # All instructor materials (guide, agenda, scripts, checklists)

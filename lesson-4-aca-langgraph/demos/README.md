@@ -2,7 +2,7 @@
 
 > 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
 
-> **Demo Type**: Instructor-led walkthrough. This demo references source code in `lesson-4-aca-langgraph/solution/`. The instructor walks through the code and Bicep template live on screen.
+> **Demo Type**: Instructor-led walkthrough. This demo references source code in `lesson-4-aca-langgraph/labs/solution/`. The instructor walks through the code and Bicep template live on screen.
 
 ## Overview
 

@@ -29,7 +29,7 @@ START -> llm_call -> [tool_calls?] -> environment -> llm_call -> ... -> END
 ## Estrutura de Arquivos
 
 ```
-lesson-3-hosted-langgraph/solution/
+lesson-3-hosted-langgraph/labs/solution/
   main.py                  # Agente LangGraph + servidor do agente hospedado
   # create_hosted_agent.py movido para prereq/
   test_agent.py            # Script de teste para executar o agente

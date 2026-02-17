@@ -42,7 +42,7 @@ Todos os materiais do instrutor estão na pasta [instructor-guide/](instructor-g
 
 ### Referência Técnica
 
-Cada pasta de lição contém suas próprias subpastas `demos/`, `labs/`, `media/` e `solution/`. Diagramas de arquitetura estão na pasta `media/` de cada lição.
+Cada pasta de lição contém suas próprias subpastas `demos/`, `labs/` (com `starter/`, `solution/` e `LAB-STATEMENT.md`) e `media/`. Diagramas de arquitetura estão na pasta `media/` de cada lição.
 ## Pré-requisitos
 
 - Azure CLI (`az`) instalado e autenticado
@@ -198,17 +198,17 @@ foundry-agents-workshop/
   prereq/                          # IaC (Bicep) + scripts de infraestrutura
     media/                         # Diagramas de arquitetura
   lesson-1-declarative/            # Agente declarativo (SDK)
-    demos/ labs/ media/ solution/
+    demos/ labs/ media/
   lesson-2-hosted-maf/             # Agente hospedado (Microsoft Agent Framework)
-    demos/ labs/ media/ solution/
+    demos/ labs/ media/
   lesson-3-hosted-langgraph/       # Agente hospedado (LangGraph)
-    demos/ labs/ media/ solution/
+    demos/ labs/ media/
   lesson-4-aca-langgraph/          # Agente conectado (ACA + FastAPI)
-    demos/ labs/ media/ solution/
+    demos/ labs/ media/
   lesson-5-a365-prereq/            # Pré-requisitos do Agent 365
     solution/
   lesson-6-a365-sdk/               # Integração A365 SDK (observabilidade, Bot Framework)
-    demos/ labs/ solution/
+    demos/ labs/
   lesson-7-publish/                # Guia de publicação (M365 Admin Center)
   lesson-8-instances/              # Guia de criação de instâncias (Teams)
   instructor-guide/                # Todos os materiais do instrutor (guia, agenda, scripts, checklists)

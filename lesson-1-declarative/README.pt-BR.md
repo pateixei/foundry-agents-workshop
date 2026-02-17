@@ -38,7 +38,6 @@ lesson-1-declarative/
     starter/             # Código inicial (TODOs)
     solution/            # Solução de referência
   media/                 # Diagramas de arquitetura
-  solution/              # Código da solução standalone
 ```
 
 ## Pré-requisitos

@@ -2,7 +2,7 @@
 
 > 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
 
-> **Demo Type**: Instructor-led walkthrough. This demo references source code in `lesson-3-hosted-langgraph/solution/`. The instructor walks through the code live on screen.
+> **Demo Type**: Instructor-led walkthrough. This demo references source code in `lesson-3-hosted-langgraph/labs/solution/`. The instructor walks through the code live on screen.
 
 ## Overview
 

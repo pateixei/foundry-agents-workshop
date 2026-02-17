@@ -40,7 +40,6 @@ lesson-1-declarative/
     starter/             # Starter code (TODOs)
     solution/            # Reference solution
   media/                 # Architecture diagrams
-  solution/              # Standalone solution code
 ```
 
 ## Prerequisites

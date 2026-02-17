@@ -8,7 +8,7 @@
 | [🔬 Exercício de Lab](labs/LAB-STATEMENT.pt-BR.md) | Lab prático com tarefas e critérios de sucesso |
 | [📐 Diagrama de Arquitetura](media/lesson-2-architecture.png) | Visão geral da arquitetura |
 | [🛠️ Diagrama de Deployment](media/lesson-2-deployment.png) | Fluxo de implantação |
-| [📁 Notas da Solução](solution/README.pt-BR.md) | Código da solução e detalhes de deployment |
+| [📁 Notas da Solução](labs/solution/README.pt-BR.md) | Código da solução e detalhes de deployment |
 
 ## Objetivo
 Nesta lição, você aprenderá a criar e implantar um agente de IA no Microsoft Foundry usando o **Microsoft Agent Framework**, focado em responder perguntas sobre o mercado financeiro.
@@ -31,19 +31,19 @@ lesson-2-hosted-maf/
   README.md
   demos/                 # Walkthrough de demonstração
   labs/                  # Laboratório prático
+    solution/
+      agent.yaml           # Manifesto do agente
+      app.py               # Servidor HTTP
+      deploy.ps1           # Script de implantação automatizada
+      Dockerfile           # Imagem do contêiner
+      requirements.txt     # Dependências
+      src/
+        main.py            # Ponto de entrada run()
+        agent/
+          finance_agent.py # Agente MAF
+      tools/
+        finance_tools.py   # Ferramentas do agente
   media/                 # Diagramas de arquitetura
-  solution/
-    agent.yaml           # Manifesto do agente
-    app.py               # Servidor HTTP
-    deploy.ps1           # Script de implantação automatizada
-    Dockerfile           # Imagem do contêiner
-    requirements.txt     # Dependências
-    src/
-      main.py            # Ponto de entrada run()
-      agent/
-        finance_agent.py # Agente MAF
-    tools/
-      finance_tools.py   # Ferramentas do agente
 ```
 
 ## Pré-requisitos

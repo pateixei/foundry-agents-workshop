@@ -10,7 +10,7 @@
 | [🔬 Lab Exercise](labs/LAB-STATEMENT.md) | Hands-on lab with tasks and success criteria |
 | [📐 Architecture Diagram](media/lesson-2-architecture.png) | Architecture overview |
 | [🛠️ Deployment Diagram](media/lesson-2-deployment.png) | Deployment flow |
-| [📁 Solution Notes](solution/README.md) | Solution code and deployment details |
+| [📁 Solution Notes](labs/solution/README.md) | Solution code and deployment details |
 
 ## Objective
 In this lesson, you will learn how to create and deploy an AI agent on Microsoft Foundry using the **Microsoft Agent Framework**, focused on answering questions about the financial market.
@@ -33,19 +33,19 @@ lesson-2-hosted-maf/
   README.md
   demos/                 # Demo walkthrough
   labs/                  # Hands-on lab
+    solution/
+      agent.yaml           # Agent manifest
+      app.py               # HTTP server
+      deploy.ps1           # Automated deployment script
+      Dockerfile           # Container image
+      requirements.txt     # Dependencies
+      src/
+        main.py            # Entrypoint run()
+        agent/
+          finance_agent.py # MAF agent
+      tools/
+        finance_tools.py   # Agent tools
   media/                 # Architecture diagrams
-  solution/
-    agent.yaml           # Agent manifest
-    app.py               # HTTP server
-    deploy.ps1           # Automated deployment script
-    Dockerfile           # Container image
-    requirements.txt     # Dependencies
-    src/
-      main.py            # Entrypoint run()
-      agent/
-        finance_agent.py # MAF agent
-    tools/
-      finance_tools.py   # Agent tools
 ```
 
 ## Prerequisites

@@ -43,9 +43,9 @@
 - [ ] `prereq/deploy.ps1` tested end-to-end on clean subscription
 - [ ] `prereq/validate-deployment.ps1` returns all green
 - [ ] `lesson-1-declarative/create_agent.py` creates agent successfully
-- [ ] `lesson-2-hosted-maf/solution/deploy.ps1` deploys and agent responds
-- [ ] `lesson-3-hosted-langgraph/solution/deploy.ps1` deploys and agent responds
-- [ ] `lesson-4-aca-langgraph/solution/deploy.ps1` deploys, health check passes
+- [ ] `lesson-2-hosted-maf/labs/solution/deploy.ps1` deploys and agent responds
+- [ ] `lesson-3-hosted-langgraph/labs/solution/deploy.ps1` deploys and agent responds
+- [ ] `lesson-4-aca-langgraph/labs/solution/deploy.ps1` deploys, health check passes
 - [ ] `lesson-6-a365-sdk/deploy.ps1` deploys, health + /chat endpoints work
 - [ ] `test/chat.py` can interact with deployed agents
 

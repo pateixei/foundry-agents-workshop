@@ -272,7 +272,7 @@ Each day follows this pattern:
   - Explain ReAct pattern in LangGraph
   - Show adapter integration
 - 🛠️ Student Lab (15 min):
-  - Review LangGraph code: `solution/main.py`
+  - Review LangGraph code: `labs/solution/main.py`
   - Identify familiar patterns from their LangGraph experience
   - Customize agent graph (add node or edge)
   - Prepare for deployment

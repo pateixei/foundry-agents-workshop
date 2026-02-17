@@ -41,7 +41,7 @@ camada de governança via AI Gateway (Azure API Management).
 ## Estrutura de Arquivos
 
 ```
-lesson-4-aca-langgraph/solution/
+lesson-4-aca-langgraph/labs/solution/
   main.py              # LangGraph Agent + FastAPI server
   requirements.txt     # Python dependencies
   Dockerfile           # Container image (port 8080)

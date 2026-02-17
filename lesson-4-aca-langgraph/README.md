@@ -10,19 +10,19 @@
 | [🔬 Lab Exercise](labs/LAB-STATEMENT.md) | Hands-on lab with tasks and success criteria |
 | [📐 Architecture Diagram](media/lesson-4-architecture.png) | Architecture overview |
 | [🛠️ Deployment Diagram](media/lesson-4-deployment.png) | Deployment flow |
-| [📁 Solution Notes](solution/README.md) | Solution code and deployment details |
+| [📁 Solution Notes](labs/solution/README.md) | Solution code and deployment details |
 | [📝 Agent Registration](REGISTER.md) | How to register agent as Connected Agent in Foundry |
 
 In this lesson, we deploy the same LangGraph agent from previous lessons on
 our own infrastructure (**Azure Container Apps**) and register it as a
 **Connected Agent** in the Microsoft Foundry Control Plane.
 
-See complete details in [solution/README.md](solution/README.md).
+See complete details in [labs/solution/README.md](labs/solution/README.md).
 
 ## Quick Start
 
 ```powershell
-cd solution
+cd labs/solution
 .\deploy.ps1
 ```
 
