@@ -1,7 +1,7 @@
 # Workshop Readiness Checklist
 
 **Workshop**: Microsoft Foundry AI Agents Workshop — 5-Day Intensive  
-**Version**: 1.0  
+**Version**: 0.7  
 **Owner**: Content Producer / Facilitator  
 **When**: Complete by Day -1 (one day before workshop start)  
 

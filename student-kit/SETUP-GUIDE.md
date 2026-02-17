@@ -3,7 +3,7 @@
 > 🇧🇷 **[Leia em Português (pt-BR)](SETUP-GUIDE.pt-BR.md)**
 
 **Workshop**: Microsoft Foundry AI Agents Workshop — 5-Day Intensive  
-**Version**: 1.0  
+**Version**: 0.7  
 **Estimated Time**: 30–45 minutes  
 **Last Verified**: February 15, 2026  
 

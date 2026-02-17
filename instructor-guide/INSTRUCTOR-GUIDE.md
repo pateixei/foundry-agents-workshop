@@ -3,7 +3,7 @@
 
 ---
 
-**Version**: 1.0  
+**Version**: 0.7  
 **Purpose**: Practical facilitation guidance for workshop delivery  
 **Audience**: Workshop instructors and teaching assistants  
 
@@ -1125,7 +1125,7 @@ Congratulations again!"
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: February 14, 2026  
+**Document Version**: 0.7  
+**Last Updated**: February 16, 2026  
 **Maintained By**: Learning Architect Team  
 **Feedback**: instructor-feedback@workshop.com

@@ -1,8 +1,8 @@
 # Materiais de Referência & Links
 
 **Workshop**: Microsoft Foundry AI Agents Workshop — Intensivo de 5 Dias  
-**Versão**: 1.0  
-**Última Atualização**: 15 de fevereiro de 2026  
+**Versão**: 0.7  
+**Última Atualização**: 16 de fevereiro de 2026  
 
 ---
 

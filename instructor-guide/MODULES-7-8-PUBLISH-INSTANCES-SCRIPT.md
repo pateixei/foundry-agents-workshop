@@ -894,7 +894,7 @@ This will:
 
 ---
 
-**Script Version**: 1.0  
-**Last Updated**: 2026-02-14  
+**Script Version**: 0.7  
+**Last Updated**: 2026-02-16  
 **Created by**: Agent 3 (Instructional Designer)  
 **Status**: Draft - Awaiting approval

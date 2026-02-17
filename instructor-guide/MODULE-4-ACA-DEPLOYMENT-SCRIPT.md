@@ -775,8 +775,8 @@ az role assignment list --assignee <mi-principal-id> --all
 
 ---
 
-**Script Version**: 1.0  
-**Last Updated**: 2026-02-14  
+**Script Version**: 0.7  
+**Last Updated**: 2026-02-16  
 **Created by**: Agent 3 (Instructional Designer)  
 **Reviewed by**: (Pending)  
 **Status**: Draft - Awaiting approval

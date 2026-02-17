@@ -1,9 +1,9 @@
 # Workshop Contingency Plan
 
 **Workshop**: Microsoft Foundry AI Agents Workshop — 5-Day Intensive  
-**Version**: 1.0  
+**Version**: 0.7  
 **Owner**: Content Producer  
-**Last Updated**: February 15, 2026  
+**Last Updated**: February 16, 2026  
 
 ---
 

@@ -3,7 +3,7 @@
 
 ---
 
-**Version**: 1.0  
+**Version**: 0.7  
 **Target Audience**: Mid-Senior Developers expanding their agent development skills to Microsoft Foundry  
 **Total Duration**: 20 hours (4 hours/day × 5 days)  
 **Format**: Self-paced with optional live Q&A  
@@ -785,7 +785,7 @@ See separate document: `INSTRUCTOR-GUIDE.md` in this folder (detailed minute-by-
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: February 14, 2026  
+**Document Version**: 0.7  
+**Last Updated**: February 16, 2026  
 **Next Review**: After first cohort delivery  
 **Maintained By**: Learning Architect Team
