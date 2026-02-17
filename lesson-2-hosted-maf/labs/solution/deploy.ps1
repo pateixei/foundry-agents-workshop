@@ -185,6 +185,13 @@ Write-Host ""
 Write-Host "[4/6] Criando hosted agent..." -ForegroundColor Yellow
 
 $ErrorActionPreference = "SilentlyContinue"
+$envVars = @(
+    "FOUNDRY_PROJECT_ENDPOINT=$PROJECT_ENDPOINT",
+    "FOUNDRY_MODEL_DEPLOYMENT_NAME=$MODEL_DEPLOYMENT",
+    "AZURE_OPENAI_ENDPOINT=$OPENAI_ENDPOINT",
+    "HOSTED_AGENT_VERSION=$NEXT_VERSION"
+)
+
 $createResult = az cognitiveservices agent create `
     --account-name $FOUNDRY_NAME `
     --project-name $PROJECT_NAME `
@@ -192,10 +199,7 @@ $createResult = az cognitiveservices agent create `
     --image $IMAGE_FULL `
     --cpu 1 --memory 2Gi `
     --protocol responses --protocol-version v1 `
-    --env FOUNDRY_PROJECT_ENDPOINT=$PROJECT_ENDPOINT `
-         FOUNDRY_MODEL_DEPLOYMENT_NAME=$MODEL_DEPLOYMENT `
-         AZURE_OPENAI_ENDPOINT=$OPENAI_ENDPOINT `
-         HOSTED_AGENT_VERSION=$NEXT_VERSION `
+    --env @envVars `
     --no-start `
     -o json
 $agent_exit = $LASTEXITCODE

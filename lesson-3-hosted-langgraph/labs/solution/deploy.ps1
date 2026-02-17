@@ -158,6 +158,12 @@ Write-Host ""
 # -----------------------------------------------------------
 Write-Host "[4/6] Criando hosted agent v$NEXT_VERSION..." -ForegroundColor Yellow
 
+$envVars = @(
+    "AZURE_AI_PROJECT_ENDPOINT=$PROJECT_ENDPOINT",
+    "AZURE_AI_MODEL_DEPLOYMENT_NAME=$MODEL_DEPLOYMENT",
+    "AZURE_OPENAI_ENDPOINT=$OPENAI_ENDPOINT"
+)
+
 az cognitiveservices agent create `
     --account-name $FOUNDRY_NAME `
     --project-name $PROJECT_NAME `
@@ -165,9 +171,7 @@ az cognitiveservices agent create `
     --image $IMAGE_FULL `
     --cpu 1 --memory 2Gi `
     --protocol responses --protocol-version v1 `
-    --env AZURE_AI_PROJECT_ENDPOINT=$PROJECT_ENDPOINT `
-         AZURE_AI_MODEL_DEPLOYMENT_NAME=$MODEL_DEPLOYMENT `
-         AZURE_OPENAI_ENDPOINT=$OPENAI_ENDPOINT `
+    --env @envVars `
     --no-start
 
 if ($LASTEXITCODE -ne 0) {
