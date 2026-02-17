@@ -86,32 +86,9 @@ Write-Host ""
 Write-Host "[2/5] Construindo imagem no ACR..." -ForegroundColor Yellow
 
 $AGENT_NAME = "fin-market-agent"
-
-# Determinar proxima versao verificando versoes existentes via Python SDK
-$existingVersionsJson = python3 -c @"
-import json, sys
-try:
-    from azure.ai.projects import AIProjectClient
-    from azure.identity import DefaultAzureCredential
-    c = AIProjectClient(endpoint='$PROJECT_ENDPOINT', credential=DefaultAzureCredential())
-    versions = [int(v.version) for v in c.agents.list_versions(agent_name='$AGENT_NAME')]
-    print(json.dumps(versions))
-except Exception:
-    print('[]')
-"@ 2>$null
-
-$versionList = $existingVersionsJson | ConvertFrom-Json -ErrorAction SilentlyContinue
-if ($versionList -and $versionList.Count -gt 0) {
-    $maxVer = ($versionList | Measure-Object -Maximum).Maximum
-    $NEXT_VERSION = $maxVer + 1
-} else {
-    $NEXT_VERSION = 1
-}
-
-$IMAGE_TAG = "$($AGENT_NAME):v$NEXT_VERSION"
+$IMAGE_TAG = "$($AGENT_NAME):v1"
 $IMAGE_FULL = "$ACR_LOGIN/$IMAGE_TAG"
 
-Write-Host "  Versao: $NEXT_VERSION"
 Write-Host "  Imagem: $IMAGE_TAG"
 
 Push-Location $PSScriptRoot
@@ -201,8 +178,10 @@ Write-Host ""
 #    O servico auto-provisiona o container apos a criacao --
 #    nao e necessario um "start" separado.
 #
-#    Se o agente ja existir, remove versoes anteriores e
-#    recria para garantir consistencia da imagem.
+#    Se o agente ja existir com containers ativos, o script
+#    reutiliza a versao existente (idempotente).
+#    Nota: create_version() NAO auto-provisiona containers.
+#    Apenas agents.create() dispara o provisionamento.
 #
 #    Env vars injetadas no container:
 #    - FOUNDRY_PROJECT_ENDPOINT: endpoint do projeto Foundry
@@ -212,7 +191,7 @@ Write-Host ""
 Write-Host "[4/5] Registrando hosted agent via Python SDK..." -ForegroundColor Yellow
 
 $createAgentPy = @"
-import json, sys, time
+import json, sys
 from azure.ai.projects import AIProjectClient
 from azure.ai.projects.models import (
     ImageBasedHostedAgentDefinition,
@@ -229,61 +208,53 @@ agent_name    = '$AGENT_NAME'
 cred = DefaultAzureCredential()
 client = AIProjectClient(endpoint=endpoint, credential=cred)
 
-# --- Limpa agente existente com mesmo nome ---
+# --- Verifica se o agente ja existe ---
+agent_exists = False
 try:
-    existing = list(client.agents.list())
-    for a in existing:
-        if getattr(a, 'name', None) == agent_name:
-            print(f'  Removendo agente existente: {a.name}')
-            try:
-                # Deletar todas as versoes primeiro
-                for v in client.agents.list_versions(agent_name=agent_name):
-                    try:
-                        client.agents.delete_version(agent_name=agent_name, agent_version=v.version)
-                        print(f'    Versao {v.version} removida')
-                    except Exception:
-                        pass
-                client.agents.delete(agent_name)
-                print(f'    Agente removido')
-            except Exception as ex:
-                print(f'    Aviso ao remover: {ex}')
-except Exception as ex:
-    print(f'  Aviso ao listar: {ex}')
-
-# Aguardar um momento para o servico processar a remocao
-time.sleep(3)
-
-# --- Criar hosted agent ---
-print(f'  Criando hosted agent {agent_name}...')
-print(f'    Imagem: {acr_image}')
-print(f'    Model:  {model}')
-
-definition = ImageBasedHostedAgentDefinition(
-    image=acr_image,
-    container_protocol_versions=[
-        ProtocolVersionRecord(protocol='responses', version='v1')
-    ],
-    cpu='1',
-    memory='2Gi',
-    environment_variables={
-        'FOUNDRY_PROJECT_ENDPOINT': endpoint,
-        'FOUNDRY_MODEL_DEPLOYMENT_NAME': model,
-        'AZURE_OPENAI_ENDPOINT': openai_ep,
-    },
-)
-
-agent = client.agents.create(
-    name=agent_name,
-    definition=definition,
-    description='Agente de mercado financeiro - hosted MAF agent',
-)
-
-version = getattr(agent, 'version', None)
-if not version:
-    latest = agent.as_dict().get('versions', {}).get('latest', {})
+    existing = client.agents.get(agent_name)
+    agent_exists = True
+    # Obter versao do agente existente
+    latest = existing.as_dict().get('versions', {}).get('latest', {})
     version = latest.get('version', '1')
+except Exception:
+    pass
 
-print(f'  Agente criado! Versao: {version}')
+if agent_exists:
+    print(f'  Agente {agent_name} ja existe (v{version}).')
+    print(f'  Reutilizando versao existente (idempotente).')
+    print(f'  Para redeployar com codigo novo, delete o agente no portal')
+    print(f'  do Foundry e execute novamente.')
+else:
+    # Criar agente pela primeira vez (auto-provisiona container)
+    print(f'  Criando hosted agent {agent_name}...')
+    print(f'    Imagem: {acr_image}')
+    print(f'    Model:  {model}')
+
+    definition = ImageBasedHostedAgentDefinition(
+        image=acr_image,
+        container_protocol_versions=[
+            ProtocolVersionRecord(protocol='responses', version='v1')
+        ],
+        cpu='1',
+        memory='2Gi',
+        environment_variables={
+            'FOUNDRY_PROJECT_ENDPOINT': endpoint,
+            'FOUNDRY_MODEL_DEPLOYMENT_NAME': model,
+            'AZURE_OPENAI_ENDPOINT': openai_ep,
+        },
+    )
+
+    agent = client.agents.create(
+        name=agent_name,
+        definition=definition,
+        description='Agente de mercado financeiro - hosted MAF agent',
+    )
+
+    version = getattr(agent, 'version', None)
+    if not version:
+        latest = agent.as_dict().get('versions', {}).get('latest', {})
+        version = latest.get('version', '1')
+    print(f'  Agente criado! Versao: {version}')
 
 # --- Resultado em JSON para o PowerShell ---
 print('AGENT_RESULT:' + json.dumps({'name': agent_name, 'version': str(version)}))
