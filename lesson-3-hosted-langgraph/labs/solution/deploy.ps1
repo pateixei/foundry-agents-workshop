@@ -5,6 +5,8 @@
 #   - Infraestrutura do prereq/ ja deployada (main.bicep)
 #     Isso inclui: ACR, Foundry account/project, Capability Host e Storage Account
 #   - az login realizado
+#   - Python 3.10+ com azure-ai-projects e azure-identity instalados
+#     (pip install azure-ai-projects azure-identity)
 #
 # O que este script faz:
 #   1. Obtem outputs do Bicep (ACR, endpoint, model, nomes de recursos)
@@ -13,9 +15,9 @@
 #   3. Atribui roles RBAC a managed identity do projeto:
 #      - AcrPull no Container Registry
 #      - Cognitive Services OpenAI User no Foundry account
-#   4. Cria nova versao do hosted agent via az cognitiveservices agent create
-#   5. Inicia o agente via az cognitiveservices agent start
-#   6. Aguarda o agente ficar Running e executa teste
+#   4. Registra o hosted agent via Python SDK (azure-ai-projects)
+#      O servico auto-provisiona o container apos criacao
+#   5. Aguarda o agente ficar Running e executa teste rapido
 
 $ErrorActionPreference = "Stop"
 
@@ -28,7 +30,7 @@ Write-Host ""
 # -----------------------------------------------------------
 # 1. Obter outputs do Bicep (infraestrutura compartilhada)
 # -----------------------------------------------------------
-Write-Host "[1/6] Obtendo outputs da infraestrutura..." -ForegroundColor Yellow
+Write-Host "[1/5] Obtendo outputs da infraestrutura..." -ForegroundColor Yellow
 
 $RG = "rg-ai-agents-workshop"
 $DEPLOYMENT = "main"
@@ -81,28 +83,15 @@ Write-Host ""
 #    Nota: --no-logs evita UnicodeEncodeError (colorama/cp1252)
 #    no PowerShell 5.1 no Windows.
 # -----------------------------------------------------------
-Write-Host "[2/6] Construindo imagem no ACR..." -ForegroundColor Yellow
+Write-Host "[2/5] Construindo imagem no ACR..." -ForegroundColor Yellow
 
 $AGENT_NAME = "lg-market-agent"
-
-# Determinar proxima versao verificando versoes existentes
-$existingVersions = az cognitiveservices agent list-versions `
-    --account-name $FOUNDRY_NAME `
-    --project-name $PROJECT_NAME `
-    --name $AGENT_NAME 2>$null | ConvertFrom-Json -ErrorAction SilentlyContinue
-
-if ($existingVersions -and $existingVersions.data) {
-    $maxVer = ($existingVersions.data | ForEach-Object { [int]$_.version } | Measure-Object -Maximum).Maximum
-    $NEXT_VERSION = $maxVer + 1
-} else {
-    $NEXT_VERSION = 1
-}
-
-$IMAGE_TAG = "$($AGENT_NAME):v$NEXT_VERSION"
+$IMAGE_TAG = "$($AGENT_NAME):v1"
 $IMAGE_FULL = "$ACR_LOGIN/$IMAGE_TAG"
 
-Write-Host "  Versao: $NEXT_VERSION"
 Write-Host "  Imagem: $IMAGE_TAG"
+
+Push-Location $PSScriptRoot
 
 az acr build `
     --registry $ACR_NAME `
@@ -115,6 +104,8 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "ERRO: Falha no build da imagem." -ForegroundColor Red
     exit 1
 }
+
+Pop-Location
 
 Write-Host "  Build concluido: $IMAGE_FULL"
 Write-Host ""
@@ -131,7 +122,7 @@ Write-Host ""
 #    Microsoft.CognitiveServices/accounts/projects
 #    (NAO MachineLearningServices/workspaces).
 # -----------------------------------------------------------
-Write-Host "[3/6] Configurando permissoes RBAC..." -ForegroundColor Yellow
+Write-Host "[3/5] Configurando permissoes RBAC..." -ForegroundColor Yellow
 
 # Obter principal ID do AI Project (managed identity)
 $PROJECT_RESOURCE_ID = "/subscriptions/$SUBSCRIPTION/resourceGroups/$RG/providers/Microsoft.CognitiveServices/accounts/$FOUNDRY_NAME/projects/$PROJECT_NAME"
@@ -172,91 +163,188 @@ if ($PROJECT_PRINCIPAL) {
 Write-Host ""
 
 # -----------------------------------------------------------
-# 4. Criar nova versao do hosted agent
+# 4. Registrar hosted agent via Python SDK
+#
+#    Usa azure-ai-projects para criar o hosted agent.
+#    O servico auto-provisiona o container apos a criacao --
+#    nao e necessario um "start" separado.
+#
+#    Se o agente ja existir com containers ativos, o script
+#    reutiliza a versao existente (idempotente).
+#
+#    Env vars injetadas no container:
+#    - AZURE_AI_PROJECT_ENDPOINT: endpoint do projeto Foundry
+#    - AZURE_AI_MODEL_DEPLOYMENT_NAME: nome do deployment GPT
+#    - AZURE_OPENAI_ENDPOINT: endpoint OpenAI do Foundry
 # -----------------------------------------------------------
-Write-Host "[4/6] Criando hosted agent v$NEXT_VERSION..." -ForegroundColor Yellow
+Write-Host "[4/5] Registrando hosted agent via Python SDK..." -ForegroundColor Yellow
 
-$envVars = @(
-    "AZURE_AI_PROJECT_ENDPOINT=$PROJECT_ENDPOINT",
-    "AZURE_AI_MODEL_DEPLOYMENT_NAME=$MODEL_DEPLOYMENT",
-    "AZURE_OPENAI_ENDPOINT=$OPENAI_ENDPOINT"
+$createAgentPy = @"
+import json, sys
+from azure.ai.projects import AIProjectClient
+from azure.ai.projects.models import (
+    ImageBasedHostedAgentDefinition,
+    ProtocolVersionRecord,
 )
+from azure.identity import DefaultAzureCredential
 
-az cognitiveservices agent create `
-    --account-name $FOUNDRY_NAME `
-    --project-name $PROJECT_NAME `
-    --name $AGENT_NAME `
-    --image $IMAGE_FULL `
-    --cpu 1 --memory 2Gi `
-    --protocol responses --protocol-version v1 `
-    --env @envVars `
-    --no-start
+endpoint      = '$PROJECT_ENDPOINT'
+acr_image     = '$IMAGE_FULL'
+model         = '$MODEL_DEPLOYMENT'
+openai_ep     = '$OPENAI_ENDPOINT'
+agent_name    = '$AGENT_NAME'
 
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERRO: Falha ao criar hosted agent." -ForegroundColor Red
+cred = DefaultAzureCredential()
+client = AIProjectClient(endpoint=endpoint, credential=cred)
+
+# --- Verifica se o agente ja existe ---
+agent_exists = False
+try:
+    existing = client.agents.get(agent_name)
+    agent_exists = True
+    latest = existing.as_dict().get('versions', {}).get('latest', {})
+    version = latest.get('version', '1')
+except Exception:
+    pass
+
+if agent_exists:
+    print(f'  Agente {agent_name} ja existe (v{version}).')
+    print(f'  Reutilizando versao existente (idempotente).')
+    print(f'  Para redeployar com codigo novo, delete o agente no portal')
+    print(f'  do Foundry e execute novamente.')
+else:
+    print(f'  Criando hosted agent {agent_name}...')
+    print(f'    Imagem: {acr_image}')
+    print(f'    Model:  {model}')
+
+    definition = ImageBasedHostedAgentDefinition(
+        image=acr_image,
+        container_protocol_versions=[
+            ProtocolVersionRecord(protocol='responses', version='v1')
+        ],
+        cpu='1',
+        memory='2Gi',
+        environment_variables={
+            'AZURE_AI_PROJECT_ENDPOINT': endpoint,
+            'AZURE_AI_MODEL_DEPLOYMENT_NAME': model,
+            'AZURE_OPENAI_ENDPOINT': openai_ep,
+        },
+    )
+
+    agent = client.agents.create(
+        name=agent_name,
+        definition=definition,
+        description='Agente de mercado financeiro - hosted LangGraph agent',
+    )
+
+    version = getattr(agent, 'version', None)
+    if not version:
+        latest = agent.as_dict().get('versions', {}).get('latest', {})
+        version = latest.get('version', '1')
+    print(f'  Agente criado! Versao: {version}')
+
+print('AGENT_RESULT:' + json.dumps({'name': agent_name, 'version': str(version)}))
+"@
+
+$agentOutput = python3 -c $createAgentPy 2>&1
+$agent_exit = $LASTEXITCODE
+
+foreach ($line in $agentOutput) {
+    if ($line -notmatch '^AGENT_RESULT:') {
+        Write-Host $line
+    }
+}
+
+if ($agent_exit -ne 0) {
+    Write-Host "ERRO: Falha ao criar hosted agent via Python SDK." -ForegroundColor Red
+    Write-Host "  Verifique se azure-ai-projects e azure-identity estao instalados:" -ForegroundColor Red
+    Write-Host "  pip install azure-ai-projects azure-identity" -ForegroundColor Red
     exit 1
 }
 
-Write-Host "  Agente $AGENT_NAME v$NEXT_VERSION criado"
+$resultLine = ($agentOutput | Where-Object { $_ -match '^AGENT_RESULT:' }) -replace '^AGENT_RESULT:',''
+if ($resultLine) {
+    $agentResult = $resultLine | ConvertFrom-Json
+    $NEXT_VERSION = $agentResult.version
+} else {
+    $NEXT_VERSION = "1"
+}
+
+Write-Host "  Agente $AGENT_NAME v$NEXT_VERSION registrado" -ForegroundColor Green
 Write-Host ""
 
 # -----------------------------------------------------------
-# 5. Iniciar o agente
+# 5. Aguardar provisionamento e testar
+#
+#    O servico auto-provisiona o container apos agents.create().
+#    Verificamos chamando o agente via Responses API ate
+#    obter uma resposta valida.
 # -----------------------------------------------------------
-Write-Host "[5/6] Iniciando agente v$NEXT_VERSION..." -ForegroundColor Yellow
+Write-Host "[5/5] Aguardando agente ficar pronto (ate ~3 min)..." -ForegroundColor Yellow
 
-az cognitiveservices agent start `
-    --account-name $FOUNDRY_NAME `
-    --project-name $PROJECT_NAME `
-    --name $AGENT_NAME `
-    --agent-version $NEXT_VERSION
-
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERRO: Falha ao iniciar o agente." -ForegroundColor Red
-    exit 1
-}
-
-Write-Host "  Aguardando agente ficar Running (pode levar ~2 min)..."
 $maxWait = 180
 $elapsed = 0
+$agentReady = $false
+
 while ($elapsed -lt $maxWait) {
     Start-Sleep -Seconds 15
     $elapsed += 15
 
-    # Verificar se ja esta Running tentando iniciar novamente
-    $startResult = az cognitiveservices agent start `
-        --account-name $FOUNDRY_NAME `
-        --project-name $PROJECT_NAME `
-        --name $AGENT_NAME `
-        --agent-version $NEXT_VERSION 2>&1
+    $testResult = python3 -c @"
+import sys
+try:
+    from azure.ai.projects import AIProjectClient
+    from azure.identity import DefaultAzureCredential
+    c = AIProjectClient(endpoint='$PROJECT_ENDPOINT', credential=DefaultAzureCredential())
+    openai = c.get_openai_client()
+    r = openai.responses.create(
+        extra_body={'agent': {'name': '$AGENT_NAME', 'version': '$NEXT_VERSION', 'type': 'agent_reference'}},
+        input='ping',
+    )
+    if r.output_text:
+        print('READY')
+    else:
+        print('WAITING')
+except Exception as e:
+    msg = str(e)
+    if 'not running' in msg.lower() or 'not found' in msg.lower():
+        print('WAITING')
+    else:
+        print(f'ERROR:{msg}')
+"@ 2>$null
 
-    if ($startResult -match "Running") {
+    if ($testResult -eq "READY") {
+        $agentReady = $true
         Write-Host "  Agente Running!" -ForegroundColor Green
         break
     }
-    Write-Host "  Aguardando... ($($elapsed)s)"
+    elseif ($testResult -match '^ERROR:') {
+        $errMsg = $testResult -replace '^ERROR:',''
+        Write-Host "  Aguardando... ($($elapsed)s) erro=$errMsg" -ForegroundColor Yellow
+    }
+    else {
+        Write-Host "  Aguardando... ($($elapsed)s) container provisionando..."
+    }
+}
+
+if (-not $agentReady) {
+    Write-Host "  Timeout aguardando agente. Verifique o portal do Foundry." -ForegroundColor Yellow
+    Write-Host "  O agente foi criado mas pode demorar mais para provisionar." -ForegroundColor Yellow
 }
 Write-Host ""
 
 # -----------------------------------------------------------
-# 6. Teste rapido
+# Informacoes finais
 # -----------------------------------------------------------
-Write-Host "[6/6] Testando o agente..." -ForegroundColor Yellow
-
-# Aguardar propagacao do RBAC (caso primeira execucao)
-Start-Sleep -Seconds 10
-
+Write-Host "Deploy concluido!" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "Para testar manualmente:" -ForegroundColor Cyan
-Write-Host "  python ../../test/chat.py --lesson 3"
+Write-Host "  python ../../test/chat.py --lesson 3" -ForegroundColor White
 Write-Host ""
 Write-Host "Ou via REST:" -ForegroundColor Cyan
-Write-Host "  Endpoint: $PROJECT_ENDPOINT"
-Write-Host "  Agent:    $AGENT_NAME v$NEXT_VERSION"
+Write-Host "  Endpoint: $PROJECT_ENDPOINT" -ForegroundColor White
+Write-Host "  Agent:    $AGENT_NAME v$NEXT_VERSION" -ForegroundColor White
 Write-Host ""
-Write-Host "Deploy concluido com sucesso!" -ForegroundColor Green
-Write-Host ""
-
 Write-Host "======================================" -ForegroundColor Green
-Write-Host " Deploy concluido!"
+Write-Host " Lesson 3 - Deploy concluido!"
 Write-Host "======================================" -ForegroundColor Green

@@ -314,9 +314,7 @@ try:
     from azure.identity import DefaultAzureCredential
     c = AIProjectClient(endpoint='$PROJECT_ENDPOINT', credential=DefaultAzureCredential())
     openai = c.get_openai_client()
-    conv = openai.conversations.create()
     r = openai.responses.create(
-        conversation=conv.id,
         extra_body={'agent': {'name': '$AGENT_NAME', 'version': '$NEXT_VERSION', 'type': 'agent_reference'}},
         input='ping',
     )

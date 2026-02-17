@@ -9,8 +9,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar codigo
 COPY . .
 
-# Porta do agentserver HTTP
-EXPOSE 8080
+# Porta do agentserver HTTP (azure-ai-agentserver-core default = 8088)
+EXPOSE 8088
 
 # Entrypoint - HTTP server mode
 CMD ["python", "app.py"]
