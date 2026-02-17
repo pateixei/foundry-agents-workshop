@@ -139,6 +139,7 @@ output aiFoundryEndpoint string = aiFoundry.properties.endpoint
 output aiProjectName string = aiProject.name
 output aiProjectEndpoint string = 'https://${aiFoundry.properties.customSubDomainName}.services.ai.azure.com/api/projects/${aiProject.name}'
 output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey
+output appInsightsConnectionString string = appInsights.properties.ConnectionString
 output containerAppsEnvName string = containerAppsEnv.name
 output containerAppsEnvId string = containerAppsEnv.id
 output resourceGroupName string = resourceGroupName
