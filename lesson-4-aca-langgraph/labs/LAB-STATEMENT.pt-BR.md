@@ -305,56 +305,67 @@ Invoke-RestMethod -Uri "https://$fqdn/chat" -Method Post -Body $body -ContentTyp
 - ✅ Endpoint de chat processa requisições
 - ✅ Respostas do agente estão corretas
 
-### Tarefa 5: Habilitar AI Gateway e Registrar como Connected Agent (20 minutos)
+### Tarefa 5: Entender Deploy ACA vs Integração Foundry (15 minutos)
 
-> **IMPORTANTE**: O registro de um agente externo (Container App) no Foundry requer que o **AI Gateway (APIM)** esteja configurado no seu recurso Foundry. Este é um **passo manual** que deve ser feito pelo portal — não é possível automatizar via SDK, CLI ou Bicep neste momento.
+> **IMPORTANTE — Limitação do Foundry Playground**: O Foundry Playground **não** suporta testar agentes implantados na sua própria infraestrutura (ACA). O Playground funciona apenas com **Prompt/Workflow agents** e **Hosted Agents** (onde o Foundry gerencia o runtime do container). Se você precisa de integração com o Playground, veja o Lab 3 (modelo Hosted Agent).
 
-**5.1 - Habilitar AI Gateway (APIM)**
+**5.1 - Por Que Agentes ACA Não Aparecem no Playground**
 
-1. Acesse o [Portal Azure AI Foundry](https://ai.azure.com/) e selecione seu projeto
-2. Navegue para **Manage** → **AI services and API Gateways**
-3. Clique em **Deploy API Gateway**
-4. Selecione **Deploy a new API Management resource**
-   - Escolha o SKU **Consumption** (menor custo, sem cobrança quando ocioso)
-   - Associe ao seu recurso Foundry
-5. **Aguarde o provisionamento** — o deploy do APIM leva **30–45 minutos**
+A nova experiência do Foundry distingue entre:
 
-> ⏱️ Enquanto o APIM é provisionado, você pode prosseguir com a Tarefa 6 (exercício de comparação) e retornar para concluir a Tarefa 5.
+| Conceito | Descrição | Playground? |
+|----------|-----------|-------------|
+| **Prompt/Workflow Agents** | Criados diretamente no Foundry Agent Builder | ✅ Sim |
+| **Hosted Agents** | Seu código container rodando na infraestrutura gerenciada do Foundry (`ImageBasedHostedAgentDefinition`) | ✅ Sim |
+| **Agentes ACA (este lab)** | Seu código container no SEU próprio Azure Container Apps | ❌ Não |
 
-**5.2 - Registrar o Connected Agent**
+A opção **Operate → Overview → Register asset** do portal Foundry apenas adiciona a URL do ACA como um **asset de referência** — NÃO integra como um agente testável.
 
-Após o AI Gateway estar ativo:
+**5.2 - Quando Escolher Cada Modelo**
 
-1. No portal Foundry, navegue para **Agents** → **+ New agent** → **Container App agent**
-2. Preencha o formulário de registro:
-   - **Agent name**: `aca-lg-agent`
-   - **Agent URL**: a URL do ACA exibida pelo `deploy.ps1` (ex: `https://aca-lg-agent.xxxxx.eastus.azurecontainerapps.io`)
-   - **Protocol**: Responses (v1)
-3. Salve. O Foundry criará uma URL de proxy gerenciada via AI Gateway que roteará requisições para seu Container App.
+| Caso de Uso | Modelo Recomendado |
+|-------------|--------------------|
+| Prototipagem rápida com Foundry Playground | **Hosted Agent** (Lab 3) |
+| Controle total de infraestrutura (VNet, escala, compliance) | **ACA** (Este Lab) |
+| Telemetria Foundry + testes no Playground | **Hosted Agent** (Lab 3) |
+| Integração com ambiente ACA/Kubernetes existente | **ACA** (Este Lab) |
+| Publicação no Teams/M365 via Foundry | **Hosted Agent** (Lab 3) |
 
-**5.3 - Testar via Foundry Playground**
+**5.3 - Testando Seu Agente ACA**
 
-1. No portal Foundry, vá para **Agents** e selecione seu agente registrado
-2. Clique em **Try in Playground**
-3. Envie uma mensagem de teste: `"Qual o preço atual da PETR4?"`
-4. Verifique se a resposta vem através do Foundry AI Gateway até seu ACA
+Como o Foundry Playground não está disponível para agentes ACA, todos os testes são feitos **diretamente** pelos endpoints do ACA:
 
-> **Nota**: Você sempre pode testar o agente **diretamente** (sem passar pelo Foundry) via a URL do ACA — isso foi validado na Tarefa 4.
+```powershell
+# Health check
+curl https://<ACA_FQDN>/health
+
+# Endpoint de chat
+curl -X POST https://<ACA_FQDN>/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Qual o preço atual da PETR4?"}'
+
+# Documentação da API
+open https://<ACA_FQDN>/docs
+```
+
+Você também pode integrar agentes ACA em suas próprias aplicações via chamadas HTTP padrão — o endpoint do ACA é uma API REST convencional.
+
+> **Opcional**: Você pode registrar a URL do ACA como asset no Foundry para fins de documentação: **Operate → Overview → Register asset**. Isso não habilita testes no Playground, mas mantém uma referência no seu projeto.
 
 **Critérios de Sucesso**:
-- ✅ AI Gateway (APIM) provisionado e ativo no Foundry
-- ✅ Agente registrado no Foundry
-- ✅ Visível na lista de Agents (mostra badge "Connected")
-- ✅ Invocações roteiam através do Foundry até o ACA
-- ✅ Telemetria coletada pelo Foundry
+- ✅ Entender por que agentes ACA não aparecem no Foundry Playground
+- ✅ Conseguir articular quando usar ACA vs Hosted Agents
+- ✅ Agente testado com sucesso via endpoints diretos do ACA (Tarefa 4)
+- ✅ Saber como integrar agentes ACA em aplicações customizadas
 
 ### Tarefa 6: Comparar Modelos de Hospedagem (10 minutos)
 
 **Complete a tabela de comparação**:
 
-| Funcionalidade | Hosted (Lab 2-3) | Connected (Este Lab) |
-|---------|------------------|----------------------|
+| Funcionalidade | Hosted (Lab 2-3) | ACA Self-Hosted (Este Lab) |
+|---------|------------------|----------------------------|
 | **Proprietário da Infraestrutura** | ? | ? |
+| **Foundry Playground** | ? | ? |
 | **Comando de Implantação** | ? | ? |
 | **Controle de Escala** | ? | ? |
 | **Modelo de Custo** | ? | ? |
@@ -388,7 +399,7 @@ Use **Connected (ACA)** quando:
 - [x] Template Bicep completo (aca.bicep)
 - [x] Infraestrutura ACA implantada
 - [x] Agente em execução e acessível
-- [x] Registrado como Connected Agent no Foundry
+- [x] Entender tradeoffs ACA vs Hosted Agent
 - [x] Documento de comparação: Hosted vs Connected
 - [x] Estimativa de custo para implantação ACA
 
@@ -399,8 +410,8 @@ Use **Connected (ACA)** quando:
 | **Template Bicep** | 30 pts | IaC completo e correto com dependências adequadas |
 | **Configuração RBAC** | 20 pts | Managed Identity + role assignments |
 | **Implantação** | 20 pts | Implantado e em execução com sucesso |
-| **Testes** | 15 pts | Acesso direto e roteamento Foundry funcionam |
-| **Connected Agent** | 10 pts | Registrado no Foundry Control Plane |
+| **Testes** | 15 pts | Acesso direto via endpoints ACA funciona |
+| **Entendimento Arquitetural** | 10 pts | Consegue explicar tradeoffs ACA vs Hosted Agent |
 | **Análise** | 5 pts | Comparação criteriosa dos modelos de hospedagem |
 
 **Total**: 100 pontos

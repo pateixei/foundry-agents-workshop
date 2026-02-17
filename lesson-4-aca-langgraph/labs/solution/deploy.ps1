@@ -159,7 +159,7 @@ if ($ACA_PRINCIPAL) {
 Write-Host ""
 
 # -----------------------------------------------------------
-# 5. Resumo e instrucoes de registro no Foundry
+# 5. Resumo e proximos passos
 # -----------------------------------------------------------
 Write-Host "======================================" -ForegroundColor Green
 Write-Host " Deploy concluido!"
@@ -183,49 +183,19 @@ Write-Host "  curl -X POST $ACA_URL/chat -H 'Content-Type: application/json' -d 
 Write-Host ""
 
 Write-Host "======================================" -ForegroundColor Magenta
-Write-Host " IMPORTANTE: Passos Manuais no Portal" -ForegroundColor Magenta
+Write-Host " NOTA: ACA vs Hosted Agents" -ForegroundColor Magenta
 Write-Host "======================================" -ForegroundColor Magenta
 Write-Host ""
-Write-Host "O registro de agentes externos (Container Apps) no Foundry requer" -ForegroundColor White
-Write-Host "configuracao manual do AI Gateway (APIM) e registro do agente via portal." -ForegroundColor White
-Write-Host "Estas etapas NAO podem ser automatizadas via SDK/CLI no momento." -ForegroundColor White
+Write-Host "Este agente roda na SUA infraestrutura (Azure Container Apps)." -ForegroundColor White
+Write-Host "Teste-o diretamente pelos endpoints acima (/health, /chat, /docs)." -ForegroundColor White
 Write-Host ""
-Write-Host "--------------------------------------" -ForegroundColor Yellow
-Write-Host " Passo 1: Habilitar AI Gateway (APIM)"
-Write-Host "--------------------------------------" -ForegroundColor Yellow
+Write-Host "O Foundry Playground NAO suporta agentes externos em ACA." -ForegroundColor Yellow
+Write-Host "Para integrar com o Playground, use o modelo 'Hosted Agent'" -ForegroundColor Yellow
+Write-Host "(veja Lesson 3), onde o Foundry gerencia a infraestrutura." -ForegroundColor Yellow
 Write-Host ""
-Write-Host "  1. Acesse o portal do Microsoft Foundry:" -ForegroundColor White
-Write-Host "     https://ai.azure.com" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "  2. Selecione seu projeto: $PROJECT_NAME" -ForegroundColor White
-Write-Host ""
-Write-Host "  3. Navegue para:" -ForegroundColor White
-Write-Host "     Manage > AI services and API Gateways > Deploy API Gateway" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "  4. Selecione a opcao 'Deploy a new API Management resource'" -ForegroundColor White
-Write-Host "     - Escolha o SKU 'Consumption' (menor custo, sem cobranca em idle)" -ForegroundColor White
-Write-Host "     - Associe ao recurso Foundry: $FOUNDRY_NAME" -ForegroundColor White
-Write-Host ""
-Write-Host "  NOTA: O deploy do APIM pode levar 30-45 minutos." -ForegroundColor DarkYellow
-Write-Host "  Aguarde a conclusao antes de prosseguir para o Passo 2." -ForegroundColor DarkYellow
-Write-Host ""
-Write-Host "--------------------------------------" -ForegroundColor Yellow
-Write-Host " Passo 2: Registrar Connected Agent"
-Write-Host "--------------------------------------" -ForegroundColor Yellow
-Write-Host ""
-Write-Host "  1. No portal Foundry, navegue para:" -ForegroundColor White
-Write-Host "     Agents > + New agent > Container App agent" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "  2. Preencha os dados do agente:" -ForegroundColor White
-Write-Host "     - Agent name:    aca-lg-agent" -ForegroundColor Cyan
-Write-Host "     - Agent URL:     $ACA_URL" -ForegroundColor Cyan
-Write-Host "     - Protocol:      Responses (v1)" -ForegroundColor Cyan
-Write-Host "     - Project:       $PROJECT_NAME" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "  3. O Foundry criara uma URL gerenciada (via AI Gateway/APIM)" -ForegroundColor White
-Write-Host "     que roteia as chamadas do portal para seu Container App." -ForegroundColor White
-Write-Host ""
-Write-Host "  4. Teste o agente diretamente no Playground do Foundry." -ForegroundColor White
+Write-Host "Voce pode registrar a URL do ACA como 'asset' no portal Foundry" -ForegroundColor White
+Write-Host "(Operate > Overview > Register asset), mas isso serve apenas" -ForegroundColor White
+Write-Host "como referencia — nao habilita o Playground." -ForegroundColor White
 Write-Host ""
 Write-Host "======================================" -ForegroundColor Magenta
 Write-Host " Dados para referencia:" -ForegroundColor Magenta
