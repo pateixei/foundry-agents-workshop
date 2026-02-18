@@ -406,7 +406,10 @@ The Microsoft 365 Developer Program provides a free, renewable Microsoft 365 E5 
 
 2. **Sign in with a Microsoft account**
    - Use your **personal Microsoft account** (e.g., @outlook.com, @hotmail.com, @live.com)
-   - **Important**: Do NOT use your work/school account if you want full control
+   - **Important**: Do NOT use your work/school account if you want full control. Work/school accounts may have:
+     - IT policies that restrict tenant creation or Global Administrator privileges
+     - Corporate ownership of the tenant (not fully yours)
+     - Limitations on API access or external integrations
    - If you don't have a personal Microsoft account, create one at [https://signup.live.com](https://signup.live.com)
 
 3. **Complete the registration form**
@@ -482,9 +485,9 @@ After signing in to the Admin Center, verify your subscription:
 > [!CAUTION]
 > **🔴 MANDATORY for Agent 365 Lessons**
 >
-> Without Copilot Frontier enrollment, you **cannot** publish or test Agent 365 agents. The A365 CLI will fail with:
+> Without Copilot Frontier enrollment, you **cannot** publish or test Agent 365 agents. The A365 CLI will fail with an error similar to:
 > ```
-> Error: Forbidden: Access denied by Frontier access control
+> Example error: Forbidden: Access denied by Frontier access control
 > ```
 
 **Enrollment steps:**

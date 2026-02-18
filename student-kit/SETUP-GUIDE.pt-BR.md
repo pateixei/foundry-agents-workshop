@@ -418,7 +418,10 @@ O Programa de Desenvolvedor Microsoft 365 fornece uma assinatura gratuita e reno
 
 2. **Entre com uma conta Microsoft**
    - Use sua **conta Microsoft pessoal** (por exemplo, @outlook.com, @hotmail.com, @live.com)
-   - **Importante**: NÃO use sua conta corporativa/escolar se quiser ter controle total
+   - **Importante**: NÃO use sua conta corporativa/escolar se quiser ter controle total. Contas corporativas/escolares podem ter:
+     - Políticas de TI que restringem a criação de tenants ou privilégios de Administrador Global
+     - Propriedade corporativa do tenant (não totalmente seu)
+     - Limitações no acesso a APIs ou integrações externas
    - Se você não tem uma conta Microsoft pessoal, crie uma em [https://signup.live.com](https://signup.live.com)
 
 3. **Complete o formulário de registro**
@@ -494,9 +497,9 @@ Após entrar no Centro de Administração, verifique sua assinatura:
 > [!CAUTION]
 > **🔴 OBRIGATÓRIO para as Lições do Agent 365**
 >
-> Sem a inscrição no Copilot Frontier, você **não pode** publicar ou testar agentes do Agent 365. O A365 CLI falhará com:
+> Sem a inscrição no Copilot Frontier, você **não pode** publicar ou testar agentes do Agent 365. O A365 CLI falhará com um erro similar a:
 > ```
-> Erro: Proibido: Acesso negado pelo controle de acesso Frontier
+> Exemplo de erro: Proibido: Acesso negado pelo controle de acesso Frontier
 > ```
 
 **Etapas de inscrição:**
