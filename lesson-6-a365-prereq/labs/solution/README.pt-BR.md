@@ -1,4 +1,4 @@
-# Lição 5 - Pré-requisitos A365: Registro de Aplicação no Entra ID
+# Lição 6 - Pré-requisitos A365: Registro de Aplicação no Entra ID
 
 > 🇺🇸 **[Read in English](README.md)**
 
@@ -138,7 +138,7 @@ O script é **idempotente** — pode ser executado múltiplas vezes com seguran�
 
 ## Próximos Passos
 
-Após completar este lab, siga para o **Lab 6** para:
+Após completar este lab, siga para o **Lab 5** para:
 1. Criar o Agent Blueprint: `a365 agent-identity create-blueprint`
 2. Publicar no M365 Admin Center: `a365 agent-identity publish`
 3. Criar instâncias do agente no Teams

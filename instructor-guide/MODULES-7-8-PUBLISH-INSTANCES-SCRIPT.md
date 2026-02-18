@@ -50,7 +50,7 @@ By the end of these modules, students will be able to:
 **Instructional Method**: Presentation
 
 **Opening (2 min)**:
-> "Your agent is registered (Module 6), enhanced with SDK (Module 5). Now: make it **discoverable** to end users."
+> "Your agent is registered (Module 5), enhanced with SDK (Module 6). Now: make it **discoverable** to end users."
 >
 > "This isn't automatic—M365 admins control which agents users can instantiate."
 
@@ -125,7 +125,7 @@ Blueprints in tenant <m365-tenant-id>:
   Messaging Endpoint: https://aca-lg-agent...azurecontainerapps.io/api/messages
 ```
 
-**If not found**: Re-run Module 6 setup
+**If not found**: Re-run Module 5 setup
 
 **Success Criteria**: ✅ Blueprint appears in list
 
@@ -166,7 +166,7 @@ Blueprints in tenant <m365-tenant-id>:
 **Explain fields**:
 - `isPrivate: true`: "Agent won't appear in public Teams app store—only your organization."
 - `icons`: "192x192 PNG for color, 32x32 for outline."
-- `permissions`: "Same as registered in Module 6."
+- `permissions`: "Same as registered in Module 5."
 
 **Student Task**: Customize description with their agent's capabilities
 
@@ -480,7 +480,7 @@ What would you like to know?
 **Verify**:
 - Response arrives within 5 seconds
 - Response is coherent and on-brand
-- Agent uses adaptive card (if implemented in Module 5)
+- Agent uses adaptive card (if implemented in Module 6)
 
 **Success Criteria**: ✅ Personal instance responds successfully
 
@@ -677,7 +677,7 @@ Permissions:
 
 #### Scenario 4: Adaptive Cards (5 min)
 
-**If implemented in Module 5**:
+**If implemented in Module 6**:
 
 **Student Task**: Request data that triggers adaptive card
 

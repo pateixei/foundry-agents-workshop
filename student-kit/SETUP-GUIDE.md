@@ -541,7 +541,7 @@ Your Microsoft 365 E5 Developer subscription is **free for 90 days** and **autom
 
 ### 8.6 Important Notes
 
-- **Azure ≠ Microsoft 365**: Your Azure subscription and M365 tenant are **separate** and likely in **different Entra ID tenants**. This is the "cross-tenant scenario" covered in Lesson 6.
+- **Azure ≠ Microsoft 365**: Your Azure subscription and M365 tenant are **separate** and likely in **different Entra ID tenants**. This is the "cross-tenant scenario" covered in Lesson 5.
 - **Personal vs. Work Account**: For full control, use a **personal Microsoft account** (not your company email) when joining the Developer Program.
 - **Multiple Tenants**: You can have multiple M365 developer tenants, but only **one per Microsoft account**.
 - **Data Persistence**: Treat the developer tenant as ephemeral for workshops. Do not store critical production data.

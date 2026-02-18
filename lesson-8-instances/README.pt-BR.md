@@ -712,7 +712,7 @@ Teste a robustez do agente com casos extremos:
 | Fora do escopo (`Tell me a joke`) | Redirecionamento: "I specialize in financial information" |
 | Mensagem vazia | Tratamento gracioso sem falha |
 
-### Cenário 4: Adaptive Cards (se implementado na Lição 6)
+### Cenário 4: Adaptive Cards (se implementado na Lição 5)
 
 ```
 You: Show me a dashboard for AAPL
@@ -808,8 +808,8 @@ a365 get-usage --instance-id <ID>
 ## Recursos
 
 - [Repositório do Workshop](https://github.com/pateixei/foundry-agents-workshop)
-- [Lição 6: Integração com SDK A365](../lesson-6-a365-langgraph/README.pt-BR.md)
-- [Lição 5: Pré-requisitos A365](../lesson-5-a365-prereq/README.pt-BR.md)
+- [Lição 5: Integração com SDK A365](../lesson-6-a365-langgraph/README.pt-BR.md)
+- [Lição 6: Pré-requisitos A365](../lesson-5-a365-prereq/README.pt-BR.md)
 - [Lição 7: Guia de Publicação](../lesson-7-publish/README.pt-BR.md)
 - [Microsoft Learn: Construa Agentes M365](https://learn.microsoft.com/en-us/training/paths/build-microsoft-365-agents/)
 

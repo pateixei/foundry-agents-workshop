@@ -1,4 +1,4 @@
-# Lab 5: Register Entra ID Application and Configure Agent 365
+# Lab 6: Register Entra ID Application and Configure Agent 365
 
 > 🇧🇷 **[Leia em Português (pt-BR)](LAB-STATEMENT.pt-BR.md)**
 
@@ -462,7 +462,7 @@ a365 config display
 
 ## Next Steps
 
-- **Lab 6**: Use the Agent 365 SDK to set up the Agent Blueprint, publish to M365 Admin Center, and create agent instances in Teams
+- **Lab 5**: Use the Agent 365 SDK to set up the Agent Blueprint, publish to M365 Admin Center, and create agent instances in Teams
 - Test the full end-to-end flow: Teams → M365 → ACA → Azure OpenAI → Response
 
 ---

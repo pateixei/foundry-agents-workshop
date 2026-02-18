@@ -1,4 +1,4 @@
-# Lesson 5 - A365 Prerequisites: Entra ID App Registration
+# Lesson 6 - A365 Prerequisites: Entra ID App Registration
 
 > 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
 
@@ -138,7 +138,7 @@ The script is **idempotent** — it can be run multiple times safely:
 
 ## Next Steps
 
-After completing this lab, proceed to **Lab 6** to:
+After completing this lab, proceed to **Lab 5** to:
 1. Create the Agent Blueprint: `a365 agent-identity create-blueprint`
 2. Publish to M365 Admin Center: `a365 agent-identity publish`
 3. Create agent instances in Teams

@@ -54,7 +54,7 @@ Desenvolvedor                M365 Admin                  Usuários Finais
 
 Antes de publicar, certifique-se de que você:
 
-1. ✅ Concluiu a configuração da Lição 5 (`a365 setup all`)
+1. ✅ Concluiu a configuração da Lição 6 (`a365 setup all`)
 2. ✅ Agent Blueprint registrado no Entra ID
 3. ✅ Agente implantado e saudável no ACA
 4. ✅ Endpoint de mensagens acessível

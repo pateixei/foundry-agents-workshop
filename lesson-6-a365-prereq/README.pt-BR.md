@@ -1,4 +1,4 @@
-# Lição 5 - Configuração Completa do Microsoft Agent 365
+# Lição 6 - Configuração Completa do Microsoft Agent 365
 
 > 🇺🇸 **[Read in English](README.md)**
 

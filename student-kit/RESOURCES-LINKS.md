@@ -53,9 +53,9 @@
 |----------|-----|---------|
 | Microsoft 365 Agents Overview | https://learn.microsoft.com/microsoft-365-copilot/extensibility/agents-are-apps | Modules 5-8 |
 | A365 Connected Agents | https://learn.microsoft.com/microsoft-365-copilot/extensibility/publish-agent-teams-toolkit | Modules 5-6 |
-| Microsoft 365 Developer Program | https://developer.microsoft.com/microsoft-365/dev-program | Module 6 |
-| Bot Framework SDK (Python) | https://learn.microsoft.com/azure/bot-service/bot-service-quickstart-create-bot | Module 5 |
-| `botbuilder-core` PyPI | https://pypi.org/project/botbuilder-core/ | Module 5 |
+| Microsoft 365 Developer Program | https://developer.microsoft.com/microsoft-365/dev-program | Module 5 |
+| Bot Framework SDK (Python) | https://learn.microsoft.com/azure/bot-service/bot-service-quickstart-create-bot | Module 6 |
+| `botbuilder-core` PyPI | https://pypi.org/project/botbuilder-core/ | Module 6 |
 | Teams App Manifest | https://learn.microsoft.com/microsoftteams/platform/resources/schema/manifest-schema | Module 7 |
 
 ## Azure Infrastructure & DevOps
@@ -65,8 +65,8 @@
 | Azure Bicep Documentation | https://learn.microsoft.com/azure/azure-resource-manager/bicep/ | Prereq, Module 4 |
 | Azure CLI Reference | https://learn.microsoft.com/cli/azure/ | All modules |
 | Azure Container Registry | https://learn.microsoft.com/azure/container-registry/ | Modules 2-4, 6 |
-| Azure Monitor / App Insights | https://learn.microsoft.com/azure/azure-monitor/ | Module 5 |
-| OpenTelemetry for Python | https://opentelemetry.io/docs/languages/python/ | Module 5 |
+| Azure Monitor / App Insights | https://learn.microsoft.com/azure/azure-monitor/ | Module 6 |
+| OpenTelemetry for Python | https://opentelemetry.io/docs/languages/python/ | Module 6 |
 | Managed Identity Overview | https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview | All modules |
 
 ## AWS → Azure Migration References

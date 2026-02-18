@@ -1,6 +1,6 @@
 # setup-entra-app.ps1 - Register Entra ID Application and Configure Agent 365
 #
-# Lesson 6 - A365 Prerequisites (SOLUTION)
+# Lesson 5 - A365 Prerequisites (STARTER)
 #
 # Usage:
 #   .\setup-entra-app.ps1 -M365TenantId <GUID> -M365Domain <domain> -AcaUrl <URL> -ManagerEmail <email>
@@ -21,6 +21,10 @@
 #
 # NOTE: Uses --use-device-code for WSL2 / headless environments where
 #       browser-based login is not available.
+#
+# INSTRUCTIONS:
+#   Search for "TODO" comments and implement each step.
+#   Each TODO has hints to guide you. Run the script after each step to test incrementally.
 
 param(
     [Parameter(Mandatory = $true, HelpMessage = "M365 Tenant ID (Tenant B) - GUID")]
@@ -56,12 +60,18 @@ $ErrorActionPreference = "Stop"
 # Microsoft Graph well-known app ID
 $GRAPH_APP_ID = "00000003-0000-0000-c000-000000000000"
 
-# Required delegated permissions (space-separated scope string)
-$REQUIRED_SCOPES = "Application.ReadWrite.All Directory.Read.All DelegatedPermissionGrant.ReadWrite.All AgentIdentityBlueprint.ReadWrite.All AgentIdentityBlueprint.UpdateAuthProperties.All"
+# TODO 5a: Define the 5 required delegated permission scopes as a space-separated string.
+# Hint: The permissions needed are:
+#   - Application.ReadWrite.All
+#   - Directory.Read.All
+#   - DelegatedPermissionGrant.ReadWrite.All
+#   - AgentIdentityBlueprint.ReadWrite.All
+#   - AgentIdentityBlueprint.UpdateAuthProperties.All
+$REQUIRED_SCOPES = ""  # <-- Fill in the scopes
 
 Write-Host ""
 Write-Host "======================================" -ForegroundColor Cyan
-Write-Host " Lesson 6 - A365 Prerequisites"
+Write-Host " Lesson 5 - A365 Prerequisites"
 Write-Host " Entra ID App Registration"
 Write-Host "======================================" -ForegroundColor Cyan
 Write-Host ""
@@ -167,15 +177,21 @@ if ($existingApp) {
     Write-Host "  App '$AppDisplayName' already exists with Client ID: $existingApp" -ForegroundColor Yellow
     $CLIENT_ID = $existingApp
 } else {
-    # Create the app registration
-    # - Single tenant (AzureADMyOrg)
-    # - Public client with localhost redirect URI
-    $appJson = az ad app create `
-        --display-name $AppDisplayName `
-        --sign-in-audience AzureADMyOrg `
-        --public-client-redirect-uris "http://localhost:8400/" `
-        --query "{appId:appId, objectId:id}" `
-        -o json | ConvertFrom-Json
+    # TODO 2: Create the app registration using "az ad app create".
+    # Requirements:
+    #   - Display name: $AppDisplayName
+    #   - Sign-in audience: Single tenant (AzureADMyOrg)
+    #   - Public client redirect URI: http://localhost:8400/
+    #   - Query output: appId and id fields
+    #
+    # Hint: Use these az ad app create flags:
+    #   --display-name <name>
+    #   --sign-in-audience AzureADMyOrg
+    #   --public-client-redirect-uris "http://localhost:8400/"
+    #   --query "{appId:appId, objectId:id}"
+    #   -o json
+
+    $appJson = $null  # <-- Replace with az ad app create command
 
     if ($LASTEXITCODE -ne 0 -or -not $appJson) {
         Write-Host "  ERRO: Failed to create app registration." -ForegroundColor Red
@@ -194,12 +210,17 @@ Write-Host ""
 # -----------------------------------------------------------
 Write-Host "[3/6] Configuring redirect URIs..." -ForegroundColor Yellow
 
-$BROKER_URI = "ms-appx-web://Microsoft.AAD.BrokerPlugin/$CLIENT_ID"
+# TODO 3: Build the broker plugin redirect URI.
+# The format is: ms-appx-web://Microsoft.AAD.BrokerPlugin/{CLIENT-ID}
+# Hint: Concatenate the base URI with the $CLIENT_ID variable.
+$BROKER_URI = ""  # <-- Build the broker URI
 
-# Update the app to include both redirect URIs
-az ad app update `
-    --id $CLIENT_ID `
-    --public-client-redirect-uris "http://localhost:8400/" $BROKER_URI
+# TODO 3b: Update the app to include BOTH redirect URIs using "az ad app update".
+# Hint: Use these flags:
+#   --id $CLIENT_ID
+#   --public-client-redirect-uris "http://localhost:8400/" $BROKER_URI
+
+# <-- Add your az ad app update command here
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "  ERRO: Failed to update redirect URIs." -ForegroundColor Red
@@ -221,7 +242,10 @@ $spId = az ad sp list --filter "appId eq '$CLIENT_ID'" --query "[0].id" -o tsv 2
 if ($spId) {
     Write-Host "  Service principal already exists: $spId" -ForegroundColor Yellow
 } else {
-    $spJson = az ad sp create --id $CLIENT_ID --query "id" -o tsv 2>$null
+    # TODO 4: Create the service principal using "az ad sp create".
+    # Hint: Use --id $CLIENT_ID and query the "id" field.
+    $spJson = $null  # <-- Replace with az ad sp create command
+
     if ($LASTEXITCODE -ne 0) {
         Write-Host "  ERRO: Failed to create service principal." -ForegroundColor Red
         exit 1
@@ -235,9 +259,8 @@ Write-Host ""
 # -----------------------------------------------------------
 # 5. Grant Delegated Permissions via Graph API
 #
-#    Uses az rest to call Microsoft Graph directly.
-#    This is equivalent to Option B in the lab statement,
-#    which handles beta permissions (AgentIdentityBlueprint.*)
+#    Uses "az rest" to call Microsoft Graph directly.
+#    This handles beta permissions (AgentIdentityBlueprint.*)
 #    that may not be visible in the Entra portal UI.
 # -----------------------------------------------------------
 Write-Host "[5/6] Granting delegated permissions via Graph API..." -ForegroundColor Yellow
@@ -268,40 +291,31 @@ $existingGrant = az rest `
 if ($existingGrant) {
     Write-Host "  Permission grant already exists. Updating scopes..." -ForegroundColor Yellow
 
-    # Update existing grant with all required scopes
-    $updateBody = @{
-        scope = $REQUIRED_SCOPES
-    } | ConvertTo-Json -Compress
+    # TODO 5b: Update the existing grant with $REQUIRED_SCOPES using az rest PATCH.
+    # Hint:
+    #   - Method: PATCH
+    #   - URL: https://graph.microsoft.com/v1.0/oauth2PermissionGrants/$existingGrant
+    #   - Body: JSON with the "scope" field set to $REQUIRED_SCOPES
+    #   - Use ConvertTo-Json to serialize the body
 
-    az rest `
-        --method PATCH `
-        --url "https://graph.microsoft.com/v1.0/oauth2PermissionGrants/$existingGrant" `
-        --headers "Content-Type=application/json" `
-        --body $updateBody 2>$null
+    # <-- Add your az rest PATCH command here
 
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "  WARN: Failed to update existing grant. Trying to delete and recreate..." -ForegroundColor Yellow
-        az rest --method DELETE --url "https://graph.microsoft.com/v1.0/oauth2PermissionGrants/$existingGrant" 2>$null
-        $existingGrant = $null
-    } else {
-        Write-Host "  Scopes updated successfully." -ForegroundColor Green
-    }
-}
+    Write-Host "  Scopes updated successfully." -ForegroundColor Green
+} else {
+    # TODO 5c: Create a new oauth2PermissionGrant using az rest POST.
+    # This grants delegated permissions with admin consent for all principals.
+    #
+    # Hint:
+    #   - Method: POST
+    #   - URL: https://graph.microsoft.com/v1.0/oauth2PermissionGrants
+    #   - Body JSON fields:
+    #       clientId    = $spId              (your app's service principal)
+    #       consentType = "AllPrincipals"    (admin consent for all users)
+    #       resourceId  = $graphSpId         (Microsoft Graph's service principal)
+    #       scope       = $REQUIRED_SCOPES  (space-separated permission scopes)
+    #   - Use ConvertTo-Json -Compress to serialize
 
-if (-not $existingGrant) {
-    # Create new oauth2PermissionGrant with admin consent for all principals
-    $grantBody = @{
-        clientId    = $spId
-        consentType = "AllPrincipals"
-        resourceId  = $graphSpId
-        scope       = $REQUIRED_SCOPES
-    } | ConvertTo-Json -Compress
-
-    az rest `
-        --method POST `
-        --url "https://graph.microsoft.com/v1.0/oauth2PermissionGrants" `
-        --headers "Content-Type=application/json" `
-        --body $grantBody 2>$null
+    # <-- Add your az rest POST command here
 
     if ($LASTEXITCODE -ne 0) {
         Write-Host "  ERRO: Failed to create permission grant." -ForegroundColor Red
@@ -311,7 +325,7 @@ if (-not $existingGrant) {
     Write-Host "  Permission grant created." -ForegroundColor Green
 }
 
-# 5c. Display granted permissions
+# Display granted permissions
 Write-Host ""
 Write-Host "  Granted delegated permissions (with admin consent):" -ForegroundColor White
 $REQUIRED_SCOPES.Split(' ') | ForEach-Object {
@@ -331,24 +345,32 @@ Write-Host "[6/6] Generating a365.config.json..." -ForegroundColor Yellow
 # Ensure ACA URL doesn't have a trailing slash
 $AcaUrlClean = $AcaUrl.TrimEnd('/')
 
-$config = @{
-    '$schema'                   = "./a365.config.schema.json"
-    tenantId                    = $M365TenantId
-    clientAppId                 = $CLIENT_ID
-    agentBlueprintDisplayName   = "$AgentDisplayName Blueprint"
-    agentIdentityDisplayName    = "$AgentDisplayName Identity"
-    agentUserPrincipalName      = "$AgentUpnPrefix@$M365Domain"
-    agentUserDisplayName        = $AgentDisplayName
-    managerEmail                = $ManagerEmail
-    agentUserUsageLocation      = "BR"
-    deploymentProjectPath       = "."
-    needDeployment              = $false
-    messagingEndpoint           = "$AcaUrlClean/api/messages"
-    agentDescription            = "$AgentDisplayName (LangGraph on ACA) - A365 Workshop"
-}
+# TODO 6: Build the $config hashtable with the following fields:
+#   - $schema:                    "./a365.config.schema.json"
+#   - tenantId:                   $M365TenantId
+#   - clientAppId:                $CLIENT_ID
+#   - agentBlueprintDisplayName:  "$AgentDisplayName Blueprint"
+#   - agentIdentityDisplayName:   "$AgentDisplayName Identity"
+#   - agentUserPrincipalName:     "$AgentUpnPrefix@$M365Domain"
+#   - agentUserDisplayName:       $AgentDisplayName
+#   - managerEmail:               $ManagerEmail
+#   - agentUserUsageLocation:     "BR"
+#   - deploymentProjectPath:      "."
+#   - needDeployment:             $false   <-- IMPORTANT: must be boolean false
+#   - messagingEndpoint:          "$AcaUrlClean/api/messages"
+#   - agentDescription:           "$AgentDisplayName (LangGraph on ACA) - A365 Workshop"
+#
+# Hint: Use @{ key = value } syntax to create a PowerShell hashtable,
+#       then pipe it to ConvertTo-Json and Set-Content to write the file.
+
+$config = @{}  # <-- Fill in the hashtable fields
 
 $configPath = Join-Path $OutputDir "a365.config.json"
-$config | ConvertTo-Json -Depth 5 | Set-Content -Path $configPath -Encoding UTF8
+
+# TODO 6b: Write $config to $configPath as JSON.
+# Hint: $config | ConvertTo-Json -Depth 5 | Set-Content -Path $configPath -Encoding UTF8
+
+# <-- Add your ConvertTo-Json | Set-Content command here
 
 Write-Host "  Created: $configPath" -ForegroundColor Green
 Write-Host ""
@@ -365,15 +387,6 @@ Write-Host "  Client ID:          $CLIENT_ID" -ForegroundColor Cyan
 Write-Host "  Tenant ID:          $M365TenantId" -ForegroundColor Cyan
 Write-Host "  Service Principal:  $spId" -ForegroundColor Cyan
 Write-Host "  Config File:        $configPath" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "  Redirect URIs:" -ForegroundColor White
-Write-Host "    1. http://localhost:8400/" -ForegroundColor Cyan
-Write-Host "    2. $BROKER_URI" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "  Delegated Permissions (admin-consented):" -ForegroundColor White
-$REQUIRED_SCOPES.Split(' ') | ForEach-Object {
-    Write-Host "    - $_" -ForegroundColor Cyan
-}
 Write-Host ""
 Write-Host "--------------------------------------" -ForegroundColor Yellow
 Write-Host " Validate the configuration:"

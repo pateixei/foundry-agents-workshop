@@ -1,4 +1,4 @@
-# Lesson 5 - Microsoft Agent 365 Complete Setup
+# Lesson 6 - Microsoft Agent 365 Complete Setup
 
 > 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
 

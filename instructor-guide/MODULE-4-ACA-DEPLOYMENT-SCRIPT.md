@@ -684,7 +684,7 @@ az cognitiveservices agent invoke \
 - [ ] Update `7-DELIVERY-LOG.md` with ACA-specific issues
 - [ ] Document common Bicep errors
 - [ ] Share cost comparison data (Hosted vs Connected)
-- [ ] Verify all students ready for Module 6 (need working ACA agent)
+- [ ] Verify all students ready for Module 5 (need working ACA agent)
 
 ---
 

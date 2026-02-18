@@ -553,7 +553,7 @@ Sua assinatura de desenvolvedor Microsoft 365 E5 é **gratuita por 90 dias** e *
 
 ### 8.6 Notas Importantes
 
-- **Azure ≠ Microsoft 365**: Sua assinatura do Azure e tenant M365 são **separados** e provavelmente em **tenants Entra ID diferentes**. Este é o "cenário cross-tenant" abordado na Lição 6.
+- **Azure ≠ Microsoft 365**: Sua assinatura do Azure e tenant M365 são **separados** e provavelmente em **tenants Entra ID diferentes**. Este é o "cenário cross-tenant" abordado na Lição 5.
 - **Conta Pessoal vs. Corporativa**: Para controle total, use uma **conta Microsoft pessoal** (não seu email corporativo) ao ingressar no Programa de Desenvolvedor.
 - **Múltiplos Tenants**: Você pode ter múltiplos tenants de desenvolvedor M365, mas apenas **um por conta Microsoft**.
 - **Persistência de Dados**: Trate o tenant de desenvolvedor como efêmero para workshops. Não armazene dados críticos de produção.

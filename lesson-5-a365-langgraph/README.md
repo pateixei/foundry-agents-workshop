@@ -1,4 +1,4 @@
-# Lesson 6: Microsoft Agent 365 SDK Integration
+# Lesson 5: Microsoft Agent 365 SDK Integration
 
 > 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
 
