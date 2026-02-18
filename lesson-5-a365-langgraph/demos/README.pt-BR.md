@@ -1,223 +1,289 @@
-# Demo 5: Integração com Microsoft Agent 365 SDK
+# Demo 5: Integração A365 SDK — Bot Framework, Adaptive Cards & Observabilidade
 
 > 🇺🇸 **[Read in English](README.md)**
 
-> **Tipo de Demo**: Demonstração guiada pelo instrutor. Esta demo referencia o código-fonte em `lesson-6-a365-langgraph/`. O instrutor percorre a configuração do A365 CLI, integração com Bot Framework e implantação ao vivo na tela.
+> **Tipo de Demo**: Demonstração guiada pelo instrutor. O instrutor adiciona ao vivo as camadas de SDK no agente ACA existente do Demo 4, mostra o endpoint Bot Framework respondendo, renderiza o Adaptive Card e verifica os traces no Application Insights.
 
 ## Visão Geral
 
-Demonstra a integração do **Microsoft Agent 365 (A365) SDK** com agentes implantados para habilitar funcionalidades do Microsoft 365: protocolo Bot Framework, Adaptive Cards e observabilidade para implantação no Teams/Outlook.
+Demonstra a adição da camada do **Microsoft Agent 365 SDK** ao agente LangGraph já rodando no ACA: suporte ao protocolo Bot Framework (`/api/messages`), Adaptive Cards para exibição rica de dados financeiros, rastreamento distribuído com OpenTelemetry e reimplantação completa — sem re-registrar o agente no Foundry.
+
+> **Nota**: A configuração do A365 CLI, o registro do app no Entra ID e os passos do Agent Blueprint estão cobertos no **Demo 6**. Este demo foca exclusivamente nas mudanças de código do SDK.
 
 ## Conceitos-Chave
 
-- ✅ Arquitetura cross-tenant (Azure Tenant A + M365 Tenant B)
-- ✅ Registro de Agent Blueprint no Entra ID
-- ✅ Endpoint Bot Framework `/api/messages`
-- ✅ Adaptive Cards para UI rica no M365
-- ✅ Integração OpenTelemetry com Application Insights
-- ✅ Publicação no M365 Admin Center
-- ✅ Criação de instâncias de agente no Teams
+- ✅ Azure Monitor OpenTelemetry — `configure_azure_monitor` + spans customizados por tool
+- ✅ Bot Framework Activity Protocol — endpoint `/api/messages` no FastAPI
+- ✅ Adaptive Cards — schema v1.4, `FactSet` para dados financeiros estruturados
+- ✅ Atualização rolling no ACA — nova imagem implantada, sem re-registro no Foundry
+- ✅ Split de observabilidade — App Insights (todas as chamadas) vs Foundry Tracing (apenas via gateway)
 
 ## Arquitetura
 
 ```
-┌────────────────────────────────────┐
-│ M365 Tenant (Tenant B)             │
-│  ├─> Agent Blueprint (Entra ID)    │
-│  ├─> Agent User (Service Principal)│
-│  └─> Teams/Outlook interface       │
-└─────────┬──────────────────────────┘
-          │ (routes to)
-          ▼
-┌────────────────────────────────────┐
-│ Azure Tenant (Tenant A)            │
-│  ├─> ACA with agent code           │
-│  ├─> /api/messages endpoint        │
-│  └─> Managed Identity auth         │
-└────────────────────────────────────┘
+┌────────────────────────────────────────────────────────┐
+│ Azure Tenant (Tenant A)                                │
+│                                                        │
+│  Cliente / Teams emulator                              │
+│       │                                                │
+│       ▼  POST /api/messages  (Bot Framework Activity)  │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │  ACA: aca-lg-agent                              │   │
+│  │  ├─> BotFrameworkAdapter                        │   │
+│  │  ├─> on_message_activity → grafo LangGraph      │   │
+│  │  ├─> tools (get_stock_price, get_exchange_rate) │   │
+│  │  │     └── spans OTel → Application Insights    │   │
+│  │  └─> resposta Adaptive Card                     │   │
+│  └─────────────────────────────────────────────────┘   │
+│                                                        │
+│  Application Insights ←── todas as chamadas            │
+│  Foundry Tracing       ←── apenas chamadas via gateway │
+└────────────────────────────────────────────────────────┘
 ```
 
 ## Pré-requisitos
 
-1. **Acesso ao Frontier Program**: Necessário para registro A365
-2. **.NET SDK 8.0+**: Para a ferramenta A365 CLI
-3. **Acesso Admin M365**: Para aprovação de publicação
-4. **Agente Existente**: Implantado em ACA (da Demo 4) ou Foundry
+- Agente do Demo 4 implantado e rodando no ACA
+- `APPLICATIONINSIGHTS_CONNECTION_STRING` disponível (dos outputs de `prereq/`)
+- Python 3.11+ e Docker disponíveis localmente
+- Bot Framework Emulator (opcional, para testes locais)
 
-## Início Rápido
+## Fluxo da Demo
 
-### Fase 1: Configuração do A365 CLI
+### Fase 1: Adicionar OpenTelemetry (5 minutos)
 
-```powershell
-# Install A365 CLI
-dotnet tool install --global Microsoft.Agents.A365.DevTools.Cli --prerelease
-
-# Verify installation
-a365 --version
-
-# Initialize config (interactive)
-cd lesson-5-a365-prereq
-a365 config init
-```
-
-### Fase 2: Registro do Blueprint
-
-```powershell
-# Login to M365 tenant (Tenant B)
-az login --tenant <m365-tenant-id>
-
-# Create Agent Blueprint
-a365 setup blueprint --config a365.config.json
-```
-
-Saída esperada:
-```
-✅ Agent Blueprint registered
-  App ID: f7a3b8e9-...
-  Name: financial-advisor-aca
-  Messaging Endpoint: https://aca-lg-agent...azurecontainerapps.io/api/messages
-```
-
-### Fase 3: Aprimorar Agente com A365 SDK
-
-O código do agente agora inclui o tratamento do Bot Framework:
+Mostre como conectar `configure_azure_monitor` e os spans customizados em um bloco:
 
 ```python
-# Enhanced main.py with Bot Framework
-from botbuilder.core import BotFrameworkAdapter, TurnContext
-from botbuilder.schema import Activity
-from langgraph_agent import create_agent
+import os
+from azure.monitor.opentelemetry import configure_azure_monitor
+from opentelemetry import trace
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
-agent = create_agent()
+app = FastAPI()
+
+app_insights_cs = os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING")
+if app_insights_cs:
+    configure_azure_monitor(connection_string=app_insights_cs)
+
+FastAPIInstrumentor.instrument_app(app)
+
+tracer = trace.get_tracer(__name__)
+```
+
+Instrumente uma função de tool com um span customizado — destaque as chamadas `set_attribute` e `record_exception`:
+
+```python
+async def get_stock_price(ticker: str) -> dict:
+    with tracer.start_as_current_span("get_stock_price") as span:
+        span.set_attribute("ticker", ticker)
+        try:
+            result = await _fetch_stock_data(ticker)
+            span.set_attribute("price", result["price"])
+            span.set_status(trace.Status(trace.StatusCode.OK))
+            return result
+        except Exception as e:
+            span.record_exception(e)
+            span.set_status(trace.Status(trace.StatusCode.ERROR, str(e)))
+            raise
+```
+
+> **Ponto-chave**: `configure_azure_monitor()` deve ser chamado **antes** de `trace.get_tracer()`. FastAPIInstrumentor auto-instrumenta todos os endpoints HTTP.
+
+### Fase 2: Adicionar Endpoint Bot Framework (10 minutos)
+
+Mostre a configuração do adapter e a rota `/api/messages`:
+
+```python
+from botbuilder.core import BotFrameworkAdapter, BotFrameworkAdapterSettings, TurnContext
+from botbuilder.schema import Activity
+
+settings = BotFrameworkAdapterSettings(
+    app_id=os.environ.get("MICROSOFT_APP_ID", ""),
+    app_password=os.environ.get("MICROSOFT_APP_PASSWORD", "")
+)
+adapter = BotFrameworkAdapter(settings)
 
 async def on_message_activity(turn_context: TurnContext):
-    """Handles incoming Bot Framework Activities."""
     user_message = turn_context.activity.text
-    
-    # Process with LangGraph agent
-    response = await agent.run(user_message)
-    
-    # Return Adaptive Card (rich UI)
-    card = create_adaptive_card(response)
-    await turn_context.send_activity(Activity(attachments=[card]))
 
-def create_adaptive_card(text: str) -> dict:
-    """Creates an Adaptive Card for M365."""
+    result = await agent_graph.ainvoke({
+        "messages": [user_message],
+        "current_tool": None,
+        "tool_result": {}
+    })
+
+    response_text = result["messages"][-1].content
+    card = create_financial_card(response_text)
+
+    await turn_context.send_activity(
+        Activity(type="message", attachments=[card])
+    )
+
+@app.post("/api/messages")
+async def handle_messages(request: Request):
+    auth_header = request.headers.get("Authorization", "")
+    body = await request.json()
+    activity = Activity().deserialize(body)
+    await adapter.process_activity(activity, auth_header, on_message_activity)
+    return Response(status_code=200)
+```
+
+> **Ponto-chave**: `MICROSOFT_APP_ID` é intencionalmente deixado vazio nesta fase. O Bot Framework pula a validação de auth quando o App ID está vazio — correto para este lab. Será preenchido após o registro do Blueprint no Lab 6.
+
+### Fase 3: Criar Adaptive Card (5 minutos)
+
+Percorra o helper do card — destaque o `FactSet` para dados estruturados de ticker/preço:
+
+```python
+def create_financial_card(text: str, ticker: str = None, price: float = None) -> dict:
+    body = [
+        {
+            "type": "ColumnSet",
+            "columns": [{
+                "type": "Column", "width": "stretch",
+                "items": [{
+                    "type": "TextBlock",
+                    "text": "💹 Consultor Financeiro",
+                    "weight": "Bolder",
+                    "size": "Medium"
+                }]
+            }]
+        },
+        {
+            "type": "TextBlock",
+            "text": text,
+            "wrap": True
+        }
+    ]
+
+    if ticker and price is not None:
+        body.append({
+            "type": "FactSet",
+            "facts": [
+                {"title": "Ticker", "value": ticker},
+                {"title": "Preço",  "value": f"R$ {price:.2f}"}
+            ]
+        })
+
     return {
         "contentType": "application/vnd.microsoft.card.adaptive",
         "content": {
             "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
             "type": "AdaptiveCard",
             "version": "1.4",
-            "body": [
-                {
-                    "type": "TextBlock",
-                    "text": "Financial Advisor",
-                    "weight": "Bolder",
-                    "size": "Large"
-                },
-                {
-                    "type": "TextBlock",
-                    "text": text,
-                    "wrap": True
-                }
-            ]
+            "body": body
         }
     }
-
-# FastAPI endpoint for Bot Framework
-@app.post("/api/messages")
-async def handle_messages(request: Request):
-    body = await request.json()
-    activity = Activity().deserialize(body)
-    
-    auth_header = request.headers.get("Authorization", "")
-    await adapter.process_activity(activity, auth_header, on_message_activity)
-    
-    return {"status": "ok"}
 ```
 
-### Fase 4: Implantar Agente Aprimorado
+> **Ponto-chave**: A versão do schema deve ser **1.4 ou inferior** — esse é o máximo suportado pelo Teams. Valide o payload em https://adaptivecards.io/designer antes de implantar.
+
+### Fase 4: Reimplantar no ACA (5 minutos)
+
+Mostre que atualizar a imagem do container NÃO requer re-registrar o agente no Foundry:
 
 ```powershell
-cd lesson-6-a365-langgraph
+cd lesson-5-a365-langgraph/solution
+
+# Build, push e atualização do ACA (gerenciados pelo deploy.ps1)
 .\deploy.ps1
+
+# Definir variáveis de ambiente no container app
+$RG       = "rg-ai-agents-workshop"
+$ACA_NAME = "aca-lg-agent"
+
+az containerapp update `
+  --name $ACA_NAME --resource-group $RG `
+  --set-env-vars `
+    "APPLICATIONINSIGHTS_CONNECTION_STRING=<connection-string>" `
+    "MICROSOFT_APP_ID=" `
+    "MICROSOFT_APP_PASSWORD="
 ```
 
-### Fase 5: Publicar no M365 Admin Center
+Verifique que a nova revisão está servindo tráfego:
 
 ```powershell
-cd lesson-7-publish
+$FQDN = az containerapp show `
+    --name $ACA_NAME --resource-group $RG `
+    --query "properties.configuration.ingress.fqdn" -o tsv
 
-# Submit for publication
-a365 publish --manifest publication-manifest.json
+# Health probe
+Invoke-RestMethod -Uri "https://$FQDN/health"
+
+# Endpoint REST de chat (compatibilidade retroativa)
+python ../../../test/chat.py --lesson 5 --endpoint "https://$FQDN"
+
+# Bot Framework Activity
+$activity = @{
+    type="message"; text="Qual é o preço da PETR4?";
+    from=@{id="demo-user"}; conversation=@{id="demo-conv"}
+    channelId="test"; serviceUrl="https://test.botframework.com"
+} | ConvertTo-Json
+Invoke-RestMethod -Uri "https://$FQDN/api/messages" `
+    -Method Post -Body $activity -ContentType "application/json"
 ```
 
-**publication-manifest.json**:
-```json
-{
-  "name": "Financial Advisor Agent",
-  "shortDescription": "AI agent providing stock insights",
-  "longDescription": "Leverages LangGraph with real-time market data tools...",
-  "developer": {
-    "name": "Contoso Financial Services",
-    "websiteUrl": "https://contoso.com",
-    "privacyUrl": "https://contoso.com/privacy",
-    "termsOfUseUrl": "https://contoso.com/terms"
-  },
-  "icons": {
-    "color": "icon-color.png",
-    "outline": "icon-outline.png"
-  },
-  "categories": ["Finance", "AI Assistant"],
-  "isPrivate": true,
-  "permissions": [
-    "Microsoft.Graph.User.Read",
-    "Microsoft.Graph.Conversations.Send"
-  ]
-}
+Esperado: resposta 200 com um Adaptive Card como attachment.
+
+### Fase 5: Verificar Observabilidade (5 minutos)
+
+#### Application Insights — Transaction Search
+
+1. Portal Azure → recurso Application Insights → **Transaction search**
+2. Defina o intervalo de tempo para **Últimos 30 minutos**
+3. Clique em uma entrada `POST /chat` ou `POST /api/messages`
+4. Clique em **View all telemetry** → inspecione o waterfall
+5. Destaque spans customizados: `get_stock_price`, `get_exchange_rate` com timing
+
+```kusto
+// Todas as requisições do agente na última hora
+requests
+| where timestamp > ago(1h)
+| where name in ("POST /chat", "POST /api/messages")
+| project timestamp, name, duration, success, resultCode
+| order by timestamp desc
+
+// Spans customizados de tools
+dependencies
+| where timestamp > ago(1h)
+| where type == "InProc"
+| project timestamp, name, duration, success
+| order by duration desc
 ```
 
-### Fase 6: Criar Instância do Agente no Teams
+#### Portal do Foundry — Apenas chamadas via gateway
+
+> Envie uma requisição via endpoint do projeto Foundry (URL do AI Gateway) para ver traces aqui — chamadas diretas ao ACA aparecem apenas no App Insights.
 
 ```powershell
-# After admin approval
-cd lesson-8-instances
-
-# Create personal instance
-a365 instance create --type personal --agent-id <blueprint-app-id>
-
-# Create shared instance (team/channel)
-a365 instance create --type shared --team-id <teams-team-id> --agent-id <blueprint-app-id>
+python ../../../test/chat.py --lesson 4 --endpoint $aiProjectEndpoint
 ```
+
+Depois: Azure AI Foundry → seu projeto → **Tracing** → clique em uma entrada → inspecione o waterfall de spans.
 
 ## Fluxo de Activity do Bot Framework
 
 ```
-Teams User → Message
-    ↓
-Microsoft Graph API (M365 Tenant)
-    ↓
-Agent Blueprint (Entra ID)
-    ↓
-Messaging Endpoint (ACA in Azure Tenant)
-    ↓
-/api/messages endpoint
-    ↓
-BotFrameworkAdapter
-    ↓
-on_message_activity handler
-    ↓
-LangGraph agent processes
-    ↓
-Adaptive Card response
-    ↓
-Response flows back to Teams
+Cliente de teste / Teams emulator
+    │
+    │  POST /api/messages  {"type":"message","text":"..."}
+    ▼
+BotFrameworkAdapter.process_activity()
+    │  (validação de auth pulada quando MICROSOFT_APP_ID está vazio)
+    ▼
+on_message_activity(turn_context)
+    │
+    ├── turn_context.activity.text  → mensagem do usuário
+    ├── agent_graph.ainvoke(...)    → execução do LangGraph
+    │       └── tools disparam → spans OTel registrados
+    └── send_activity(Adaptive Card)
+    │
+    ▼
+200 OK  (resposta Bot Framework)
 ```
 
-## Exemplos de Adaptive Cards
-
-### Card de Cotação de Ação
+## Adaptive Cards — Exemplo Renderizado
 
 ```json
 {
@@ -227,92 +293,64 @@ Response flows back to Teams
   "body": [
     {
       "type": "ColumnSet",
-      "columns": [
-        {
-          "type": "Column",
-          "width": "auto",
-          "items": [{
-            "type": "TextBlock",
-            "text": "📈 PETR4",
-            "size": "Large",
-            "weight": "Bolder"
-          }]
-        },
-        {
-          "type": "Column",
-          "width": "stretch",
-          "items": [{
-            "type": "TextBlock",
-            "text": "R$ 35,42",
-            "size": "Large",
-            "horizontalAlignment": "Right",
-            "color": "Good"
-          }]
-        }
+      "columns": [{
+        "type": "Column", "width": "stretch",
+        "items": [{ "type": "TextBlock", "text": "💹 Consultor Financeiro", "weight": "Bolder", "size": "Medium" }]
+      }]
+    },
+    { "type": "TextBlock", "text": "PETR4 está sendo negociada a R$ 35,42 hoje, alta de 1,23%.", "wrap": true },
+    {
+      "type": "FactSet",
+      "facts": [
+        { "title": "Ticker", "value": "PETR4" },
+        { "title": "Preço",  "value": "R$ 35,42" }
       ]
-    },
-    {
-      "type": "TextBlock",
-      "text": "Variação: +1.23% (alta)",
-      "color": "Good"
-    },
-    {
-      "type": "TextBlock",
-      "text": "Informação apenas para fins educativos.",
-      "size": "Small",
-      "isSubtle": True,
-      "wrap": True
     }
   ]
 }
 ```
 
-## Fluxo de Autenticação Cross-Tenant
+## Split de Observabilidade — App Insights vs Foundry
 
-1. **Desenvolvedor** (Azure Tenant A): Implanta infraestrutura do agente
-2. **A365 CLI** (via login M365 Tenant B): Cria Blueprint no Tenant B
-3. **Agent Blueprint** (M365 Tenant B): Referencia o endpoint de mensagens no Tenant A
-4. **Runtime**: M365 autentica usuário → Agent Blueprint → roteia para endpoint no Azure Tenant A
+| Caminho da Chamada | App Insights | Foundry Tracing |
+|--------------------|:------------:|:---------------:|
+| Direto ao ACA `POST /chat` | ✅ | ❌ |
+| Direto ao ACA `POST /api/messages` | ✅ | ❌ |
+| Via Foundry AI Gateway | ✅ | ✅ |
+
+> Use o App Insights para observabilidade completa em produção. Use o Foundry Tracing para inspeção rápida durante o desenvolvimento ao rotear pelo gateway.
 
 ## Resolução de Problemas
 
-**Problema: "A365 CLI command not found"**  
-**Causa**: Caminho das .NET tools não está no PATH  
-**Solução**: Adicione `~/.dotnet/tools` ao PATH ou reinicie o terminal
+**`/api/messages` retorna 401**  
+Causa: `MICROSOFT_APP_ID` definido mas credenciais ainda não provisionadas (Lab 6 necessário)  
+Solução: Deixe `MICROSOFT_APP_ID` vazio — o Bot Framework pula a auth quando o App ID está em branco.
 
-**Problema: "Frontier Program access denied"**  
-**Causa**: Não inscrito no programa de preview  
-**Solução**: Inscreva-se em https://adoption.microsoft.com/copilot/frontier-program/
+**Spans customizados ausentes no App Insights**  
+Causa: `configure_azure_monitor()` chamado após `trace.get_tracer()`  
+Solução: Chame `configure_azure_monitor()` primeiro, depois obtenha o tracer.
 
-**Problema: "Blueprint registration failed: tenant mismatch"**  
-**Causa**: Logado no tenant errado com `az login`  
-**Solução**: `az login --tenant <m365-tenant-id>` explicitamente
+**Adaptive Card não renderiza**  
+Causa: Versão do schema > 1.4 ou JSON inválido  
+Solução: Valide em https://adaptivecards.io/designer. Use `"version": "1.4"`.
 
-**Problema: "/api/messages returns 404"**  
-**Causa**: Endpoint do Bot Framework não implementado ou rota mal configurada  
-**Solução**: Verifique se a rota FastAPI existe: `@app.post("/api/messages")`
+**Foundry Tracing não mostra traces**  
+Causa: Chamadas de teste foram diretamente ao ACA, não pelo AI Gateway  
+Solução: Use o endpoint do projeto Foundry (`$aiProjectEndpoint`) para as requisições de teste.
 
-**Problema: "Adaptive Card not rendering in Teams"**  
-**Causa**: Schema JSON inválido ou incompatibilidade de versão  
-**Solução**: Valide em https://adaptivecards.io/designer
-
-## Tipos de Instância de Agente
-
-| Tipo | Escopo | Caso de Uso |
-|------|-------|----------|
-| **Personal** | Usuário individual | Agente privado para uso pessoal |
-| **Shared** | Equipe/Canal | Agente colaborativo para a equipe |
-| **Org-wide** | Organização inteira | Implantação em toda a empresa |
+**Telemetria não aparece no App Insights**  
+Causa: `APPLICATIONINSIGHTS_CONNECTION_STRING` não definido no ACA  
+Solução: Execute `az containerapp update --set-env-vars` e reinicie a revisão.
 
 ## Recursos
 
-- [Guia do Desenvolvedor Microsoft Agent 365](https://learn.microsoft.com/microsoft-agent-365/developer/)
-- [SDK do Bot Framework](https://learn.microsoft.com/azure/bot-service/)
+- [Azure Monitor OpenTelemetry](https://learn.microsoft.com/azure/azure-monitor/app/opentelemetry-enable)
+- [SDK do Bot Framework para Python](https://learn.microsoft.com/azure/bot-service/bot-builder-python-quickstart)
 - [Designer de Adaptive Cards](https://adaptivecards.io/designer/)
-- [Frontier Program](https://adoption.microsoft.com/copilot/frontier-program/)
+- [Azure Container Apps — Atualizar revisão](https://learn.microsoft.com/azure/container-apps/revisions)
 
 ---
 
 **Nível da Demo**: Avançado  
-**Tempo Estimado**: 45-60 minutos (inclui espera de aprovação do admin)  
-**Melhor Para**: Implantações corporativas no ecossistema M365 (Teams, Outlook, Copilot)
+**Tempo Estimado**: 30 minutos  
+**Melhor Para**: Demonstrar o fluxo de integração do SDK antes dos passos de A365 CLI/Blueprint no Demo 6
