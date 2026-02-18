@@ -334,10 +334,21 @@ Write-Host "`n[4/4] Updating test/ Python files..." -ForegroundColor Yellow
 $chatPy = Join-Path $WorkspaceRoot "test" "chat.py"
 if (Test-Path $chatPy) {
     $chatContent = Get-Content $chatPy -Raw
+    
+    # Update RESOURCE_GROUP default
     $chatNew = $chatContent -replace '(os\.environ\.get\(\s*"RESOURCE_GROUP",\s*)"[^"]*"', "`$1`"$ResourceGroupName`""
     if ($chatNew -ne $chatContent) {
         Set-Content -Path $chatPy -Value $chatNew -NoNewline
         Write-Host "  [OK] test/chat.py - RESOURCE_GROUP default updated to '$ResourceGroupName'" -ForegroundColor Green
+        $updatedFiles++
+        $chatContent = $chatNew
+    }
+    
+    # Update PROJECT_ENDPOINT default (handles both empty string and URL patterns)
+    $chatNew = $chatContent -replace '(os\.environ\.get\(\s*"PROJECT_ENDPOINT",\s*\n?\s*)"[^"]*"', "`$1`"$aiProjectEndpoint`""
+    if ($chatNew -ne $chatContent) {
+        Set-Content -Path $chatPy -Value $chatNew -NoNewline
+        Write-Host "  [OK] test/chat.py - PROJECT_ENDPOINT default updated to '$aiProjectEndpoint'" -ForegroundColor Green
         $updatedFiles++
     }
 }
