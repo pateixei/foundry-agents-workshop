@@ -67,7 +67,7 @@ Write-Host ""
 Write-Host "[2/5] Construindo imagem no ACR..." -ForegroundColor Yellow
 
 $AGENT_NAME = "aca-lg-agent"
-$IMAGE_TAG = "$($AGENT_NAME):v1"
+$IMAGE_TAG = "$($AGENT_NAME):v2"
 $IMAGE_FULL = "$ACR_LOGIN/$IMAGE_TAG"
 
 Write-Host "  Imagem: $IMAGE_FULL"
