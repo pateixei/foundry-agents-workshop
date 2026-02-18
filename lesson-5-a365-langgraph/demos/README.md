@@ -2,7 +2,7 @@
 
 > 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
 
-> **Demo Type**: Instructor-led walkthrough. This demo references source code in `lesson-6-a365-langgraph/`. The instructor walks through A365 CLI setup, Bot Framework integration, and deployment live on screen.
+> **Demo Type**: Instructor-led walkthrough. This demo references source code in `lesson-5-a365-langgraph/`. The instructor walks through A365 CLI setup, Bot Framework integration, and deployment live on screen.
 
 ## Overview
 
@@ -140,7 +140,7 @@ async def handle_messages(request: Request):
 ### Phase 4: Deploy Enhanced Agent
 
 ```powershell
-cd lesson-6-a365-langgraph
+cd lesson-5-a365-langgraph
 .\deploy.ps1
 ```
 
