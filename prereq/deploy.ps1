@@ -32,7 +32,7 @@ Write-Host "   DEPLOYMENT WORKSHOP AGENT365" -ForegroundColor Cyan
 Write-Host "========================================`n" -ForegroundColor Cyan
 
 # Verificar se Azure CLI esta instalado
-Write-Host "[1/8] Verificando Azure CLI..." -ForegroundColor Yellow
+Write-Host "[1/9] Verificando Azure CLI..." -ForegroundColor Yellow
 try {
     $azVersion = az version --output json 2>$null | ConvertFrom-Json
     if ($azVersion) {
@@ -49,7 +49,7 @@ try {
 }
 
 # Verificar se esta logado no Azure
-Write-Host "`n[2/8] Verificando autenticacao no Azure..." -ForegroundColor Yellow
+Write-Host "`n[2/9] Verificando autenticacao no Azure..." -ForegroundColor Yellow
 try {
     $account = az account show --output json 2>$null | ConvertFrom-Json
     if ($account) {
@@ -77,7 +77,7 @@ try {
 }
 
 # Verificar extensoes necessarias do Azure CLI
-Write-Host "`n[3/8] Verificando extensoes do Azure CLI..." -ForegroundColor Yellow
+Write-Host "`n[3/9] Verificando extensoes do Azure CLI..." -ForegroundColor Yellow
 $requiredExtensions = @('containerapp', 'ml', 'application-insights')
 
 foreach ($ext in $requiredExtensions) {
@@ -97,6 +97,25 @@ foreach ($ext in $requiredExtensions) {
     }
 }
 
+# Instalar modulos PowerShell do Microsoft Graph (necessarios para Lessons 5-6: A365)
+Write-Host "`n[4/9] Verificando modulos PowerShell do Microsoft Graph..." -ForegroundColor Yellow
+$requiredModules = @('Microsoft.Graph.Authentication', 'Microsoft.Graph.Applications')
+
+foreach ($mod in $requiredModules) {
+    $installed = Get-Module -ListAvailable -Name $mod 2>$null | Select-Object -First 1
+    if ($installed) {
+        Write-Host "  [OK] Modulo '$mod' v$($installed.Version) instalado" -ForegroundColor Green
+    } else {
+        Write-Host "  [!] Modulo '$mod' nao encontrado. Instalando..." -ForegroundColor Yellow
+        Install-Module -Name $mod -Scope CurrentUser -Force -AllowClobber -Repository PSGallery 2>$null
+        if ($?) {
+            Write-Host "  [OK] Modulo '$mod' instalado" -ForegroundColor Green
+        } else {
+            Write-Host "  [WARN] Falha ao instalar '$mod'. Instale manualmente: Install-Module $mod -Scope CurrentUser" -ForegroundColor Yellow
+        }
+    }
+}
+
 # Ler ResourceGroupName do arquivo de parametros, se nao foi informado
 if (-not $ResourceGroupName -and $ParametersFile -and (Test-Path $ParametersFile)) {
     $rgMatch = Select-String -Path $ParametersFile -Pattern "param\s+resourceGroupName\s*=\s*'([^']+)'" | Select-Object -First 1
@@ -111,7 +130,7 @@ if (-not $ResourceGroupName) {
 }
 
 # Verificar se o arquivo de parametros existe
-Write-Host "`n[4/8] Verificando arquivos de deployment..." -ForegroundColor Yellow
+Write-Host "`n[5/9] Verificando arquivos de deployment..." -ForegroundColor Yellow
 $templateFile = "main.bicep"
 
 if (-not (Test-Path $templateFile)) {
@@ -130,7 +149,7 @@ if (-not (Test-Path $ParametersFile)) {
 }
 
 # Criar ou verificar Resource Group
-Write-Host "`n[5/8] Verificando Resource Group..." -ForegroundColor Yellow
+Write-Host "`n[6/9] Verificando Resource Group..." -ForegroundColor Yellow
 $rgExists = az group exists --name $ResourceGroupName
 if ($rgExists -eq "true") {
     Write-Host "  [OK] Resource Group '$ResourceGroupName' ja existe" -ForegroundColor Green
@@ -141,7 +160,7 @@ if ($rgExists -eq "true") {
 }
 
 # Validar template Bicep
-Write-Host "`n[6/8] Validando template Bicep..." -ForegroundColor Yellow
+Write-Host "`n[7/9] Validando template Bicep..." -ForegroundColor Yellow
 $ErrorActionPreference = "Continue"
 try {
     if ($useParamsFile) {
@@ -183,7 +202,7 @@ try {
 $ErrorActionPreference = "Stop"
 
 # Executar deployment
-Write-Host "`n[7/8] Iniciando deployment..." -ForegroundColor Yellow
+Write-Host "`n[8/9] Iniciando deployment..." -ForegroundColor Yellow
 
 if ($WhatIf) {
     Write-Host "  -> Modo WhatIf ativado - simulando deployment..." -ForegroundColor Cyan
@@ -247,7 +266,7 @@ try {
 }
 
 # Obter outputs do deployment
-Write-Host "`n[8/8] Obtendo outputs do deployment..." -ForegroundColor Yellow
+Write-Host "`n[9/9] Obtendo outputs do deployment..." -ForegroundColor Yellow
 try {
     $deployment = az deployment group show `
         --resource-group $ResourceGroupName `
