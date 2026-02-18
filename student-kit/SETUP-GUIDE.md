@@ -270,7 +270,7 @@ a365-workshop/
 ├── lesson-3-hosted-langgraph/ # Hosted agent with LangGraph on Foundry
 ├── lesson-4-aca-langgraph/    # Connected agent on Azure Container Apps
 ├── lesson-5-a365-prereq/     # Agent 365 cross-tenant setup
-├── lesson-6-a365-sdk/        # Full A365 SDK (LangGraph + Bot Framework + OTel)
+├── lesson-6-a365-langgraph/  # Full A365 SDK (LangGraph + Bot Framework + OTel)
 ├── lesson-7-publish/         # Publish to M365 Admin Center
 ├── lesson-8-instances/       # Create agent instances in Teams
 ├── test/                     # Test client (chat.py)

@@ -469,7 +469,7 @@ async def messages(request: Request):
 
 **Student Task**:
 ```powershell
-cd lesson-6-a365-sdk
+cd lesson-6-a365-langgraph
 
 # Install A365 SDK packages
 pip install -r requirements.txt

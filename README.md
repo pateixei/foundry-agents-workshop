@@ -16,7 +16,7 @@ Practical workshop to build, deploy, and manage AI agents using **Microsoft Foun
 | [3](lesson-3-hosted-langgraph/) | Hosted Agent (LangGraph) | LangGraph + adapter | LangGraph container hosted in Foundry |
 | [4](lesson-4-aca-langgraph/) | Connected Agent (ACA) | FastAPI + LangGraph | Own container in ACA, registered in Foundry Control Plane |
 | [5](lesson-5-a365-prereq/) | Agent 365 (Prereqs) | A365 CLI | Preparation to publish agents in Microsoft 365 |
-| [6](lesson-6-a365-sdk/) | A365 SDK Integration | Azure Monitor + Bot Framework | Enhanced agent with observability, Bot Framework, Adaptive Cards |
+| [6](lesson-6-a365-langgraph/) | A365 SDK Integration | Azure Monitor + Bot Framework | Enhanced agent with observability, Bot Framework, Adaptive Cards |
 | [7](lesson-7-publish/) | Publishing to M365 | A365 CLI + Admin Center | Step-by-step guide to publish agent to M365 Admin Center |
 | [8](lesson-8-instances/) | Creating Instances | Teams + A365 CLI | Guide to create personal and shared agent instances in Teams |
 

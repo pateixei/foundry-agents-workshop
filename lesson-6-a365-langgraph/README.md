@@ -180,7 +180,7 @@ botbuilder-schema>=4.16.0
 ## Deployment
 
 ```powershell
-cd lesson-6-a365-sdk
+cd lesson-6-a365-langgraph
 ./deploy.ps1
 ```
 

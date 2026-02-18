@@ -460,7 +460,7 @@ Each day follows this pattern:
 ### Hour 2: SDK Integration (01:00-02:00)
 
 **01:00-01:15 | Lesson 6: A365 SDK Deep Dive**
-- 📖 Read: `lesson-6-a365-sdk/README.md` (5 min)
+- 📖 Read: `lesson-6-a365-langgraph/README.md` (5 min)
 - 🎬 Code walkthrough (10 min):
   - Azure Monitor OpenTelemetry integration
   - Bot Framework `/api/messages` endpoint
@@ -470,7 +470,7 @@ Each day follows this pattern:
 **01:15-01:50 | Lab: Enhance Agent with A365 SDK**
 - 🛠️ Student Lab (35 min):
   ```powershell
-  cd lesson-6-a365-sdk
+  cd lesson-6-a365-langgraph
   .\deploy.ps1
   ```
   - Add OpenTelemetry to existing agent

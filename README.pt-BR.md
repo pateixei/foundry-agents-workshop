@@ -16,7 +16,7 @@ Workshop prático para construir, implantar e gerenciar agentes de IA usando o *
 | [3](lesson-3-hosted-langgraph/) | Agente Hospedado (LangGraph) | LangGraph + adaptador | Contêiner LangGraph hospedado no Foundry |
 | [4](lesson-4-aca-langgraph/) | Agente Conectado (ACA) | FastAPI + LangGraph | Contêiner próprio no ACA, registrado no Control Plane do Foundry |
 | [5](lesson-5-a365-prereq/) | Agent 365 (Pré-requisitos) | A365 CLI | Preparação para publicar agentes no Microsoft 365 |
-| [6](lesson-6-a365-sdk/) | Integração A365 SDK | Azure Monitor + Bot Framework | Agente aprimorado com observabilidade, Bot Framework, Adaptive Cards |
+| [6](lesson-6-a365-langgraph/) | Integração A365 SDK | Azure Monitor + Bot Framework | Agente aprimorado com observabilidade, Bot Framework, Adaptive Cards |
 | [7](lesson-7-publish/) | Publicação no M365 | A365 CLI + Admin Center | Guia passo a passo para publicar agente no M365 Admin Center |
 | [8](lesson-8-instances/) | Criando Instâncias | Teams + A365 CLI | Guia para criar instâncias de agente pessoais e compartilhadas no Teams |
 ## Materiais do Workshop
@@ -209,7 +209,7 @@ foundry-agents-workshop/
     demos/ labs/ media/
   lesson-5-a365-prereq/            # Pré-requisitos do Agent 365
     solution/
-  lesson-6-a365-sdk/               # Integração A365 SDK (observabilidade, Bot Framework)
+  lesson-6-a365-langgraph/         # Integração A365 SDK (observabilidade, Bot Framework)
     demos/ labs/
   lesson-7-publish/                # Guia de publicação (M365 Admin Center)
   lesson-8-instances/              # Guia de criação de instâncias (Teams)

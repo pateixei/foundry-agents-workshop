@@ -800,8 +800,8 @@ a365 get-usage --instance-id <ID>
 ### Arquivos Principais
 
 - **Configuração A365:** `lesson-5-a365-prereq/a365.config.json`
-- **Código do Agente:** `lesson-6-a365-sdk/main.py`
-- **Requisitos:** `lesson-6-a365-sdk/requirements.txt`
+- **Código do Agente:** `lesson-6-a365-langgraph/main.py`
+- **Requisitos:** `lesson-6-a365-langgraph/requirements.txt`
 
 ---
 
@@ -809,7 +809,7 @@ a365 get-usage --instance-id <ID>
 
 - [Repositório do Workshop](https://github.com/pateixei/foundry-agents-workshop)
 - [Lição 5: Pré-requisitos A365](../lesson-5-a365-prereq/README.pt-BR.md)
-- [Lição 6: Integração com SDK A365](../lesson-6-a365-sdk/README.pt-BR.md)
+- [Lição 6: Integração com SDK A365](../lesson-6-a365-langgraph/README.pt-BR.md)
 - [Lição 7: Guia de Publicação](../lesson-7-publish/README.pt-BR.md)
 - [Microsoft Learn: Construa Agentes M365](https://learn.microsoft.com/en-us/training/paths/build-microsoft-365-agents/)
 
