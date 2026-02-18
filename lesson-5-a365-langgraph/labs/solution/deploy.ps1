@@ -46,9 +46,13 @@ $PROJECT_ENDPOINT = $outputs.aiProjectEndpoint.value
 $MODEL_DEPLOYMENT = $outputs.aiModelDeployment.value
 $FOUNDRY_NAME     = $outputs.aiFoundryName.value
 $PROJECT_NAME     = $outputs.aiProjectName.value
+$APPINSIGHTS_CS   = $outputs.appInsightsConnectionString.value
 
-# Endpoint OpenAI do Foundry
-$OPENAI_ENDPOINT = "https://$FOUNDRY_NAME.openai.azure.com/"
+# Endpoint OpenAI do Foundry (usar output direto)
+$OPENAI_ENDPOINT = $outputs.openAIEndpoint.value
+if (-not $OPENAI_ENDPOINT) {
+    $OPENAI_ENDPOINT = "https://$FOUNDRY_NAME.openai.azure.com/"
+}
 
 Write-Host "  ACR:             $ACR_LOGIN"
 Write-Host "  Endpoint:        $PROJECT_ENDPOINT"
@@ -97,6 +101,7 @@ $ACA_OUTPUTS = az deployment group create `
         projectEndpoint=$PROJECT_ENDPOINT `
         modelDeployment=$MODEL_DEPLOYMENT `
         openaiEndpoint=$OPENAI_ENDPOINT `
+        appInsightsConnectionString=$APPINSIGHTS_CS `
     --query "properties.outputs" `
     -o json | ConvertFrom-Json
 
