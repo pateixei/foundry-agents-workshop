@@ -108,31 +108,36 @@ if (-not $a365Available) {
     Write-Host "  A365 CLI:    Installed" -ForegroundColor Green
 }
 
-# 1c. Check Azure CLI login on M365 Tenant
-$currentTenant = $null
-try {
-    $currentTenant = az account show --query tenantId -o tsv 2>$null
-} catch {}
+# 1c. Login to Azure CLI on M365 Tenant
+#
+#     IMPORTANT:
+#     - We always logout first to clear cached tokens from other tenants.
+#     - We use --allow-no-subscriptions because the M365 tenant may NOT have
+#       an Azure subscription. We only need Entra ID (Azure AD) access,
+#       not resource management.
+#     - We use --use-device-code for WSL2 / headless environments.
 
-if (-not $currentTenant) {
-    Write-Host "  Azure CLI not logged in. Logging in to M365 Tenant..." -ForegroundColor Yellow
-    Write-Host "  (Using device code flow — follow the instructions below)" -ForegroundColor White
-    az login --tenant $M365TenantId --use-device-code
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "  ERRO: Failed to log in. Run 'az login --tenant $M365TenantId --use-device-code' manually." -ForegroundColor Red
-        exit 1
-    }
-    $currentTenant = az account show --query tenantId -o tsv 2>$null
+Write-Host "  Clearing existing Azure CLI session..." -ForegroundColor White
+az logout 2>$null
+
+Write-Host "  Logging in to M365 Tenant ($M365TenantId)..." -ForegroundColor Yellow
+Write-Host "  (Using device code flow — follow the instructions below)" -ForegroundColor White
+Write-Host "  NOTE: 'No subscriptions found' is EXPECTED if the M365 tenant has no Azure subscription." -ForegroundColor DarkYellow
+Write-Host ""
+
+az login --tenant $M365TenantId --use-device-code --allow-no-subscriptions
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "  ERRO: Failed to log in." -ForegroundColor Red
+    Write-Host "  Run manually: az login --tenant $M365TenantId --use-device-code --allow-no-subscriptions" -ForegroundColor Yellow
+    exit 1
 }
 
+# Verify we're in the correct tenant
+$currentTenant = az account show --query tenantId -o tsv 2>$null
 if ($currentTenant -ne $M365TenantId) {
-    Write-Host "  WARNING: Current tenant ($currentTenant) differs from M365 Tenant ($M365TenantId)." -ForegroundColor Yellow
-    Write-Host "  Switching to M365 Tenant (device code flow)..." -ForegroundColor Yellow
-    az login --tenant $M365TenantId --use-device-code
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "  ERRO: Failed to switch tenant." -ForegroundColor Red
-        exit 1
-    }
+    Write-Host "  ERRO: Logged into tenant $currentTenant but expected $M365TenantId." -ForegroundColor Red
+    Write-Host "  Run: az logout && az login --tenant $M365TenantId --use-device-code --allow-no-subscriptions" -ForegroundColor Yellow
+    exit 1
 }
 Write-Host "  Azure CLI:   Logged in to tenant $M365TenantId" -ForegroundColor Green
 Write-Host ""
