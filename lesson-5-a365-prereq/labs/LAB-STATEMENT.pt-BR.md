@@ -15,7 +15,16 @@ Sua organização deseja disponibilizar o agente de mercado financeiro (rodando 
 - Capturar o Client ID gerado
 - Criar o `a365.config.json` apontando para o endpoint do agente no ACA
 
-> **IMPORTANTE**: O Agent 365 requer participação no [programa Frontier preview](https://adoption.microsoft.com/copilot/frontier-program/). Este lab assume que você possui acesso.
+> [!CAUTION]
+> **🔴 PRÉ-REQUISITO OBRIGATÓRIO — Inscrição no Programa Copilot Frontier**
+>
+> Seu tenant M365 **DEVE** estar inscrito no **programa Microsoft Copilot Frontier preview** antes de iniciar este lab. Sem a inscrição no Frontier, o comando `a365 setup blueprint` falhará com **"Forbidden: Access denied by Frontier access control"** e você não conseguirá registrar blueprints de agentes ou endpoints de mensagens.
+>
+> **Inscreva-se aqui → [https://adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/)**
+>
+> Após a inscrição, um Global Admin também deve **habilitar o Copilot Frontier** no [Centro de Administração do Microsoft 365](https://admin.microsoft.com/) → Copilot → Configurações → Acesso de usuários → Copilot Frontier.
+>
+> ⏱️ **Aguarde até 24 horas** para que a inscrição no Frontier se propague completamente ao seu tenant.
 
 ## Resultados de Aprendizagem
 

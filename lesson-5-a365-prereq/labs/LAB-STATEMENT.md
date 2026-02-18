@@ -15,7 +15,16 @@ Your organization wants to make the financial market agent (running in ACA from 
 - Capture the generated Client ID
 - Create the `a365.config.json` pointing to your ACA agent endpoint
 
-> **IMPORTANT**: Agent 365 requires participation in the [Frontier preview program](https://adoption.microsoft.com/copilot/frontier-program/). This lab assumes you have access.
+> [!CAUTION]
+> **🔴 MANDATORY PREREQUISITE — Copilot Frontier Program Enrollment**
+>
+> Your M365 tenant **MUST** be enrolled in the **Microsoft Copilot Frontier preview program** before starting this lab. Without Frontier enrollment, the `a365 setup blueprint` command will fail with **"Forbidden: Access denied by Frontier access control"** and you will be unable to register agent blueprints or messaging endpoints.
+>
+> **Enroll here → [https://adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/)**
+>
+> After enrolling, a Global Admin must also **enable Copilot Frontier** in the [Microsoft 365 Admin Center](https://admin.microsoft.com/) → Copilot → Settings → User access → Copilot Frontier.
+>
+> ⏱️ **Allow up to 24 hours** for Frontier enrollment to propagate fully to your tenant.
 
 ## Learning Outcomes
 

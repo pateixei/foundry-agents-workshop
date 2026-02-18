@@ -20,6 +20,16 @@ Antes de começar, certifique-se de que você tem:
 | 3 | Assinatura Azure com papel de **Contributor** | [azure.com/free](https://azure.com/free) ou corporativa |
 | 4 | Conta no GitHub | Para clonar o repositório do workshop |
 | 5 | Tenant de Desenvolvedor Microsoft 365 (Dias 3-5) | [developer.microsoft.com/microsoft-365/dev-program](https://developer.microsoft.com/microsoft-365/dev-program) |
+| 6 | Inscrição no **Programa Copilot Frontier** (Dias 3-5) | [adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/) |
+
+> [!CAUTION]
+> **🔴 OBRIGATÓRIO — Inscrição no Programa Copilot Frontier (Dias 3–5)**
+>
+> Seu tenant M365 **DEVE** estar inscrito no **programa Microsoft Copilot Frontier preview** para completar as Lições 5–8 (Agent 365). Sem esta inscrição, o A365 CLI falhará com **"Forbidden: Access denied by Frontier access control"** ao registrar blueprints de agentes.
+>
+> **Inscreva-se aqui → [https://adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/)**
+>
+> Após a inscrição, um Global Admin deve habilitar o Copilot Frontier no [Centro de Admin do Microsoft 365](https://admin.microsoft.com/) → Copilot → Configurações → Acesso de usuários → Copilot Frontier. **Aguarde até 24 horas** para propagação.
 
 > **Usuários WSL (Windows Subsystem for Linux)**: Todas as instruções de Linux se aplicam dentro do seu terminal WSL. Certifique-se de que o WSL 2 está instalado: `wsl --install -d Ubuntu` a partir de um prompt PowerShell elevado. Abra um terminal WSL via `wsl` ou Windows Terminal → Ubuntu.
 

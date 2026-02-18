@@ -20,6 +20,16 @@ Before starting, ensure you have:
 | 3 | Azure subscription with **Contributor** role | [azure.com/free](https://azure.com/free) or enterprise |
 | 4 | GitHub account | To clone workshop repo |
 | 5 | Microsoft 365 Developer Tenant (Days 3-5) | [developer.microsoft.com/microsoft-365/dev-program](https://developer.microsoft.com/microsoft-365/dev-program) |
+| 6 | **Copilot Frontier Program** enrollment (Days 3-5) | [adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/) |
+
+> [!CAUTION]
+> **🔴 MANDATORY — Copilot Frontier Program Enrollment (Days 3–5)**
+>
+> Your M365 tenant **MUST** be enrolled in the **Microsoft Copilot Frontier preview program** to complete Lessons 5–8 (Agent 365). Without this enrollment, the A365 CLI will fail with **"Forbidden: Access denied by Frontier access control"** when registering agent blueprints.
+>
+> **Enroll here → [https://adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/)**
+>
+> After enrollment, a Global Admin must enable Copilot Frontier in [Microsoft 365 Admin Center](https://admin.microsoft.com/) → Copilot → Settings → User access → Copilot Frontier. **Allow up to 24 hours** for propagation.
 
 > **WSL Users (Windows Subsystem for Linux)**: All Linux instructions apply inside your WSL terminal. Ensure WSL 2 is installed: `wsl --install -d Ubuntu` from an elevated PowerShell prompt. Open a WSL terminal via `wsl` or Windows Terminal → Ubuntu.
 
