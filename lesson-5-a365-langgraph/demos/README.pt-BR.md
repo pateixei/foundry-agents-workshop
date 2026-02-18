@@ -2,7 +2,7 @@
 
 > 🇺🇸 **[Read in English](README.md)**
 
-> **Tipo de Demo**: Demonstração guiada pelo instrutor. Esta demo referencia o código-fonte em `lesson-6-a365-langgraph/`. O instrutor percorre a configuração do A365 CLI, integração com Bot Framework e implantação ao vivo na tela.
+> **Tipo de Demo**: Demonstração guiada pelo instrutor. Esta demo referencia o código-fonte em `lesson-5-a365-langgraph/`. O instrutor percorre a configuração do A365 CLI, integração com Bot Framework e implantação ao vivo na tela.
 
 ## Visão Geral
 
@@ -140,7 +140,7 @@ async def handle_messages(request: Request):
 ### Fase 4: Implantar Agente Aprimorado
 
 ```powershell
-cd lesson-6-a365-langgraph
+cd lesson-5-a365-langgraph
 .\deploy.ps1
 ```
 

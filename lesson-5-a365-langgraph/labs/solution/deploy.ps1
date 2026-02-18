@@ -19,7 +19,7 @@ $ErrorActionPreference = "Stop"
 
 Write-Host ""
 Write-Host "======================================" -ForegroundColor Cyan
-Write-Host " Lesson 6 - ACA Agent + A365 SDK"
+Write-Host " Lesson 5 - ACA Agent + A365 SDK"
 Write-Host " (Connected Agent no Foundry)"
 Write-Host "======================================" -ForegroundColor Cyan
 Write-Host ""
