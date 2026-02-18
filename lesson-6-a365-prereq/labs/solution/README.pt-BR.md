@@ -1,4 +1,4 @@
-# Lição 5 - Pré-requisitos A365: Registro de Aplicação no Entra ID
+# Lição 6 - Pré-requisitos A365: Registro de Aplicação no Entra ID
 
 > 🇺🇸 **[Read in English](README.md)**
 
@@ -34,7 +34,7 @@ Este script automatiza o **Registro de Aplicação no Entra ID** e a configuraç
 ## Estrutura de Arquivos
 
 ```
-lesson-5-a365-prereq/labs/
+lesson-6-a365-prereq/labs/
   LAB-STATEMENT.md         # Instruções do lab (Inglês)
   LAB-STATEMENT.pt-BR.md   # Instruções do lab (Português)
   solution/

@@ -1,24 +1,24 @@
-# Demo 5: Integração com Microsoft Agent 365 SDK
+# Demo 5: Microsoft Agent 365 SDK Integration
 
-> 🇺🇸 **[Read in English](README.md)**
+> 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
 
-> **Tipo de Demo**: Demonstração guiada pelo instrutor. Esta demo referencia o código-fonte em `lesson-6-a365-langgraph/`. O instrutor percorre a configuração do A365 CLI, integração com Bot Framework e implantação ao vivo na tela.
+> **Demo Type**: Instructor-led walkthrough. This demo references source code in `lesson-5-a365-langgraph/`. The instructor walks through A365 CLI setup, Bot Framework integration, and deployment live on screen.
 
-## Visão Geral
+## Overview
 
-Demonstra a integração do **Microsoft Agent 365 (A365) SDK** com agentes implantados para habilitar funcionalidades do Microsoft 365: protocolo Bot Framework, Adaptive Cards e observabilidade para implantação no Teams/Outlook.
+Demonstrates integrating **Microsoft Agent 365 (A365) SDK** with deployed agents to enable Microsoft 365 features: Bot Framework protocol, Adaptive Cards, and observability for Teams/Outlook deployment.
 
-## Conceitos-Chave
+## Key Concepts
 
-- ✅ Arquitetura cross-tenant (Azure Tenant A + M365 Tenant B)
-- ✅ Registro de Agent Blueprint no Entra ID
-- ✅ Endpoint Bot Framework `/api/messages`
-- ✅ Adaptive Cards para UI rica no M365
-- ✅ Integração OpenTelemetry com Application Insights
-- ✅ Publicação no M365 Admin Center
-- ✅ Criação de instâncias de agente no Teams
+- ✅ Cross-tenant architecture (Azure Tenant A + M365 Tenant B)
+- ✅ Agent Blueprint registration in Entra ID
+- ✅ Bot Framework `/api/messages` endpoint
+- ✅ Adaptive Cards for rich M365 UI
+- ✅ OpenTelemetry integration with Application Insights
+- ✅ Publishing to M365 Admin Center
+- ✅ Creating agent instances in Teams
 
-## Arquitetura
+## Architecture
 
 ```
 ┌────────────────────────────────────┐
@@ -37,16 +37,16 @@ Demonstra a integração do **Microsoft Agent 365 (A365) SDK** com agentes impla
 └────────────────────────────────────┘
 ```
 
-## Pré-requisitos
+## Prerequisites
 
-1. **Acesso ao Frontier Program**: Necessário para registro A365
-2. **.NET SDK 8.0+**: Para a ferramenta A365 CLI
-3. **Acesso Admin M365**: Para aprovação de publicação
-4. **Agente Existente**: Implantado em ACA (da Demo 4) ou Foundry
+1. **Frontier Program Access**: Required for A365 registration
+2. **.NET SDK 8.0+**: For A365 CLI tool
+3. **M365 Admin Access**: For publishing approval
+4. **Existing Agent**: Deployed in ACA (from Demo 4) or Foundry
 
-## Início Rápido
+## Quick Start
 
-### Fase 1: Configuração do A365 CLI
+### Phase 1: A365 CLI Setup
 
 ```powershell
 # Install A365 CLI
@@ -56,11 +56,11 @@ dotnet tool install --global Microsoft.Agents.A365.DevTools.Cli --prerelease
 a365 --version
 
 # Initialize config (interactive)
-cd lesson-5-a365-prereq
+cd lesson-6-a365-prereq
 a365 config init
 ```
 
-### Fase 2: Registro do Blueprint
+### Phase 2: Blueprint Registration
 
 ```powershell
 # Login to M365 tenant (Tenant B)
@@ -70,7 +70,7 @@ az login --tenant <m365-tenant-id>
 a365 setup blueprint --config a365.config.json
 ```
 
-Saída esperada:
+Expected output:
 ```
 ✅ Agent Blueprint registered
   App ID: f7a3b8e9-...
@@ -78,9 +78,9 @@ Saída esperada:
   Messaging Endpoint: https://aca-lg-agent...azurecontainerapps.io/api/messages
 ```
 
-### Fase 3: Aprimorar Agente com A365 SDK
+### Phase 3: Enhance Agent with A365 SDK
 
-O código do agente agora inclui o tratamento do Bot Framework:
+The agent code now includes Bot Framework handling:
 
 ```python
 # Enhanced main.py with Bot Framework
@@ -137,14 +137,14 @@ async def handle_messages(request: Request):
     return {"status": "ok"}
 ```
 
-### Fase 4: Implantar Agente Aprimorado
+### Phase 4: Deploy Enhanced Agent
 
 ```powershell
-cd lesson-6-a365-langgraph
+cd lesson-5-a365-langgraph
 .\deploy.ps1
 ```
 
-### Fase 5: Publicar no M365 Admin Center
+### Phase 5: Publish to M365 Admin Center
 
 ```powershell
 cd lesson-7-publish
@@ -178,7 +178,7 @@ a365 publish --manifest publication-manifest.json
 }
 ```
 
-### Fase 6: Criar Instância do Agente no Teams
+### Phase 6: Create Agent Instance in Teams
 
 ```powershell
 # After admin approval
@@ -191,7 +191,7 @@ a365 instance create --type personal --agent-id <blueprint-app-id>
 a365 instance create --type shared --team-id <teams-team-id> --agent-id <blueprint-app-id>
 ```
 
-## Fluxo de Activity do Bot Framework
+## Bot Framework Activity Flow
 
 ```
 Teams User → Message
@@ -215,9 +215,9 @@ Adaptive Card response
 Response flows back to Teams
 ```
 
-## Exemplos de Adaptive Cards
+## Adaptive Cards Examples
 
-### Card de Cotação de Ação
+### Stock Quote Card
 
 ```json
 {
@@ -267,52 +267,52 @@ Response flows back to Teams
 }
 ```
 
-## Fluxo de Autenticação Cross-Tenant
+## Cross-Tenant Authentication Flow
 
-1. **Desenvolvedor** (Azure Tenant A): Implanta infraestrutura do agente
-2. **A365 CLI** (via login M365 Tenant B): Cria Blueprint no Tenant B
-3. **Agent Blueprint** (M365 Tenant B): Referencia o endpoint de mensagens no Tenant A
-4. **Runtime**: M365 autentica usuário → Agent Blueprint → roteia para endpoint no Azure Tenant A
+1. **Developer** (Azure Tenant A): Deploys agent infrastructure
+2. **A365 CLI** (via M365 Tenant B login): Creates Blueprint in Tenant B
+3. **Agent Blueprint** (M365 Tenant B): References messaging endpoint in Tenant A
+4. **Runtime**: M365 authenticates user → Agent Blueprint → routes to Azure Tenant A endpoint
 
-## Resolução de Problemas
+## Troubleshooting
 
-**Problema: "A365 CLI command not found"**  
-**Causa**: Caminho das .NET tools não está no PATH  
-**Solução**: Adicione `~/.dotnet/tools` ao PATH ou reinicie o terminal
+**Issue: "A365 CLI command not found"**  
+**Cause**: .NET tools path not in PATH  
+**Fix**: Add `~/.dotnet/tools` to PATH or restart terminal
 
-**Problema: "Frontier Program access denied"**  
-**Causa**: Não inscrito no programa de preview  
-**Solução**: Inscreva-se em https://adoption.microsoft.com/copilot/frontier-program/
+**Issue: "Frontier Program access denied"**  
+**Cause**: Not enrolled in preview program  
+**Fix**: Apply at https://adoption.microsoft.com/copilot/frontier-program/
 
-**Problema: "Blueprint registration failed: tenant mismatch"**  
-**Causa**: Logado no tenant errado com `az login`  
-**Solução**: `az login --tenant <m365-tenant-id>` explicitamente
+**Issue: "Blueprint registration failed: tenant mismatch"**  
+**Cause**: Logged into wrong tenant with `az login`  
+**Fix**: `az login --tenant <m365-tenant-id>` explicitly
 
-**Problema: "/api/messages returns 404"**  
-**Causa**: Endpoint do Bot Framework não implementado ou rota mal configurada  
-**Solução**: Verifique se a rota FastAPI existe: `@app.post("/api/messages")`
+**Issue: "/api/messages returns 404"**  
+**Cause**: Bot Framework endpoint not implemented or route misconfigured  
+**Fix**: Verify FastAPI route exists: `@app.post("/api/messages")`
 
-**Problema: "Adaptive Card not rendering in Teams"**  
-**Causa**: Schema JSON inválido ou incompatibilidade de versão  
-**Solução**: Valide em https://adaptivecards.io/designer
+**Issue: "Adaptive Card not rendering in Teams"**  
+**Cause**: Invalid JSON schema or version mismatch  
+**Fix**: Validate at https://adaptivecards.io/designer
 
-## Tipos de Instância de Agente
+## Agent Instance Types
 
-| Tipo | Escopo | Caso de Uso |
+| Type | Scope | Use Case |
 |------|-------|----------|
-| **Personal** | Usuário individual | Agente privado para uso pessoal |
-| **Shared** | Equipe/Canal | Agente colaborativo para a equipe |
-| **Org-wide** | Organização inteira | Implantação em toda a empresa |
+| **Personal** | Individual user | Private agent for personal use |
+| **Shared** | Team/Channel | Collaborative agent for team |
+| **Org-wide** | Entire organization | Company-wide deployment |
 
-## Recursos
+## Resources
 
-- [Guia do Desenvolvedor Microsoft Agent 365](https://learn.microsoft.com/microsoft-agent-365/developer/)
-- [SDK do Bot Framework](https://learn.microsoft.com/azure/bot-service/)
-- [Designer de Adaptive Cards](https://adaptivecards.io/designer/)
+- [Microsoft Agent 365 Developer Guide](https://learn.microsoft.com/microsoft-agent-365/developer/)
+- [Bot Framework SDK](https://learn.microsoft.com/azure/bot-service/)
+- [Adaptive Cards Designer](https://adaptivecards.io/designer/)
 - [Frontier Program](https://adoption.microsoft.com/copilot/frontier-program/)
 
 ---
 
-**Nível da Demo**: Avançado  
-**Tempo Estimado**: 45-60 minutos (inclui espera de aprovação do admin)  
-**Melhor Para**: Implantações corporativas no ecossistema M365 (Teams, Outlook, Copilot)
+**Demo Level**: Advanced  
+**Estimated Time**: 45-60 minutes (includes admin approval wait)  
+**Best For**: Enterprise deployments to M365 ecosystem (Teams, Outlook, Copilot)

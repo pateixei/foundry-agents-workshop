@@ -15,8 +15,8 @@ Workshop prático para construir, implantar e gerenciar agentes de IA usando o *
 | [2](lesson-2-hosted-maf/) | Agente Hospedado (MAF) | Microsoft Agent Framework | Contêiner com MAF hospedado no Foundry |
 | [3](lesson-3-hosted-langgraph/) | Agente Hospedado (LangGraph) | LangGraph + adaptador | Contêiner LangGraph hospedado no Foundry |
 | [4](lesson-4-aca-langgraph/) | Agente Conectado (ACA) | FastAPI + LangGraph | Contêiner próprio no ACA, registrado no Control Plane do Foundry |
-| [5](lesson-5-a365-prereq/) | Agent 365 (Pré-requisitos) | A365 CLI | Preparação para publicar agentes no Microsoft 365 |
-| [6](lesson-6-a365-langgraph/) | Integração A365 SDK | Azure Monitor + Bot Framework | Agente aprimorado com observabilidade, Bot Framework, Adaptive Cards |
+| [5](lesson-5-a365-langgraph/) | Integração A365 SDK | Azure Monitor + Bot Framework | Agente aprimorado com observabilidade, Bot Framework, Adaptive Cards |
+| [6](lesson-6-a365-prereq/) | Agent 365 (Pré-requisitos) | A365 CLI | Preparação para publicar agentes no Microsoft 365 |
 | [7](lesson-7-publish/) | Publicação no M365 | A365 CLI + Admin Center | Guia passo a passo para publicar agente no M365 Admin Center |
 | [8](lesson-8-instances/) | Criando Instâncias | Teams + A365 CLI | Guia para criar instâncias de agente pessoais e compartilhadas no Teams |
 ## Materiais do Workshop
@@ -143,11 +143,7 @@ O agente LangGraph roda em infraestrutura própria (ACA) e é registrado como Co
 ![Implantação Lição 4](lesson-4-aca-langgraph/media/lesson-4-deployment.png)
 </details>
 
-### Lição 5 - Microsoft Agent 365 (Pré-requisitos)
-
-Configuração do A365 CLI, registro de aplicativo no Entra ID e configuração do Agent Blueprint para publicar agentes no Microsoft 365 (Teams, Outlook). Cobre o cenário cross-tenant (Azure != M365).
-
-### Lição 6 - Integração A365 SDK
+### Lição 5 - Integração A365 SDK
 
 Agente de Mercado Financeiro aprimorado integrado com o SDK do Microsoft Agent 365. Adiciona:
 - **Azure Monitor OpenTelemetry** para rastreamento distribuído e observabilidade
@@ -156,6 +152,10 @@ Agente de Mercado Financeiro aprimorado integrado com o SDK do Microsoft Agent 3
 - **Ferramentas Instrumentadas** com rastreamento de spans para monitoramento de desempenho
 
 O agente agora suporta tanto API REST (`/chat`) quanto endpoints Bot Framework Activity, permitindo integração transparente com o Microsoft 365 mantendo compatibilidade retroativa.
+
+### Lição 6 - Microsoft Agent 365 (Pré-requisitos)
+
+Configuração do A365 CLI, registro de aplicativo no Entra ID e configuração do Agent Blueprint para publicar agentes no Microsoft 365 (Teams, Outlook). Cobre o cenário cross-tenant (Azure != M365).
 
 ### Lição 7 - Publicação no Microsoft 365
 
@@ -207,9 +207,9 @@ foundry-agents-workshop/
     demos/ labs/ media/
   lesson-4-aca-langgraph/          # Agente conectado (ACA + FastAPI)
     demos/ labs/ media/
-  lesson-5-a365-prereq/            # Pré-requisitos do Agent 365
-    solution/
-  lesson-6-a365-langgraph/         # Integração A365 SDK (observabilidade, Bot Framework)
+  lesson-5-a365-langgraph/         # Integração A365 SDK (observabilidade, Bot Framework)
+    demos/ labs/
+  lesson-6-a365-prereq/            # Pré-requisitos do Agent 365
     demos/ labs/
   lesson-7-publish/                # Guia de publicação (M365 Admin Center)
   lesson-8-instances/              # Guia de criação de instâncias (Teams)

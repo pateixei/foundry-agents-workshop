@@ -31,7 +31,7 @@ from opentelemetry import trace
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 # Bot Framework
-from botbuilder.core import BotFrameworkAdapter
+from botbuilder.core import BotFrameworkAdapter, BotFrameworkAdapterSettings
 from botbuilder.schema import Activity, ActivityTypes
 
 logger = logging.getLogger(__name__)
@@ -294,7 +294,7 @@ class A365BotAdapter:
     
     def __init__(self, agent):
         self.agent = agent
-        self.adapter = BotFrameworkAdapter(settings=BotFrameworkAdapter.BotAdapterSettings(
+        self.adapter = BotFrameworkAdapter(BotFrameworkAdapterSettings(
             app_id=os.getenv("MICROSOFT_APP_ID", ""),
             app_password=os.getenv("MICROSOFT_APP_PASSWORD", "")
         ))

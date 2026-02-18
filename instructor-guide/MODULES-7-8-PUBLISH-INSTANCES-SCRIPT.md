@@ -714,8 +714,8 @@ Permissions:
 
 **Student Task**:
 ```powershell
-# Redeploy ACA agent (from lesson-6-a365-langgraph)
-cd lesson-6-a365-langgraph
+# Redeploy ACA agent (from lesson-5-a365-langgraph)
+cd lesson-5-a365-langgraph
 .\deploy.ps1
 ```
 

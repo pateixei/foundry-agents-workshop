@@ -54,7 +54,7 @@ Developer                   M365 Admin                  End Users
 
 Before publishing, ensure you have:
 
-1. ✅ Completed Lesson 5 setup (`a365 setup all`)
+1. ✅ Completed Lesson 6 setup (`a365 setup all`)
 2. ✅ Agent Blueprint registered in Entra ID
 3. ✅ Agent deployed and healthy in ACA
 4. ✅ Messaging endpoint accessible
@@ -65,7 +65,7 @@ Before publishing, ensure you have:
 ### Step 1: Verify Agent Blueprint Status
 
 ```powershell
-cd lesson-5-a365-prereq
+cd lesson-6-a365-prereq
 a365 blueprint list
 ```
 

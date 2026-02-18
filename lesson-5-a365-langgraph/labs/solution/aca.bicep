@@ -5,7 +5,7 @@ param location string = resourceGroup().location
 param acaEnvironmentName string = 'cae-rg-ai-agents-workshop'
 
 @description('Nome do Container App')
-param containerAppName string = 'aca-a365-agent'
+param containerAppName string = 'aca-lg-agent'
 
 @description('Nome do ACR existente')
 param acrName string

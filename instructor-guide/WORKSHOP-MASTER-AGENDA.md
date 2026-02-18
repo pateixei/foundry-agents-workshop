@@ -443,8 +443,8 @@ Each day follows this pattern:
   - Publishing workflow overview for Cross-tenant (most complex)
   - Enterprise deployment models
 
-**00:45-01:00 | Lesson 5: A365 Prerequisites**
-- 📖 Read: `lesson-5-a365-prereq/README.md` (5 min)
+**00:45-01:00 | Lesson 6: A365 Prerequisites**
+- 📖 Read: `lesson-6-a365-prereq/README.md` (5 min)
 - 🛠️ Student Lab (10 min):
   - Install A365 CLI: `a365 --version`
   - Configure for cross-tenant scenario
@@ -459,8 +459,8 @@ Each day follows this pattern:
 
 ### Hour 2: SDK Integration (01:00-02:00)
 
-**01:00-01:15 | Lesson 6: A365 SDK Deep Dive**
-- 📖 Read: `lesson-6-a365-langgraph/README.md` (5 min)
+**01:00-01:15 | Lesson 5: A365 SDK Deep Dive**
+- 📖 Read: `lesson-5-a365-langgraph/README.md` (5 min)
 - 🎬 Code walkthrough (10 min):
   - Azure Monitor OpenTelemetry integration
   - Bot Framework `/api/messages` endpoint
@@ -470,7 +470,7 @@ Each day follows this pattern:
 **01:15-01:50 | Lab: Enhance Agent with A365 SDK**
 - 🛠️ Student Lab (35 min):
   ```powershell
-  cd lesson-6-a365-langgraph
+  cd lesson-5-a365-langgraph
   .\deploy.ps1
   ```
   - Add OpenTelemetry to existing agent

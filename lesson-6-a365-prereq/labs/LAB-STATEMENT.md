@@ -1,4 +1,4 @@
-# Lab 5: Register Entra ID Application and Configure Agent 365
+# Lab 6: Register Entra ID Application and Configure Agent 365
 
 > 🇧🇷 **[Leia em Português (pt-BR)](LAB-STATEMENT.pt-BR.md)**
 
@@ -310,7 +310,7 @@ az account show --query "{tenant:tenantId, user:user.name}" -o table
 **5.2 - Navigate to lesson directory**
 
 ```powershell
-cd lesson-5-a365-prereq
+cd lesson-6-a365-prereq
 ```
 
 **5.3 - Create the configuration file**
@@ -377,7 +377,7 @@ a365 config display
 
 **Complete the comparison table:**
 
-| Aspect | Hosted Agent (Lab 2-3) | ACA + A365 (Labs 4-5) |
+| Aspect | Hosted Agent (Lab 2-3) | ACA + A365 (Labs 4-6) |
 |--------|------------------------|------------------------|
 | **Agent Code Runs On** | ? | ? |
 | **Identity Provider** | ? | ? |
@@ -462,7 +462,7 @@ a365 config display
 
 ## Next Steps
 
-- **Lab 6**: Use the Agent 365 SDK to set up the Agent Blueprint, publish to M365 Admin Center, and create agent instances in Teams
+- **Lab 5**: Use the Agent 365 SDK to set up the Agent Blueprint, publish to M365 Admin Center, and create agent instances in Teams
 - Test the full end-to-end flow: Teams → M365 → ACA → Azure OpenAI → Response
 
 ---
