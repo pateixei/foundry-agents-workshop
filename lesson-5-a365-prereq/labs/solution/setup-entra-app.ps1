@@ -16,8 +16,11 @@
 # Prerequisites:
 #   - .NET 8.0+ SDK installed
 #   - Agent 365 CLI installed (dotnet tool install --global Microsoft.Agents.A365.DevTools.Cli --prerelease)
-#   - Azure CLI logged in to M365 Tenant (az login --tenant <M365-TENANT-ID>)
+#   - Azure CLI logged in to M365 Tenant (az login --tenant <M365-TENANT-ID> --use-device-code)
 #   - Global Administrator or Agent ID Administrator role in M365 Tenant
+#
+# NOTE: Uses --use-device-code for WSL2 / headless environments where
+#       browser-based login is not available.
 
 param(
     [Parameter(Mandatory = $true, HelpMessage = "M365 Tenant ID (Tenant B) - GUID")]
@@ -113,9 +116,10 @@ try {
 
 if (-not $currentTenant) {
     Write-Host "  Azure CLI not logged in. Logging in to M365 Tenant..." -ForegroundColor Yellow
-    az login --tenant $M365TenantId
+    Write-Host "  (Using device code flow — follow the instructions below)" -ForegroundColor White
+    az login --tenant $M365TenantId --use-device-code
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "  ERRO: Failed to log in. Run 'az login --tenant $M365TenantId' manually." -ForegroundColor Red
+        Write-Host "  ERRO: Failed to log in. Run 'az login --tenant $M365TenantId --use-device-code' manually." -ForegroundColor Red
         exit 1
     }
     $currentTenant = az account show --query tenantId -o tsv 2>$null
@@ -123,8 +127,8 @@ if (-not $currentTenant) {
 
 if ($currentTenant -ne $M365TenantId) {
     Write-Host "  WARNING: Current tenant ($currentTenant) differs from M365 Tenant ($M365TenantId)." -ForegroundColor Yellow
-    Write-Host "  Switching to M365 Tenant..." -ForegroundColor Yellow
-    az login --tenant $M365TenantId
+    Write-Host "  Switching to M365 Tenant (device code flow)..." -ForegroundColor Yellow
+    az login --tenant $M365TenantId --use-device-code
     if ($LASTEXITCODE -ne 0) {
         Write-Host "  ERRO: Failed to switch tenant." -ForegroundColor Red
         exit 1
