@@ -20,7 +20,7 @@ By the end of this lesson, you will be able to:
 |----------|-------------|
 | [📖 Demo Walkthrough](demos/README.md) | Code walkthrough and demo instructions |
 | [🔬 Lab Exercise](labs/LAB-STATEMENT.md) | Hands-on lab with tasks and success criteria |
-| [📝 Agent Registration](REGISTER.md) | How to register the A365 agent |
+| [📝 Agent Registration](REGISTER.md) | How to register the agent in Foundry Portal (as an assest) |
 
 ---
 
@@ -234,20 +234,91 @@ Invoke-RestMethod -Uri "https://<endpoint>/api/messages" -Method Post -Body $act
 
 ## View Telemetry
 
-1. Azure Portal → Application Insights → **Transaction Search**
-2. Find recent requests (within last 5 min)
-3. Click to see **End-to-end Transaction** view
-4. Verify custom spans: `get_stock_price` visible with timing
+### Understanding Where Traces Appear
+
+The call path determines **which observability surface** captures the trace:
+
+| Call path | Traces in Foundry portal? | Traces in Application Insights? |
+|-----------|--------------------------|----------------------------------|
+| **Direct → ACA** (`/chat` or `/api/messages`) | ❌ No | ✅ Yes (via OpenTelemetry) |
+| **Via Foundry AI Gateway** (Foundry project endpoint) | ✅ Yes | ✅ Yes (both) |
+
+> **Why?** Foundry only captures telemetry for requests that pass through its AI Gateway (APIM). When you call ACA directly, Foundry never sees the request. Application Insights captures everything because the OpenTelemetry SDK instruments the agent process itself, regardless of how the call arrived.
+
+---
+
+### Viewing Traces in Application Insights
+
+Application Insights captures all calls (direct and gateway-routed), including custom OpenTelemetry spans for individual tool calls.
+
+**Transaction Search** — find a specific request end-to-end:
+1. Azure Portal → your Application Insights resource → **Transaction search**
+2. Set time range to **Last 30 minutes**
+3. Click a `POST /chat` or `POST /api/messages` request
+4. Click **View all telemetry** → see the full **End-to-end transaction** waterfall
+5. Verify custom spans appear: `get_stock_price`, `get_portfolio`, etc., each with duration
+
+**Performance** — aggregate latency analysis:
+1. Application Insights → **Performance**
+2. Select operation `POST /chat` or `POST /api/messages`
+3. View P50 / P95 / P99 response times and drill into slow samples
+4. Click **Drill into samples** → pick a slow trace → see which tool span caused the delay
+
+**Live Metrics** — real-time stream during a live demo:
+1. Application Insights → **Live metrics**
+2. Keep this open while sending test messages
+3. See incoming request rate, failure rate, and server telemetry with ~1 s latency
+
+**KQL query** — custom analysis in Log Analytics:
+```kusto
+// All agent requests in the last hour with duration
+requests
+| where timestamp > ago(1h)
+| where name in ("POST /chat", "POST /api/messages")
+| project timestamp, name, duration, success, resultCode
+| order by timestamp desc
+
+// Custom spans for tool calls
+dependencies
+| where timestamp > ago(1h)
+| where type == "InProc"  // OpenTelemetry in-process spans
+| project timestamp, name, duration, success
+| order by duration desc
+```
+
+---
+
+### Viewing Traces in Foundry Portal
+
+Foundry tracing only captures calls routed **through the AI Gateway endpoint** (the Foundry project URL, not the ACA FQDN directly).
+
+1. Azure Portal → Azure AI Foundry → your project → **Tracing** (left nav)
+2. You'll see traces for each invocation routed via the gateway
+3. Each trace shows: latency, token usage, model calls, and the connected agent hop
+4. Click a trace → drill into the **span waterfall**: `gateway → ACA /chat → LangGraph nodes`
+
+> **To generate Foundry traces from your tests**, use the Foundry project endpoint instead of the ACA URL directly:
+> ```powershell
+> # This goes through AI Gateway → captured in Foundry tracing
+> python ../../test/chat.py --lesson 4 --endpoint $aiProjectEndpoint
+>
+> # This goes direct to ACA → NOT captured in Foundry tracing
+> python ../../test/chat.py --lesson 4 --endpoint https://<aca-fqdn>
+> ```
+
+---
 
 ### Key Metrics to Monitor
 
 | Metric | Where | What to Look For |
-|--------|-------|-----------------|
-| Request count | Application Insights → Requests | Volume of `/api/messages` calls |
+|--------|-------|------------------|
+| Request count | Application Insights → Requests | Volume of `/chat` and `/api/messages` calls |
 | Response time | Application Insights → Performance | P50, P95, P99 latencies |
-| Failures | Application Insights → Failures | Failed requests and exceptions |
-| Tool timing | Transaction Search → Custom spans | Per-tool execution duration |
-| Dependencies | Application Insights → Dependencies | External API calls (stock data) |
+| Failures | Application Insights → Failures | Failed requests and exceptions with stack traces |
+| Tool timing | Transaction Search → custom spans | Per-tool execution duration (`get_stock_price`, etc.) |
+| Dependencies | Application Insights → Dependencies | External API calls (stock data providers) |
+| Gateway traces | Foundry portal → Tracing | End-to-end span including gateway overhead |
+| Token usage | Foundry portal → Tracing | Token count per invocation when routed via gateway |
 
 ---
 

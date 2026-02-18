@@ -284,6 +284,36 @@ az cognitiveservices connectedagent create \
 
 > **Connected Agent** = "Hey Foundry, I have an agent running elsewhere. Please manage it."
 
+### ♻️ Do I Need to Re-Register After Updating My Code?
+
+**No.** The registration stores your ACA **endpoint URL**, not a reference to a specific container image or code version. When you push a new image version (`v2`, `v3`, etc.) to the same ACA app, the URL remains unchanged — Foundry continues routing to that same endpoint and automatically picks up the new code.
+
+| Change | Re-registration needed? |
+|--------|------------------------|
+| Updated container image (same ACA app) | ❌ No |
+| Bug fix, new feature, dependency update | ❌ No |
+| New ACA app or different FQDN | ✅ Yes |
+| Moved to a different resource group / subscription | ✅ Yes |
+| Changed the `/chat` path or API contract | ✅ Yes (update `--endpoint`) |
+
+To **update** an existing registration (e.g., new endpoint URL):
+```powershell
+az cognitiveservices connectedagent update \
+  --name financial-advisor-aca \
+  --resource-group $rgName \
+  --foundry-project $foundryProjectName \
+  --endpoint "https://$newAgentFqdn"
+```
+
+To **verify** the current registered endpoint:
+```powershell
+az cognitiveservices connectedagent show \
+  --name financial-advisor-aca \
+  --resource-group $rgName \
+  --foundry-project $foundryProjectName \
+  --query "properties.endpoint"
+```
+
 ---
 
 ## Testing: Two Paths
