@@ -1,4 +1,4 @@
-# Lesson 6 - A365 Prerequisites: Entra ID App Registration
+# Lesson 5 - A365 Prerequisites: Entra ID App Registration
 
 > 🇧🇷 **[Leia em Português (pt-BR)](README.pt-BR.md)**
 
@@ -34,7 +34,7 @@ This script automates the **Entra ID Application Registration** and **a365.confi
 ## File Structure
 
 ```
-lesson-6-a365-prereq/labs/
+lesson-5-a365-prereq/labs/
   LAB-STATEMENT.md         # Lab instructions (English)
   LAB-STATEMENT.pt-BR.md   # Lab instructions (Portuguese)
   solution/

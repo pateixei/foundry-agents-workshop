@@ -15,8 +15,8 @@ Practical workshop to build, deploy, and manage AI agents using **Microsoft Foun
 | [2](lesson-2-hosted-maf/) | Hosted Agent (MAF) | Microsoft Agent Framework | Container with MAF hosted in Foundry |
 | [3](lesson-3-hosted-langgraph/) | Hosted Agent (LangGraph) | LangGraph + adapter | LangGraph container hosted in Foundry |
 | [4](lesson-4-aca-langgraph/) | Connected Agent (ACA) | FastAPI + LangGraph | Own container in ACA, registered in Foundry Control Plane |
-| [5](lesson-5-a365-langgraph/) | A365 SDK Integration | Azure Monitor + Bot Framework | Enhanced agent with observability, Bot Framework, Adaptive Cards |
-| [6](lesson-6-a365-prereq/) | Agent 365 (Prereqs) | A365 CLI | Preparation to publish agents in Microsoft 365 |
+| [5](lesson-5-a365-prereq/) | Agent 365 (Prereqs) | A365 CLI | Preparation to publish agents in Microsoft 365 |
+| [6](lesson-6-a365-langgraph/) | A365 SDK Integration | Azure Monitor + Bot Framework | Enhanced agent with observability, Bot Framework, Adaptive Cards |
 | [7](lesson-7-publish/) | Publishing to M365 | A365 CLI + Admin Center | Step-by-step guide to publish agent to M365 Admin Center |
 | [8](lesson-8-instances/) | Creating Instances | Teams + A365 CLI | Guide to create personal and shared agent instances in Teams |
 
@@ -111,7 +111,11 @@ Same concept as lesson 2, but using LangGraph as the orchestration framework. Th
 
 The LangGraph agent runs on its own infrastructure (ACA) and is registered as a Connected Agent in the Foundry Control Plane. Foundry routes requests via AI Gateway (APIM) to gain observability and governance.
 
-### Lesson 5 - A365 SDK Integration
+### Lesson 5 - Microsoft Agent 365 (Prerequisites)
+
+A365 CLI configuration, app registration in Entra ID, and Agent Blueprint setup to publish agents in Microsoft 365 (Teams, Outlook). Covers the cross-tenant scenario (Azure != M365).
+
+### Lesson 6 - A365 SDK Integration
 
 Enhanced Financial Market Agent integrated with Microsoft Agent 365 SDK. Adds:
 - **Azure Monitor OpenTelemetry** for distributed tracing and observability
@@ -120,10 +124,6 @@ Enhanced Financial Market Agent integrated with Microsoft Agent 365 SDK. Adds:
 - **Instrumented Tools** with span tracking for performance monitoring
 
 The agent now supports both REST API (`/chat`) and Bot Framework Activity endpoints, enabling seamless integration with Microsoft 365 while maintaining backward compatibility.
-
-### Lesson 6 - Microsoft Agent 365 (Prerequisites)
-
-A365 CLI configuration, app registration in Entra ID, and Agent Blueprint setup to publish agents in Microsoft 365 (Teams, Outlook). Covers the cross-tenant scenario (Azure != M365).
 
 ### Lesson 7 - Publishing to Microsoft 365
 

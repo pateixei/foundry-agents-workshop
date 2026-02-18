@@ -78,7 +78,7 @@ Antes de criar instâncias, verifique se seu agente está publicado e implantado
 pwsh
 
 # Navigate to your A365 config directory
-cd c:\Cloud\Code\a365-workshop\lesson-6-a365-prereq
+cd c:\Cloud\Code\a365-workshop\lesson-5-a365-prereq
 
 # Check publication status
 a365 publish status
@@ -712,7 +712,7 @@ Teste a robustez do agente com casos extremos:
 | Fora do escopo (`Tell me a joke`) | Redirecionamento: "I specialize in financial information" |
 | Mensagem vazia | Tratamento gracioso sem falha |
 
-### Cenário 4: Adaptive Cards (se implementado na Lição 5)
+### Cenário 4: Adaptive Cards (se implementado na Lição 6)
 
 ```
 You: Show me a dashboard for AAPL
@@ -799,17 +799,17 @@ a365 get-usage --instance-id <ID>
 
 ### Arquivos Principais
 
-- **Configuração A365:** `lesson-6-a365-prereq/a365.config.json`
-- **Código do Agente:** `lesson-5-a365-langgraph/main.py`
-- **Requisitos:** `lesson-5-a365-langgraph/requirements.txt`
+- **Configuração A365:** `lesson-5-a365-prereq/a365.config.json`
+- **Código do Agente:** `lesson-6-a365-langgraph/main.py`
+- **Requisitos:** `lesson-6-a365-langgraph/requirements.txt`
 
 ---
 
 ## Recursos
 
 - [Repositório do Workshop](https://github.com/pateixei/foundry-agents-workshop)
-- [Lição 5: Integração com SDK A365](../lesson-5-a365-langgraph/README.pt-BR.md)
-- [Lição 6: Pré-requisitos A365](../lesson-6-a365-prereq/README.pt-BR.md)
+- [Lição 6: Integração com SDK A365](../lesson-6-a365-langgraph/README.pt-BR.md)
+- [Lição 5: Pré-requisitos A365](../lesson-5-a365-prereq/README.pt-BR.md)
 - [Lição 7: Guia de Publicação](../lesson-7-publish/README.pt-BR.md)
 - [Microsoft Learn: Construa Agentes M365](https://learn.microsoft.com/en-us/training/paths/build-microsoft-365-agents/)
 

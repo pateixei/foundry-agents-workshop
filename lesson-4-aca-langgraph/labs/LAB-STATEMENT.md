@@ -446,7 +446,7 @@ Use **Connected (ACA)** when:
 
 ## Next Steps
 
-- **Lab 5**: Integrate Microsoft Agent 365 SDK for M365 deployment
+- **Lab 6**: Integrate Microsoft Agent 365 SDK for M365 deployment
 - Learn cross-tenant architecture
 - Publish to Teams and Outlook
 

@@ -1,4 +1,4 @@
-# Lição 5: Integração com o SDK do Microsoft Agent 365
+# Lição 6: Integração com o SDK do Microsoft Agent 365
 
 > 🇺🇸 **[Read in English](README.md)**
 
@@ -180,7 +180,7 @@ botbuilder-schema>=4.16.0
 ## Implantação
 
 ```powershell
-cd lesson-5-a365-langgraph
+cd lesson-6-a365-langgraph
 ./deploy.ps1
 ```
 
@@ -198,7 +198,7 @@ az containerapp update --name aca-lg-agent --resource-group $rgName \
 
 Atualize a configuração do A365 com o novo endpoint:
 ```powershell
-cd ../lesson-6-a365-prereq
+cd ../lesson-5-a365-prereq
 a365 setup blueprint --skip-infrastructure
 ```
 

@@ -31,7 +31,7 @@ This document defines backup plans for the most likely disruptions during a 5-da
 - [ ] Pre-download all pip packages as wheels:
   ```powershell
   pip download -r lesson-1-declarative/requirements.txt -d ./offline-packages/
-  pip download -r lesson-5-a365-langgraph/requirements.txt -d ./offline-packages/
+  pip download -r lesson-6-a365-langgraph/requirements.txt -d ./offline-packages/
   ```
 - [ ] Pre-build all Docker images on instructor machine (acts as demo fallback)
 - [ ] Save key Azure Portal screenshots for offline demo

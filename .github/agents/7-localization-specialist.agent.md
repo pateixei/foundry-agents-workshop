@@ -46,7 +46,7 @@ Translated files live **alongside their originals** with a `.pt-BR.md` suffix (n
 - **`prereq/README.pt-BR.md`** — Translated prereq guide
 - **`lesson-{1-8}/README.pt-BR.md`** — Translated lesson READMEs
 - **`lesson-4-aca-langgraph/REGISTER.pt-BR.md`** — Translated registration guide
-- **`lesson-5-a365-langgraph/REGISTER.pt-BR.md`** — Translated registration guide
+- **`lesson-6-a365-langgraph/REGISTER.pt-BR.md`** — Translated registration guide
 - **`student-kit/SETUP-GUIDE.pt-BR.md`** — Translated setup guide
 - **`student-kit/RESOURCES-LINKS.pt-BR.md`** — Translated resources
 - **`capability-host.pt-BR.md`** — Translated capability host explanation (project root)

@@ -1,4 +1,4 @@
-# Lab 6: Registrar Aplicação no Entra ID e Configurar Agent 365
+# Lab 5: Registrar Aplicação no Entra ID e Configurar Agent 365
 
 > 🇺🇸 **[Read in English](LAB-STATEMENT.md)**
 
@@ -310,7 +310,7 @@ az account show --query "{tenant:tenantId, user:user.name}" -o table
 **5.2 - Navegar até o diretório da lição**
 
 ```powershell
-cd lesson-6-a365-prereq
+cd lesson-5-a365-prereq
 ```
 
 **5.3 - Criar o arquivo de configuração**
@@ -462,7 +462,7 @@ a365 config display
 
 ## Próximos Passos
 
-- **Lab 5**: Usar o Agent 365 SDK para configurar o Agent Blueprint, publicar no M365 Admin Center e criar instâncias de agente no Teams
+- **Lab 6**: Usar o Agent 365 SDK para configurar o Agent Blueprint, publicar no M365 Admin Center e criar instâncias de agente no Teams
 - Testar o fluxo completo end-to-end: Teams → M365 → ACA → Azure OpenAI → Resposta
 
 ---

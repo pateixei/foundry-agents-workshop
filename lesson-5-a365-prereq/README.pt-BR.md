@@ -1,4 +1,4 @@
-# Lição 6 - Configuração Completa do Microsoft Agent 365
+# Lição 5 - Configuração Completa do Microsoft Agent 365
 
 > 🇺🇸 **[Read in English](README.md)**
 
@@ -266,7 +266,7 @@ az account show --query "{tenant:tenantId, user:user.name}" -o table
 Navegue até o diretório da lição 6 e crie o arquivo:
 
 ```powershell
-cd lesson-6-a365-prereq
+cd lesson-5-a365-prereq
 ```
 
 Crie o arquivo `a365.config.json` com o seguinte conteúdo:
@@ -330,7 +330,7 @@ O blueprint define a identidade e as permissões do agente no Entra ID. Com `nee
 ### 5.1 - Executar o setup
 
 ```powershell
-# Executar o setup completo (dentro de lesson-6-a365-prereq/)
+# Executar o setup completo (dentro de lesson-5-a365-prereq/)
 a365 setup all
 ```
 
@@ -600,8 +600,8 @@ Ao final desta lição, você terá:
 
 | Artefato | Localização | Descrição |
 |----------|-------------|-----------|
-| `a365.config.json` | `lesson-6-a365-prereq/` | Configuração manual (criada à mão, sem assistente) |
-| `a365.generated.config.json` | `lesson-6-a365-prereq/` | Configuração gerada pelo CLI (IDs, secrets, detalhes de publicação) |
+| `a365.config.json` | `lesson-5-a365-prereq/` | Configuração manual (criada à mão, sem assistente) |
+| `a365.generated.config.json` | `lesson-5-a365-prereq/` | Configuração gerada pelo CLI (IDs, secrets, detalhes de publicação) |
 | Custom Client App | Entra ID (Tenant M365) | App registration para autenticação do CLI |
 | Agent Blueprint | Entra ID (Tenant M365) | Identidade do agente + permissões |
 | Service Principal | Entra ID (Tenant M365) | Identidade do agente para autenticação |

@@ -24,7 +24,7 @@ By the end of these modules, students will be able to:
 
 ## 📊 Module Overview
 
-### Module 6: A365 Prerequisites (60 min - Day 3 Hour 3)
+### Module 5: A365 Prerequisites (60 min - Day 3 Hour 3)
 | Element | Duration | Method |
 |---------|----------|--------|
 | **Cross-Tenant Scenario** | 15 min | Presentation (Azure vs M365 tenant) |
@@ -32,7 +32,7 @@ By the end of these modules, students will be able to:
 | **Agent Blueprint Registration** | 20 min | CLI commands + Entra ID verification |
 | **Troubleshooting** | 5 min | Common auth issues |
 
-### Module 5: A365 SDK Integration (120 min - Day 3 Hour 4 + Day 4 Hour 1)
+### Module 6: A365 SDK Integration (120 min - Day 3 Hour 4 + Day 4 Hour 1)
 | Element | Duration | Method |
 |---------|----------|--------|
 | **SDK Overview** | 15 min | A365 SDK capabilities |
@@ -43,7 +43,7 @@ By the end of these modules, students will be able to:
 
 ---
 
-## 🗣️ Module 6: Instructional Script
+## 🗣️ Module 5: Instructional Script
 
 ### 11:15-11:30 | Cross-Tenant Scenario (15 min)
 
@@ -171,7 +171,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
 **Instructor demonstrates, students follow**:
 
 ```powershell
-cd lesson-6-a365-prereq
+cd lesson-5-a365-prereq
 
 # Create config file
 a365 config init
@@ -379,21 +379,21 @@ a365 setup blueprint
 - Fix: Ensure Managed Identity (Tenant A) has no conflict with App Registration (Tenant B)
 - Note: These are separate identities—no conflict unless networkingblocks access
 
-**Wrap Module 6**:
+**Wrap Module 5**:
 > "Blueprint registered! Tomorrow we enhance the agent with A365 SDK features."
 >
 > "Break for lunch. Afternoon: SDK integration with telemetry and adaptive cards."
 
 ---
 
-## 🗣️ Module 5: Instructional Script
+## 🗣️ Module 6: Instructional Script
 
 ### 13:15-13:30 | SDK Overview (15 min)
 
 **Instructional Method**: Presentation
 
 **Opening (2 min)**:
-> "Your agent works in ACA (Module 4) and is registered in M365 (Module 6). Now: make it **production-ready** with observability, rich UX, and M365 protocol support."
+> "Your agent works in ACA (Module 4) and is registered in M365 (Module 5). Now: make it **production-ready** with observability, rich UX, and M365 protocol support."
 
 **Content Delivery (10 min)**:
 
@@ -469,7 +469,7 @@ async def messages(request: Request):
 
 **Student Task**:
 ```powershell
-cd lesson-5-a365-langgraph
+cd lesson-6-a365-langgraph
 
 # Install A365 SDK packages
 pip install -r requirements.txt
@@ -684,7 +684,7 @@ Invoke-RestMethod -Uri "https://<aca-fqdn>/api/messages" -Method Post -Body $act
 ### 14:30 | Wrap Modules 5-6
 
 **Summary**:
-> "You've configured A365 CLI (Module 6) and integrated A365 SDK (Module 5)."
+> "You've configured A365 CLI (Module 5) and integrated A365 SDK (Module 6)."
 >
 > "Next modules: Publish to M365 Admin Center (Module 7) and create agent instances in Teams (Module 8)."
 >

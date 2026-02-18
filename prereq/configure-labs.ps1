@@ -262,9 +262,9 @@ if (Test-Path $lesson4Dir) {
     }
 }
 
-# --- Lesson 5: A365 SDK ---
-Write-Host "`n  Lesson 5 - A365 SDK Agent" -ForegroundColor White
-$lesson6Dir = Join-Path $WorkspaceRoot "lesson-5-a365-langgraph" "labs" "solution"
+# --- Lesson 6: A365 SDK ---
+Write-Host "`n  Lesson 6 - A365 SDK Agent" -ForegroundColor White
+$lesson6Dir = Join-Path $WorkspaceRoot "lesson-6-a365-langgraph" "labs" "solution"
 if (Test-Path $lesson6Dir) {
     # Update aca.bicep - ACA environment name
     $bicep6 = Join-Path $lesson6Dir "aca.bicep"
@@ -298,7 +298,7 @@ $solutionDirs = @(
     (Join-Path $WorkspaceRoot "lesson-2-hosted-maf" "labs" "solution"),
     (Join-Path $WorkspaceRoot "lesson-3-hosted-langgraph" "labs" "solution"),
     (Join-Path $WorkspaceRoot "lesson-4-aca-langgraph" "labs" "solution"),
-    (Join-Path $WorkspaceRoot "lesson-5-a365-langgraph" "labs" "solution")
+    (Join-Path $WorkspaceRoot "lesson-6-a365-langgraph" "labs" "solution")
 )
 
 foreach ($solDir in $solutionDirs) {
@@ -362,5 +362,5 @@ Write-Host "    2. Lesson 1: cd lesson-1-declarative/labs/solution && python cre
 Write-Host "    3. Lesson 2: cd lesson-2-hosted-maf/labs/solution && ./deploy.ps1" -ForegroundColor White
 Write-Host "    4. Lesson 3: cd lesson-3-hosted-langgraph/labs/solution && ./deploy.ps1" -ForegroundColor White
 Write-Host "    5. Lesson 4: cd lesson-4-aca-langgraph/labs/solution && ./deploy.ps1" -ForegroundColor White
-Write-Host "    5. Lesson 5: cd lesson-5-a365-langgraph/labs/solution && ./deploy.ps1" -ForegroundColor White
+Write-Host "    6. Lesson 6: cd lesson-6-a365-langgraph/labs/solution && ./deploy.ps1" -ForegroundColor White
 Write-Host ""

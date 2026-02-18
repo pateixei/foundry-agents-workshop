@@ -78,7 +78,7 @@ Before creating instances, verify your agent is published and deployed:
 pwsh
 
 # Navigate to your A365 config directory
-cd c:\Cloud\Code\a365-workshop\lesson-6-a365-prereq
+cd c:\Cloud\Code\a365-workshop\lesson-5-a365-prereq
 
 # Check publication status
 a365 publish status
@@ -714,7 +714,7 @@ Test agent robustness with edge cases:
 | Out-of-scope (`Tell me a joke`) | Redirect: "I specialize in financial information" |
 | Empty message | Graceful handling without crash |
 
-### Scenario 4: Adaptive Cards (if implemented in Lesson 5)
+### Scenario 4: Adaptive Cards (if implemented in Lesson 6)
 
 ```
 You: Show me a dashboard for AAPL
@@ -801,17 +801,17 @@ a365 get-usage --instance-id <ID>
 
 ### Key Files
 
-- **A365 Config:** `lesson-6-a365-prereq/a365.config.json`
-- **Agent Code:** `lesson-5-a365-langgraph/main.py`
-- **Requirements:** `lesson-5-a365-langgraph/requirements.txt`
+- **A365 Config:** `lesson-5-a365-prereq/a365.config.json`
+- **Agent Code:** `lesson-6-a365-langgraph/main.py`
+- **Requirements:** `lesson-6-a365-langgraph/requirements.txt`
 
 ---
 
 ## Resources
 
 - [Workshop Repository](https://github.com/pateixei/foundry-agents-workshop)
-- [Lesson 5: A365 SDK Integration](../lesson-5-a365-langgraph/README.md)
-- [Lesson 6: A365 Prerequisites](../lesson-6-a365-prereq/README.md)
+- [Lesson 6: A365 SDK Integration](../lesson-6-a365-langgraph/README.md)
+- [Lesson 5: A365 Prerequisites](../lesson-5-a365-prereq/README.md)
 - [Lesson 7: Publishing Guide](../lesson-7-publish/README.md)
 - [Microsoft Learn: Build M365 Agents](https://learn.microsoft.com/en-us/training/paths/build-microsoft-365-agents/)
 
