@@ -180,7 +180,7 @@ botbuilder-schema>=4.16.0
 ## Deployment
 
 ```powershell
-cd lesson-6-a365-langgraph
+cd lesson-5-a365-langgraph
 ./deploy.ps1
 ```
 
@@ -196,9 +196,9 @@ az containerapp update --name aca-lg-agent --resource-group $rgName \
   --set-env-vars "APPLICATIONINSIGHTS_CONNECTION_STRING=$connectionString"
 ```
 
-Update A365 config with new endpoint:
+**LESSON 6** - Update A365 config with new endpoint:
 ```powershell
-cd ../lesson-5-a365-prereq
+cd ../lesson-6-a365-prereq
 a365 setup blueprint --skip-infrastructure
 ```
 
