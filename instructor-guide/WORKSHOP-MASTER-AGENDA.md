@@ -426,7 +426,7 @@ Each day follows this pattern:
 **Goal**: Integrate agents with Microsoft 365 ecosystem  
 **Focus**: Agent 365 SDK, Bot Framework, Adaptive Cards, publishing  
 
-### Hour 1: Agent 365 Fundamentals (00:00-01:00)
+### Hour 1: Agent 365 Fundamentals & SDK Integration (00:00-01:00)
 
 **00:00-00:15 | Day 4 Kickoff & M365 Context**
 - 🔄 Quick recap: Days 1-3 journey
@@ -443,34 +443,24 @@ Each day follows this pattern:
   - Publishing workflow overview for Cross-tenant (most complex)
   - Enterprise deployment models
 
-**00:45-01:00 | Lesson 5: A365 Prerequisites**
-- 📖 Read: `lesson-5-a365-prereq/README.md` (5 min)
-- 🛠️ Student Lab (10 min):
-  - Install A365 CLI: `a365 --version`
-  - Configure for cross-tenant scenario
-  - Create Entra ID app registration
-  - Set up Agent Blueprint manifest
-  - Validate configuration
-  - Quick overview about diferences from single tenant scenario
-
-**✅ Checkpoint**: A365 CLI configured and ready
-
----
-
-### Hour 2: SDK Integration (01:00-02:00)
-
-**01:00-01:15 | Lesson 6: A365 SDK Deep Dive**
-- 📖 Read: `lesson-6-a365-langgraph/README.md` (5 min)
+**00:45-01:00 | Lesson 5: A365 SDK Deep Dive**
+- 📖 Read: `lesson-5-a365-langgraph/README.md` (5 min)
 - 🎬 Code walkthrough (10 min):
   - Azure Monitor OpenTelemetry integration
   - Bot Framework `/api/messages` endpoint
   - Adaptive Cards template generation
   - Instrumented tools with span tracking
 
-**01:15-01:50 | Lab: Enhance Agent with A365 SDK**
+**✅ Checkpoint**: Agent code reviewed and ready for SDK lab
+
+---
+
+### Hour 2: SDK Lab + A365 Prerequisites (01:00-02:00)
+
+**01:00-01:35 | Lab: Enhance Agent with A365 SDK**
 - 🛠️ Student Lab (35 min):
   ```powershell
-  cd lesson-6-a365-langgraph
+  cd lesson-5-a365-langgraph
   .\deploy.ps1
   ```
   - Add OpenTelemetry to existing agent
@@ -479,11 +469,23 @@ Each day follows this pattern:
   - Deploy enhanced agent
   - Test observability in Azure Monitor
 
-**01:50-02:00 | Demo: Adaptive Cards Showcase**
+**01:35-01:45 | Demo: Adaptive Cards Showcase**
 - 🎬 Instructor shows creative Adaptive Card examples
 - 💬 Discussion: When to use rich UI vs plain text
 
 **✅ Checkpoint**: Agent enhanced with A365 SDK features
+
+**01:45-02:00 | Lesson 6: A365 Prerequisites**
+- 📖 Read: `lesson-6-a365-prereq/README.md` (5 min)
+- 🛠️ Student Lab (10 min):
+  - Install A365 CLI: `a365 --version`
+  - Configure for cross-tenant scenario
+  - Create Entra ID app registration
+  - Set up Agent Blueprint manifest
+  - Validate configuration
+  - Quick overview about differences from single tenant scenario
+
+**✅ Checkpoint**: A365 CLI configured and ready
 
 ---
 

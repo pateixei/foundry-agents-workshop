@@ -262,12 +262,12 @@ if (Test-Path $lesson4Dir) {
     }
 }
 
-# --- Lesson 6: A365 SDK ---
-Write-Host "`n  Lesson 6 - A365 SDK Agent" -ForegroundColor White
-$lesson6Dir = Join-Path $WorkspaceRoot "lesson-6-a365-langgraph" "labs" "solution"
-if (Test-Path $lesson6Dir) {
+# --- Lesson 5: A365 SDK ---
+Write-Host "`n  Lesson 5 - A365 SDK Agent" -ForegroundColor White
+$lesson5Dir = Join-Path $WorkspaceRoot "lesson-5-a365-langgraph" "labs" "solution"
+if (Test-Path $lesson5Dir) {
     # Update aca.bicep - ACA environment name
-    $bicep6 = Join-Path $lesson6Dir "aca.bicep"
+    $bicep6 = Join-Path $lesson5Dir "aca.bicep"
     if (Test-Path $bicep6) {
         $b6Content = Get-Content $bicep6 -Raw
         $b6New = $b6Content -replace "param acaEnvironmentName string = '[^']*'", "param acaEnvironmentName string = '$containerAppsEnvName'"
@@ -279,7 +279,7 @@ if (Test-Path $lesson6Dir) {
     }
 
     # Check if deploy.ps1 exists
-    $deploy6 = Join-Path $lesson6Dir "deploy.ps1"
+    $deploy6 = Join-Path $lesson5Dir "deploy.ps1"
     if (Test-Path $deploy6) {
         $d6Content = Get-Content $deploy6 -Raw
         $d6New = $d6Content -replace '\$RG\s*=\s*"[^"]*"', "`$RG = `"$ResourceGroupName`""
@@ -298,7 +298,8 @@ $solutionDirs = @(
     (Join-Path $WorkspaceRoot "lesson-2-hosted-maf" "labs" "solution"),
     (Join-Path $WorkspaceRoot "lesson-3-hosted-langgraph" "labs" "solution"),
     (Join-Path $WorkspaceRoot "lesson-4-aca-langgraph" "labs" "solution"),
-    (Join-Path $WorkspaceRoot "lesson-6-a365-langgraph" "labs" "solution")
+    (Join-Path $WorkspaceRoot "lesson-5-a365-langgraph" "labs" "solution"),
+    (Join-Path $WorkspaceRoot "lesson-6-a365-prereq" "labs" "solution")
 )
 
 foreach ($solDir in $solutionDirs) {
@@ -373,5 +374,4 @@ Write-Host "    2. Lesson 1: cd lesson-1-declarative/labs/solution && python cre
 Write-Host "    3. Lesson 2: cd lesson-2-hosted-maf/labs/solution && ./deploy.ps1" -ForegroundColor White
 Write-Host "    4. Lesson 3: cd lesson-3-hosted-langgraph/labs/solution && ./deploy.ps1" -ForegroundColor White
 Write-Host "    5. Lesson 4: cd lesson-4-aca-langgraph/labs/solution && ./deploy.ps1" -ForegroundColor White
-Write-Host "    6. Lesson 6: cd lesson-6-a365-langgraph/labs/solution && ./deploy.ps1" -ForegroundColor White
-Write-Host ""
+Write-Host "    6. Lesson 5: cd lesson-5-a365-langgraph/labs/solution && ./deploy.ps1" -ForegroundColor White  Write-Host "    7. Lesson 6: cd lesson-6-a365-prereq/solution && ./setup-entra-app.ps1 (requires M365TenantId, M365Domain, AcaUrl, ManagerEmail)" -ForegroundColor WhiteWrite-Host ""
