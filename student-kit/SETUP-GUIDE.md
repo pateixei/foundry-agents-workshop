@@ -380,7 +380,203 @@ a365 --version
 
 ---
 
-## Step 8: Environment Validation Script
+## Step 8: Microsoft 365 Developer Tenant Setup (Days 3–5)
+
+> [!IMPORTANT]
+> **Required for Lessons 5–8 (Agent 365 integration)**
+>
+> You **MUST** have a Microsoft 365 Developer tenant to complete the Agent 365 lessons (Days 3–5). This is **separate** from your Azure subscription and provides a free M365 environment for development and testing.
+
+### 8.1 Join the Microsoft 365 Developer Program
+
+The Microsoft 365 Developer Program provides a free, renewable Microsoft 365 E5 developer subscription for building and testing M365 solutions.
+
+**Benefits:**
+- Free Microsoft 365 E5 subscription (renewable every 90 days with active usage)
+- 25 user licenses
+- Pre-configured sample data packs (optional)
+- Access to all Microsoft 365 services (Teams, SharePoint, Exchange, etc.)
+- Global Administrator access to your tenant
+
+**Step-by-step registration:**
+
+1. **Navigate to the Developer Program portal**
+   - Go to [https://developer.microsoft.com/microsoft-365/dev-program](https://developer.microsoft.com/microsoft-365/dev-program)
+   - Click **"Join now"** (or **"Sign in"** if you already have a Microsoft account)
+
+2. **Sign in with a Microsoft account**
+   - Use your **personal Microsoft account** (e.g., @outlook.com, @hotmail.com, @live.com)
+   - **Important**: Do NOT use your work/school account if you want full control
+   - If you don't have a personal Microsoft account, create one at [https://signup.live.com](https://signup.live.com)
+
+3. **Complete the registration form**
+   - **Country/Region**: Select your country
+   - **Company**: Enter your company name or "Individual Developer"
+   - **Language preference**: Select your preferred language
+   - **Accept terms**: Review and accept the terms and conditions
+   - Click **"Next"**
+
+4. **Set up your developer subscription**
+   You'll be presented with two options:
+   
+   **Option A: Instant sandbox (Recommended for this workshop)**
+   - Click **"Set up E5 subscription"**
+   - The system will automatically provision a tenant with:
+     - Domain: `<random-name>.onmicrosoft.com`
+     - Admin username: `admin@<random-name>.onmicrosoft.com`
+     - A temporary password (you'll be prompted to change it on first sign-in)
+   - **Advantages**: Instant setup (< 1 minute), no configuration needed
+   - **Note**: Write down your admin credentials immediately — you cannot retrieve them later
+
+   **Option B: Configurable sandbox (Advanced)**
+   - Choose **"Set up E5 subscription"** and then select **"Configurable"**
+   - You can customize:
+     - Username (admin@...)
+     - Domain prefix (e.g., `mycompany.onmicrosoft.com`)
+     - Password
+   - Sample data packs (optional — adds sample users, emails, SharePoint sites)
+   - Takes 2–5 minutes to provision
+   
+   > **Workshop Recommendation**: Use **Option A (Instant sandbox)** for faster setup. You can always add sample data later.
+
+5. **Save your credentials**
+   
+   After provisioning completes, you'll see:
+   ```
+   Your Microsoft 365 Developer subscription is ready!
+   
+   Domain: dev123456.onmicrosoft.com
+   Username: admin@dev123456.onmicrosoft.com
+   Password: [temporary password shown once]
+   ```
+   
+   **🚨 CRITICAL**: Save these credentials in a secure location (password manager recommended). You'll need them to:
+   - Sign in to Microsoft 365 Admin Center
+   - Enroll in the Copilot Frontier Program (required — see below)
+   - Configure A365 CLI authentication
+   - Publish and test agents in Teams
+
+### 8.2 First Sign-In and Password Change
+
+1. Go to [https://admin.microsoft.com](https://admin.microsoft.com)
+2. Sign in with `admin@<your-tenant>.onmicrosoft.com` and the temporary password
+3. You'll be prompted to change your password immediately
+4. Set up multi-factor authentication (MFA) if prompted — **recommended** for security
+5. Complete the Microsoft 365 setup wizard (optional — you can skip this)
+
+### 8.3 Verify Your Tenant
+
+After signing in to the Admin Center, verify your subscription:
+
+1. In the left navigation, go to **Billing** → **Your products**
+2. You should see:
+   - **Microsoft 365 E5 Developer (without Windows and Audio Conferencing)**
+   - Status: **Active**
+   - Subscription expires: **[90 days from creation]**
+3. Note your **Tenant ID** (you'll need this for A365 CLI):
+   - Go to **Settings** → **Org settings** → **Organization profile**
+   - Copy the **Tenant ID** (a GUID like `12345678-1234-1234-1234-123456789012`)
+
+### 8.4 Enroll in Copilot Frontier Program (MANDATORY)
+
+> [!CAUTION]
+> **🔴 MANDATORY for Agent 365 Lessons**
+>
+> Without Copilot Frontier enrollment, you **cannot** publish or test Agent 365 agents. The A365 CLI will fail with:
+> ```
+> Error: Forbidden: Access denied by Frontier access control
+> ```
+
+**Enrollment steps:**
+
+1. **Join the Frontier Program**
+   - Go to [https://adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/)
+   - Click **"Join the program"**
+   - Sign in with your **M365 developer tenant admin account** (`admin@<your-tenant>.onmicrosoft.com`)
+   - Complete the enrollment form
+   - Accept the program terms
+
+2. **Enable Copilot Frontier in your tenant**
+   - Go to [https://admin.microsoft.com](https://admin.microsoft.com)
+   - Sign in as Global Administrator (your admin account)
+   - Navigate to **Copilot** → **Settings** (or **Settings** → **Copilot**)
+   - Go to **User access** → **Copilot Frontier**
+   - Toggle **Enable Copilot Frontier** to **On**
+   - Click **"Save"**
+
+3. **Wait for propagation**
+   - Allow **up to 24 hours** for the changes to propagate across Microsoft 365 services
+   - **Recommendation**: Complete this step **at least 1 day before Day 3** of the workshop
+
+4. **Verify Frontier access (after propagation)**
+   ```bash
+   # Test A365 CLI authentication (after Day 3 setup)
+   a365 auth login --tenant-id <YOUR_M365_TENANT_ID>
+   a365 blueprint list
+   ```
+   If successful, you should see an empty list or existing blueprints (not a "Forbidden" error).
+
+### 8.5 Subscription Renewal
+
+Your Microsoft 365 E5 Developer subscription is **free for 90 days** and **automatically renewable** if you show active development usage.
+
+**Renewal criteria:**
+- Active usage includes: API calls, user sign-ins, agent development, Teams app installations
+- Microsoft evaluates usage automatically ~2 weeks before expiration
+- If active, the subscription renews for another 90 days
+- If inactive, you'll receive an email warning 30 days before expiration
+
+**Best practices to ensure renewal:**
+- Use your tenant regularly (sign in, send emails, test agents)
+- Build and test agents throughout the workshop
+- Keep your developer program profile up to date
+
+**What happens if it expires?**
+- You'll receive multiple email warnings before expiration
+- If expired, your tenant data is retained for 30 days
+- You can join the program again with a new tenant (different domain)
+
+### 8.6 Important Notes
+
+- **Azure ≠ Microsoft 365**: Your Azure subscription and M365 tenant are **separate** and likely in **different Entra ID tenants**. This is the "cross-tenant scenario" covered in Lesson 6.
+- **Personal vs. Work Account**: For full control, use a **personal Microsoft account** (not your company email) when joining the Developer Program.
+- **Multiple Tenants**: You can have multiple M365 developer tenants, but only **one per Microsoft account**.
+- **Data Persistence**: Treat the developer tenant as ephemeral for workshops. Do not store critical production data.
+- **Licensing**: The E5 license includes all M365 services, but some features (like advanced compliance) may require additional configuration.
+
+### 8.7 Troubleshooting
+
+**Issue: "You already have a developer subscription"**
+- You previously joined the program with this Microsoft account
+- Go to [https://developer.microsoft.com/microsoft-365/profile](https://developer.microsoft.com/microsoft-365/profile) to view your existing subscription
+- Check the **Subscriptions** tab for your tenant details
+- If you forgot credentials, you may need to wait for expiration or contact support
+
+**Issue: "Cannot sign up with work/school account"**
+- The program requires a personal Microsoft account for the initial registration
+- Create a new personal Microsoft account at [https://signup.live.com](https://signup.live.com)
+- Use that account to join the Developer Program
+
+**Issue: "Subscription not renewing"**
+- Ensure you're actively using the tenant (API calls, user sign-ins)
+- Check your Developer Program dashboard for usage metrics
+- Consider adding sample data packs or test users to increase activity
+
+**Issue: "Cannot enable Copilot Frontier"**
+- Verify you're signed in as Global Administrator
+- Ensure your tenant is enrolled in the Frontier Program first
+- Try in a different browser (Edge or Chrome recommended)
+- Clear browser cache and cookies
+- Wait 1 hour after Frontier enrollment before enabling in Admin Center
+
+**Issue: "Tenant ID not found"**
+- Go to [https://admin.microsoft.com](https://admin.microsoft.com) → **Settings** → **Org settings** → **Organization profile**
+- Look for **Directory ID** or **Tenant ID** (same thing)
+- Alternatively, use Azure CLI: `az login --tenant <your-tenant>.onmicrosoft.com --allow-no-subscriptions && az account show --query tenantId -o tsv`
+
+---
+
+## Step 9: Environment Validation Script
 
 Run this comprehensive check to verify your setup.
 
