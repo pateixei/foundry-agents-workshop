@@ -1,486 +1,424 @@
-# Lab 5: Integração Microsoft Agent 365 e Implantação no M365
+# Lab 5: Integração A365 SDK — Bot Framework, Adaptive Cards & Observabilidade
 
 > 🇺🇸 **[Read in English](LAB-STATEMENT.md)**
 
 ## Objetivo
 
-Aprimorar seu agente com o **Microsoft Agent 365 (A365) SDK**, registrar Agent Blueprint no Microsoft 365 e implantar no Teams para acesso dos usuários finais. Este laboratório completa o ciclo completo de implantação corporativa.
+Aprimorar o agente LangGraph (do Lab 4) com o **Microsoft Agent 365 SDK**: adicionar suporte ao protocolo Bot Framework, Adaptive Cards para exibição rica de dados financeiros e observabilidade via Azure Monitor / OpenTelemetry — em seguida, reimplantar no ACA.
 
 ## Cenário
 
-Seu agente de consultoria financeira (do Lab 4) está pronto para produção. O negócio requer:
-- Implantação no Microsoft Teams para funcionários
-- Integração com Bot Framework para conversas ricas
-- Adaptive Cards para visualização de dados financeiros
-- Suporte cross-tenant (infraestrutura Azure no Tenant A, M365 no Tenant B)
-- Processo de publicação com aprovação do admin
+Seu agente de consultoria financeira está rodando no ACA e registrado no Foundry. O negócio agora requer:
+- Endpoint Bot Framework `/api/messages` para que o agente se comunique com Microsoft Teams e Outlook
+- Adaptive Cards para respostas financeiras com formatação profissional
+- Rastreamento distribuído via Application Insights para observabilidade em produção
+
+> **Nota**: A configuração do A365 CLI, o registro do app no Entra ID e os passos do Agent Blueprint estão cobertos no **Lab 6**. Este lab foca exclusivamente nas mudanças de SDK e código.
 
 ## Objetivos de Aprendizagem
 
-- Configurar A365 CLI para cenários cross-tenant
-- Registrar Agent Blueprints no Microsoft Entra ID
-- Implementar endpoint Bot Framework `/api/messages`
-- Criar Adaptive Cards para dados financeiros
-- Publicar agentes no M365 Admin Center
-- Criar e gerenciar instâncias de agente no Teams
-- Entender o modelo de governança M365 para agentes
+- Implementar o Bot Framework Activity Protocol (endpoint `/api/messages`)
+- Criar Adaptive Cards para visualização de dados financeiros
+- Integrar Azure Monitor OpenTelemetry para rastreamento distribuído
+- Instrumentar funções de tools individuais com spans customizados
+- Reimplantar uma imagem de container atualizada no ACA (sem necessidade de re-registro)
+- Observar traces no Application Insights e no portal do Foundry
 
 ## Pré-requisitos
 
-- [x] Lab 4 completado (agente implantado em ACA)
-- [x] Acesso ao Frontier Program (necessário para A365)
-- [x] .NET SDK 8.0+ instalado
-- [x] Permissões de Admin M365 (ou simuladas para o workshop)
-- [x] Entendimento de cenários cross-tenant
+- [x] Lab 4 concluído (agente ACA rodando e registrado no Foundry)
+- [x] Recurso Application Insights provisionado (criado em `prereq/`)
+- [x] `APPLICATIONINSIGHTS_CONNECTION_STRING` disponível (dos outputs de `prereq/`)
+- [x] Python 3.11+ e Docker disponíveis localmente
 
 ## Tarefas
 
-### Tarefa 1: Instalar e Configurar A365 CLI (15 minutos)
+### Tarefa 1: Adicionar Observabilidade com OpenTelemetry (20 minutos)
 
-**1.1 - Instalar .NET SDK**
+**1.1 - Atualizar `requirements.txt`**
 
-```powershell
-# Check version
-dotnet --version
-# Required: 8.0+
-
-# If missing:
-winget install Microsoft.DotNet.SDK.8
-```
-
-**1.2 - Instalar A365 CLI**
-
-```powershell
-# Install as .NET global tool
-dotnet tool install --global Microsoft.Agents.A365.DevTools.Cli --prerelease
-
-# Verify
-a365 --version
-# Expected: 1.0.x or higher
-```
-
-**1.3 - Configurar A365**
-
-```powershell
-cd starter/a365-config
-a365 config init
-```
-
-**Prompts interativos**:
-```
-? M365 Tenant ID: <your-m365-tenant-id>
-? Azure Subscription ID: <your-azure-subscription-id>
-? Agent Name: financial-advisor-teams
-? Messaging Endpoint: https://aca-financial-agent.nicebeach-abc123.eastus.azurecontainerapps.io/api/messages
-? Create Azure infrastructure (App Service)? No  ← IMPORTANTE: Já temos ACA!
-```
-
-**`a365.config.json` gerado**:
-```json
-{
-  "tenantId": "<m365-tenant-id>",
-  "subscriptionId": "<azure-subscription-id>",
-  "agentName": "financial-advisor-teams",
-  "messagingEndpoint": "https://aca-financial-agent...azurecontainerapps.io/api/messages",
-  "needDeployment": false
-}
-```
-
-**Critérios de Sucesso**:
-- ✅ A365 CLI instalado e funcionando
-- ✅ Arquivo de configuração criado com valores corretos
-- ✅ `needDeployment: false` (usando ACA existente)
-
-### Tarefa 2: Registrar Agent Blueprint (20 minutos)
-
-**2.1 - Login no Tenant M365**
-
-```powershell
-# Important: Login to M365 tenant (Tenant B), not Azure tenant (Tenant A)
-az login --tenant <m365-tenant-id>
-
-# Verify
-az account show
-# Tenant ID should match M365 tenant
-```
-
-**2.2 - Criar Agent Blueprint**
-
-```powershell
-a365 setup blueprint --config a365.config.json
-```
-
-**Saída Esperada**:
-```
-🔧 Creating Agent Blueprint...
-✅ Blueprint registered in Entra ID
-   App ID: f7a3b8e9-1234-5678-abcd-9876543210ef
-   Name: financial-advisor-teams
-   Messaging Endpoint: https://aca-financial-agent...azurecontainerapps.io/api/messages
-
-🔐 Creating Service Principal (Agent User)...
-✅ Service Principal created
-   Principal ID: abc12345-...
-
-✅ Configuring permissions...
-   - Microsoft.Graph.User.Read
-   - Microsoft.Graph.Conversations.Send
-
-✅ Agent Blueprint registration complete
-```
-
-**O que aconteceu?**:
-- Criou App Registration no Entra ID do Tenant M365
-- Criou Service Principal (identidade Agent User)
-- Configurou permissões da Graph API
-- Vinculou o endpoint de mensagens (seu agente ACA no Azure Tenant)
-
-**2.3 - Verificar no Portal**
-
-1. Navegue até o [Portal Entra ID](https://entra.microsoft.com/)
-2. Selecione **App registrations** → **All applications**
-3. Busque por "financial-advisor-teams"
-4. Verifique o endpoint de mensagens em **Authentication**
-
-**Critérios de Sucesso**:
-- ✅ Blueprint visível no Entra ID
-- ✅ Service Principal criado
-- ✅ Permissões configuradas corretamente
-- ✅ Endpoint de mensagens aponta para ACA
-
-### Tarefa 3: Aprimorar Agente com Bot Framework (30 minutos)
-
-**3.1 - Adicionar dependências do Bot Framework**
-
-Atualize `requirements.txt`:
+Adicione ao `starter/requirements.txt`:
 ```txt
-# Existing dependencies...
+azure-monitor-opentelemetry>=1.6.0
+opentelemetry-api>=1.27.0
+opentelemetry-sdk>=1.27.0
+opentelemetry-instrumentation-fastapi>=0.48b0
+```
+
+**1.2 - Configurar Azure Monitor no `main.py`**
+
+```python
+import os
+from azure.monitor.opentelemetry import configure_azure_monitor
+from opentelemetry import trace
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
+app = FastAPI()
+
+# Configurar telemetria do Application Insights
+app_insights_cs = os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING")
+if app_insights_cs:
+    configure_azure_monitor(connection_string=app_insights_cs)
+
+FastAPIInstrumentor.instrument_app(app)  # Auto-instrumentar todos os endpoints HTTP
+```
+
+**1.3 - Instrumentar funções de tools com spans customizados**
+
+```python
+tracer = trace.get_tracer(__name__)
+
+async def get_stock_price(ticker: str) -> dict:
+    with tracer.start_as_current_span("get_stock_price") as span:
+        span.set_attribute("ticker", ticker)
+        try:
+            result = await _fetch_stock_data(ticker)
+            span.set_attribute("price", result["price"])
+            span.set_status(trace.Status(trace.StatusCode.OK))
+            return result
+        except Exception as e:
+            span.record_exception(e)
+            span.set_status(trace.Status(trace.StatusCode.ERROR, str(e)))
+            raise
+```
+
+Aplique o mesmo padrão em cada tool do LangGraph (`get_exchange_rate`, `get_market_summary`, etc.).
+
+**Critérios de Sucesso**:
+- ✅ `configure_azure_monitor()` chamado na inicialização
+- ✅ Endpoints FastAPI auto-instrumentados
+- ✅ Cada função de tool envolvida em um span customizado
+- ✅ Atributos do span incluem contexto relevante (ticker, valor, etc.)
+
+---
+
+### Tarefa 2: Implementar Endpoint Bot Framework `/api/messages` (30 minutos)
+
+**2.1 - Adicionar dependências do Bot Framework ao `requirements.txt`**
+
+```txt
 botbuilder-core>=4.16.0
 botbuilder-schema>=4.16.0
 botframework-connector>=4.16.0
 ```
 
-**3.2 - Implementar endpoint `/api/messages`**
-
-Abra `starter/main.py` e adicione:
+**2.2 - Implementar o endpoint em `starter/main.py`**
 
 ```python
 from fastapi import FastAPI, Request, Response
-from botbuilder.core import BotFrameworkAdapter, TurnContext
+from botbuilder.core import BotFrameworkAdapter, BotFrameworkAdapterSettings, TurnContext
 from botbuilder.schema import Activity
-from langgraph_agent import create_agent
 
-app = FastAPI()
-agent_graph = create_agent()
-
-# Bot Framework Adapter
-adapter = BotFrameworkAdapter(
-    app_id=os.environ.get("MICROSOFT_APP_ID"),  # From Agent Blueprint
-    app_password=os.environ.get("MICROSOFT_APP_PASSWORD", "")  # MI auth
+# Bot Framework Adapter — APP_ID virá do Agent Blueprint (Lab 6)
+settings = BotFrameworkAdapterSettings(
+    app_id=os.environ.get("MICROSOFT_APP_ID", ""),
+    app_password=os.environ.get("MICROSOFT_APP_PASSWORD", "")
 )
+adapter = BotFrameworkAdapter(settings)
 
 async def on_message_activity(turn_context: TurnContext):
-    """Handles incoming Bot Framework Activities from M365."""
+    """Processa um Bot Framework Activity com o agente LangGraph."""
     user_message = turn_context.activity.text
-    
-    # Process with LangGraph agent
+
     result = await agent_graph.ainvoke({
         "messages": [user_message],
         "current_tool": None,
         "tool_result": {}
     })
-    
+
     response_text = result["messages"][-1].content
-    
-    # Create Adaptive Card for rich display
     card = create_financial_card(response_text)
-    
+
     await turn_context.send_activity(
-        Activity(
-            type="message",
-            attachments=[card]
-        )
+        Activity(type="message", attachments=[card])
     )
 
 @app.post("/api/messages")
 async def handle_messages(request: Request):
-    """Bot Framework messaging endpoint for M365."""
+    """Endpoint de mensagens do Bot Framework — recebe Activities do M365."""
     auth_header = request.headers.get("Authorization", "")
     body = await request.json()
-    
     activity = Activity().deserialize(body)
-    
-    # Process with Bot Framework adapter
     await adapter.process_activity(activity, auth_header, on_message_activity)
-    
     return Response(status_code=200)
 ```
 
-**3.3 - Criar helper de Adaptive Card**
+**2.3 - Testar o endpoint localmente**
+
+```powershell
+# Simular um Bot Framework Activity
+$activity = @{
+    type         = "message"
+    text         = "Qual é o preço da PETR4?"
+    from         = @{ id = "user-test"; name = "Test User" }
+    conversation = @{ id = "conv-test" }
+    channelId    = "test"
+    serviceUrl   = "https://test.botframework.com"
+} | ConvertTo-Json
+
+Invoke-RestMethod `
+    -Uri "http://localhost:8080/api/messages" `
+    -Method Post `
+    -Body $activity `
+    -ContentType "application/json"
+```
+
+> **Esperado**: Resposta 200 com um Adaptive Card como attachment.
+
+**Critérios de Sucesso**:
+- ✅ `/api/messages` aceita requisições POST
+- ✅ Activities do Bot Framework processadas corretamente
+- ✅ Resposta contém um Adaptive Card como attachment
+- ✅ Endpoint `/chat` ainda funciona (compatibilidade retroativa)
+
+---
+
+### Tarefa 3: Criar Adaptive Cards para Dados Financeiros (20 minutos)
+
+**3.1 - Implementar o helper de card em `starter/main.py`**
 
 ```python
-def create_financial_card(text: str, data: dict = None) -> dict:
-    """Creates an Adaptive Card for financial information."""
+def create_financial_card(text: str, ticker: str = None, price: float = None) -> dict:
+    """Cria um Adaptive Card para respostas financeiras."""
+    body = [
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column", "width": "stretch",
+                    "items": [{
+                        "type": "TextBlock",
+                        "text": "💹 Consultor Financeiro",
+                        "weight": "Bolder",
+                        "size": "Medium"
+                    }]
+                }
+            ]
+        },
+        {
+            "type": "TextBlock",
+            "text": text,
+            "wrap": True
+        }
+    ]
+
+    # Adicionar linha de preço estruturado se dados disponíveis
+    if ticker and price is not None:
+        body.append({
+            "type": "FactSet",
+            "facts": [
+                {"title": "Ticker", "value": ticker},
+                {"title": "Preço", "value": f"R$ {price:.2f}"}
+            ]
+        })
+
     return {
         "contentType": "application/vnd.microsoft.card.adaptive",
         "content": {
             "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
             "type": "AdaptiveCard",
             "version": "1.4",
-            "body": [
-                {
-                    "type": "ColumnSet",
-                    "columns": [
-                        {
-                            "type": "Column",
-                            "width": "auto",
-                            "items": [{
-                                "type": "Image",
-                                "url": "https://example.com/finance-icon.png",
-                                "size": "Small"
-                            }]
-                        },
-                        {
-                            "type": "Column",
-                            "width": "stretch",
-                            "items": [{
-                                "type": "TextBlock",
-                                "text": "Financial Advisor",
-                                "weight": "Bolder",
-                                "size": "Large"
-                            }]
-                        }
-                    ]
-                },
-                {
-                    "type": "TextBlock",
-                    "text": text,
-                    "wrap": True
-                }
-            ]
+            "body": body
         }
     }
 ```
 
-**3.4 - Reimplantar no ACA**
+**3.2 - Validar o schema do card**
+
+Antes de implantar, valide seu card em [https://adaptivecards.io/designer](https://adaptivecards.io/designer):
+- Versão do schema deve ser **1.4 ou inferior** (máximo do Teams)
+- Todas as propriedades referenciadas devem ser válidas para a versão selecionada
+
+**Critérios de Sucesso**:
+- ✅ Adaptive Card renderiza a resposta textual
+- ✅ `FactSet` opcional incluído para dados estruturados de ticker/preço
+- ✅ Schema do card validado (versão ≤ 1.4)
+- ✅ Card usado no handler `on_message_activity`
+
+---
+
+### Tarefa 4: Reimplantar no ACA (20 minutos)
+
+> **Ponto chave**: Atualizar a imagem do container NÃO requer re-registrar o agente no Foundry. A URL do endpoint registrado permanece a mesma — o Foundry automaticamente serve o novo código.
+
+**4.1 - Executar o script de deploy**
 
 ```powershell
-# Rebuild container with Bot Framework support
-docker build -t langgraph-financial-agent:v2 .
-docker tag langgraph-financial-agent:v2 YOUR-ACR.azurecr.io/langgraph-financial-agent:v2
-docker push YOUR-ACR.azurecr.io/langgraph-financial-agent:v2
+cd lesson-5-a365-langgraph/labs/solution
 
-# Update ACA to use new image
-az containerapp update \
-  --name aca-financial-agent \
-  --resource-group rg-aca \
-  --image YOUR-ACR.azurecr.io/langgraph-financial-agent:v2
+.\deploy.ps1
 ```
 
-**3.5 - Testar endpoint Bot Framework**
+O script de deploy:
+1. Constrói a nova imagem de container com Bot Framework + OpenTelemetry
+2. Faz push para o ACR
+3. Atualiza o app ACA para a nova revisão da imagem
+4. Configura `APPLICATIONINSIGHTS_CONNECTION_STRING` como variável de ambiente
+
+**4.2 - Definir variáveis de ambiente no ACA**
 
 ```powershell
-# Simulate Bot Framework Activity
+$RG       = "rg-ai-agents-workshop"
+$ACA_NAME = "aca-lg-agent"
+
+az containerapp update `
+  --name $ACA_NAME `
+  --resource-group $RG `
+  --set-env-vars `
+    "APPLICATIONINSIGHTS_CONNECTION_STRING=<connection-string>" `
+    "MICROSOFT_APP_ID=" `
+    "MICROSOFT_APP_PASSWORD="
+```
+
+> `MICROSOFT_APP_ID` / `MICROSOFT_APP_PASSWORD` ficam vazios por enquanto — serão preenchidos no Lab 6 após o Agent Blueprint ser registrado.
+
+**4.3 - Verificar a implantação**
+
+```powershell
+$FQDN = az containerapp show `
+    --name $ACA_NAME --resource-group $RG `
+    --query "properties.configuration.ingress.fqdn" -o tsv
+
+# Health check
+Invoke-RestMethod -Uri "https://$FQDN/health"
+
+# Endpoint REST de chat
+python ../../../test/chat.py --lesson 5 --endpoint "https://$FQDN"
+
+# Endpoint Bot Framework
 $activity = @{
-    type = "message"
-    text = "Qual o preco da PETR4?"
-    from = @{ id = "user123"; name = "Test User" }
-    conversation = @{ id = "conv123" }
-    channelId = "test"
-    serviceUrl = "https://test.botframework.com"
+    type="message"; text="Resumo de mercado do IBOV";
+    from=@{id="u1"}; conversation=@{id="c1"}
+    channelId="test"; serviceUrl="https://test.botframework.com"
 } | ConvertTo-Json
-
-Invoke-RestMethod -Uri "https://aca-financial-agent...azurecontainerapps.io/api/messages" -Method Post -Body $activity -ContentType "application/json"
+Invoke-RestMethod -Uri "https://$FQDN/api/messages" -Method Post -Body $activity -ContentType "application/json"
 ```
 
 **Critérios de Sucesso**:
-- ✅ Endpoint `/api/messages` implementado
-- ✅ Activities do Bot Framework processadas
-- ✅ Adaptive Cards renderizados
-- ✅ Agente reimplantado com sucesso
+- ✅ Container reimplantado sem downtime
+- ✅ `/health` retorna `{ "status": "ok" }`
+- ✅ Endpoint `/chat` responde corretamente
+- ✅ `/api/messages` aceita Bot Framework activities
+- ✅ Nenhum re-registro necessário no Foundry
 
-### Tarefa 4: Publicar no M365 Admin Center (20 minutos)
+---
 
-**4.1 - Criar manifesto de publicação**
+### Tarefa 5: Verificar Observabilidade (20 minutos)
 
-Crie `publication-manifest.json`:
-```json
-{
-  "name": "Financial Advisor Agent",
-  "shortDescription": "AI-powered financial market insights for Brazilian and international markets",
-  "longDescription": "Leverages LangGraph orchestration with real-time market data tools. Provides stock quotes, exchange rates, and market summaries. Includes appropriate disclaimers for educational purposes.",
-  "developer": {
-    "name": "Contoso Financial Services",
-    "websiteUrl": "https://contoso.com",
-    "privacyUrl": "https://contoso.com/privacy",
-    "termsOfUseUrl": "https://contoso.com/terms"
-  },
-  "icons": {
-    "color": "icon-color.png",
-    "outline": "icon-outline.png"
-  },
-  "categories": ["Finance", "AI Assistant", "Productivity"],
-  "isPrivate": true,
-  "permissions": [
-    "Microsoft.Graph.User.Read",
-    "Microsoft.Graph.Conversations.Send"
-  ]
-}
+#### Application Insights (todas as chamadas — diretas e via gateway)
+
+**Transaction Search** (requisição individual end-to-end):
+1. Portal Azure → seu recurso Application Insights → **Transaction search**
+2. Defina o intervalo de tempo para **Últimos 30 minutos**
+3. Clique em uma entrada `POST /chat` ou `POST /api/messages`
+4. Clique em **View all telemetry** → inspecione o waterfall **End-to-end transaction**
+5. Verifique se spans customizados aparecem: `get_stock_price`, `get_exchange_rate`, etc., cada um com timing
+
+**Performance** (latência agregada):
+1. Application Insights → **Performance**
+2. Selecione a operação `POST /chat`
+3. Visualize latências P50 / P95 / P99
+4. Clique em **Drill into samples** → selecione um trace lento → identifique qual span de tool causou o atraso
+
+**Live Metrics** (tempo real — útil durante demos ao vivo):
+1. Application Insights → **Live metrics**
+2. Mantenha aberto enquanto envia mensagens de teste; veja requisições, falhas e telemetria do servidor com ~1 s de latência
+
+**Queries KQL** no Log Analytics:
+```kusto
+// Todas as requisições do agente na última hora
+requests
+| where timestamp > ago(1h)
+| where name in ("POST /chat", "POST /api/messages")
+| project timestamp, name, duration, success, resultCode
+| order by timestamp desc
+
+// Spans customizados de tools
+dependencies
+| where timestamp > ago(1h)
+| where type == "InProc"
+| project timestamp, name, duration, success
+| order by duration desc
 ```
 
-**4.2 - Submeter para publicação**
+#### Portal do Foundry (apenas chamadas via gateway)
 
-```powershell
-a365 publish --manifest publication-manifest.json
-```
+> O Foundry só captura traces de chamadas roteadas pelo **endpoint do AI Gateway** (URL do projeto Foundry), não de chamadas diretas ao ACA.
 
-**Saída Esperada**:
-```
-📤 Submitting agent for publication...
-   Blueprint: financial-advisor-teams
-   App ID: f7a3b8e9-...
-   
-✅ Submission successful!
-   
-📋 Publication Details:
-   Submission ID: sub-abc123
-   Status: Pending Admin Approval
-   Submitted: 2026-02-14 15:30 UTC
-   
-⏳ Next Steps:
-   1. M365 Admin reviews in Admin Center
-   2. You'll receive email when status changes
-   3. After approval, agent appears in Teams app catalog
-```
-
-**4.3 - Aprovação do Admin (Simulada para o Workshop)**
-
-Em produção:
-1. Admin M365 recebe notificação
-2. Admin Center → **Apps** → **Manage apps** → **financial-advisor-teams**
-3. Revisa metadados, permissões, política de privacidade
-4. Clica em **Approve** ou **Reject**
-5. Se aprovado, define visibilidade: Org privada / Pública / Usuários específicos
+1. Portal Azure → Azure AI Foundry → seu projeto → **Tracing** (menu esquerdo)
+2. Envie uma requisição via endpoint do projeto Foundry:
+   ```powershell
+   python ../../../test/chat.py --lesson 4 --endpoint $aiProjectEndpoint
+   ```
+3. Clique na entrada de trace → veja o waterfall de spans: `gateway → ACA /chat → nós LangGraph`
+4. Observe uso de tokens e latência por hop
 
 **Critérios de Sucesso**:
-- ✅ Manifesto de publicação é JSON válido
-- ✅ Submetido com sucesso ao Admin Center
-- ✅ (Em produção) Aprovação do admin obtida
+- ✅ Application Insights mostra requisições para `/chat` e `/api/messages`
+- ✅ Spans customizados de tools visíveis no Transaction Search
+- ✅ Foundry Tracing mostra traces para chamadas roteadas via gateway
+- ✅ Latência P95 identificada em Performance
 
-### Tarefa 5: Criar Instância do Agente no Teams (15 minutos)
-
-**Premissa**: Agente está aprovado e publicado (ou usando agente de teste pré-aprovado)
-
-**5.1 - Criar instância pessoal**
-
-```powershell
-# Personal agent (private to one user)
-a365 instance create \
-  --type personal \
-  --agent-id f7a3b8e9-1234-5678-abcd-9876543210ef \
-  --user-id <your-m365-user-id>
-```
-
-**5.2 - Testar no Teams**
-
-1. Abra o Microsoft Teams (desktop ou web)
-2. Vá para **Apps** → **Built for your org**
-3. Busque "Financial Advisor"
-4. Clique em **Add**
-5. Inicie conversa:
-   - "Qual é o preço da PETR4?"
-   - "Calcule valor: 100 PETR4, 50 VALE3"
-   - "Resumo do mercado brasileiro"
-
-**Comportamento Esperado**:
-- Agente responde com Adaptive Cards (UI rica)
-- Dados financeiros formatados profissionalmente
-- Disclaimers incluídos
-- Contexto da conversa mantido
-
-**5.3 - Criar instância compartilhada (Opcional)**
-
-```powershell
-# Shared agent for entire team
-a365 instance create \
-  --type shared \
-  --agent-id f7a3b8e9-... \
-  --team-id <teams-team-id>
-```
-
-**Critérios de Sucesso**:
-- ✅ Agente visível no catálogo de apps do Teams
-- ✅ Instância pessoal criada
-- ✅ Conversas funcionam no Teams
-- ✅ Adaptive Cards renderizados corretamente
+---
 
 ## Entregáveis
 
-- [x] A365 CLI configurado
-- [x] Agent Blueprint registrado no Entra ID
-- [x] Integração Bot Framework implementada
-- [x] Agente aprimorado com Adaptive Cards
-- [x] Manifesto de publicação criado
-- [x] Instância do agente funcionando no Teams
+- [x] Observabilidade OpenTelemetry integrada (`configure_azure_monitor`, spans customizados)
+- [x] Endpoint Bot Framework `/api/messages` implementado
+- [x] Adaptive Cards criados e validados
+- [x] Agente reimplantado no ACA (sem re-registro)
+- [x] Traces visíveis no Application Insights
+- [x] Traces visíveis no portal do Foundry (via caminho gateway)
 
 ## Critérios de Avaliação
 
 | Critério | Pontos | Descrição |
 |-----------|--------|-------------|
-| **Configuração A365** | 15 pts | Setup do CLI e arquivo de configuração |
-| **Registro do Blueprint** | 20 pts | Registrado com sucesso no Entra ID |
-| **Bot Framework** | 30 pts | Endpoint `/api/messages` funcional |
-| **Adaptive Cards** | 15 pts | Cards ricas implementadas e renderizando |
-| **Publicação** | 10 pts | Manifesto válido, submetido ao Admin Center |
-| **Integração Teams** | 10 pts | Agente funcionando no Teams |
+| **Setup OpenTelemetry** | 20 pts | `configure_azure_monitor` + spans customizados de tools |
+| **Endpoint Bot Framework** | 30 pts | `/api/messages` funcional, activities processadas |
+| **Adaptive Cards** | 20 pts | Card implementado, schema válido, renderiza corretamente |
+| **Reimplantação no ACA** | 20 pts | Nova imagem implantada, health checks funcionando |
+| **Observabilidade Verificada** | 10 pts | Traces confirmados no App Insights e Foundry |
 
 **Total**: 100 pontos
 
 ## Resolução de Problemas
 
-### "A365 CLI not found"
-- Caminho das .NET tools não está no PATH
-- Solução: Adicione `~/.dotnet/tools` ao PATH, reinicie o terminal
+### Telemetria não aparece no Application Insights
+- **Causa**: Connection string não definida ou incorreta
+- **Solução**: Verifique a variável de ambiente `APPLICATIONINSIGHTS_CONNECTION_STRING` no ACA. Reinicie a revisão do container após defini-la.
 
-### "Blueprint registration failed: tenant mismatch"
-- Logado no tenant errado
-- Solução: `az login --tenant <m365-tenant-id>` explicitamente
+### `/api/messages` retorna 401
+- **Causa**: `MICROSOFT_APP_ID` definido mas credenciais ainda não configuradas (Lab 6 é necessário primeiro)
+- **Solução**: Deixe `MICROSOFT_APP_ID` vazio por enquanto — o Bot Framework pula a validação de auth quando App ID está vazio, o que é aceitável para testes.
 
-### "/api/messages returns 400"
-- Formato JSON da Activity inválido
-- Solução: Certifique-se de que o schema da Activity corresponde à especificação do Bot Framework
+### Adaptive Card não renderiza
+- **Causa**: Schema inválido ou versão > 1.4
+- **Solução**: Valide em [https://adaptivecards.io/designer](https://adaptivecards.io/designer). Certifique-se de usar `"version": "1.4"`.
 
-### "Adaptive Card not rendering in Teams"
-- Schema inválido ou versão incompatível
-- Solução: Valide em https://adaptivecards.io/designer
-- Certifique-se de que a versão é 1.4 ou inferior (limite do Teams)
+### Spans customizados ausentes no App Insights
+- **Causa**: `configure_azure_monitor()` chamado após criação do tracer
+- **Solução**: Chame `configure_azure_monitor()` antes de qualquer chamada a `trace.get_tracer()`.
 
-### "Frontier Program access denied"
-- Não inscrito no preview
-- Solução: Inscreva-se em https://adoption.microsoft.com/copilot/frontier-program/
+### Foundry Tracing não mostra traces
+- **Causa**: Chamadas de teste foram diretamente ao ACA, não pelo AI Gateway
+- **Solução**: Use o endpoint do projeto Foundry (`$aiProjectEndpoint`) em vez do FQDN do ACA.
 
 ## Estimativa de Tempo
 
-- Tarefa 1: 15 minutos
-- Tarefa 2: 20 minutos
-- Tarefa 3: 30 minutos
+- Tarefa 1: 20 minutos
+- Tarefa 2: 30 minutos
+- Tarefa 3: 20 minutos
 - Tarefa 4: 20 minutos
-- Tarefa 5: 15 minutos
-- **Total**: 100 minutos
+- Tarefa 5: 20 minutos
+- **Total**: ~110 minutos
 
-## Parabéns! 🎉
+## Próximos Passos
 
-Você completou o ciclo completo de implantação corporativa de agentes:
-1. ✅ Construiu agente declarativo (Lab 1)
-2. ✅ Implementou tools personalizadas com MAF (Lab 2)
-3. ✅ Implantou agente LangGraph no Foundry (Lab 3)
-4. ✅ Implantou em ACA com Bicep (Lab 4)
-5. ✅ Integrou A365 e publicou no Teams (Lab 5)
-
-Seu agente agora está acessível para usuários finais no Microsoft 365!
+- **Lab 6**: Registrar o agente no Microsoft Entra ID, configurar o A365 CLI e configurar o Agent Blueprint para que o endpoint `/api/messages` seja integrado ao Microsoft Teams.
 
 ---
 
 **Dificuldade**: Avançado  
-**Pré-requisitos**: Todos os labs anteriores, acesso ao Frontier Program  
-**Tempo Estimado**: 100 minutos
+**Pré-requisitos**: Lab 4, connection string do Application Insights  
+**Tempo Estimado**: ~110 minutos

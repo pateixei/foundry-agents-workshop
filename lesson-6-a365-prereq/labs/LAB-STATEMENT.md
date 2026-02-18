@@ -310,7 +310,7 @@ az account show --query "{tenant:tenantId, user:user.name}" -o table
 **5.2 - Navigate to lesson directory**
 
 ```powershell
-cd lesson-5-a365-prereq
+cd lesson-6-a365-prereq
 ```
 
 **5.3 - Create the configuration file**
@@ -375,6 +375,8 @@ a365 config display
 
 ### Task 6: Compare Hosting & Authentication Models (10 minutes)
 
+> **Note**: Tasks 7 and 8 (A365 CLI install + Agent Blueprint registration) follow after this task.
+
 **Complete the comparison table:**
 
 | Aspect | Hosted Agent (Lab 2-3) | ACA + A365 (Labs 4-6) |
@@ -398,6 +400,110 @@ a365 config display
 - ✅ Can explain the cross-tenant architecture
 - ✅ Understands why `needDeployment: false` is used
 
+### Task 7: Install A365 CLI (15 minutes)
+
+With the Entra ID app registered and `a365.config.json` in place, install the Agent 365 CLI tooling that will be used to register the Agent Blueprint.
+
+**7.1 - Verify .NET SDK (if not done in Task 1)**
+
+```powershell
+dotnet --version
+# Expected: 8.0.x or higher
+```
+
+**7.2 - Install Agent 365 CLI**
+
+```powershell
+# Install the CLI tooling (preview)
+dotnet tool install --global Microsoft.Agents.A365.DevTools.Cli --prerelease
+
+# If already installed, update instead
+dotnet tool update --global Microsoft.Agents.A365.DevTools.Cli --prerelease
+
+# Verify
+a365 -h
+```
+
+**7.3 - Display configuration**
+
+```powershell
+cd lesson-6-a365-prereq
+a365 config display
+```
+
+Expected: Shows the contents of your `a365.config.json` with no validation errors. All fields should be populated.
+
+**Success Criteria**:
+- ✅ .NET 8.0+ installed
+- ✅ `a365 -h` returns CLI help
+- ✅ `a365 config display` shows configuration without errors
+
+---
+
+### Task 8: Register Agent Blueprint (20 minutes)
+
+Use the A365 CLI to create the **Agent Blueprint** in the M365 tenant. This registers the agent's identity, messaging endpoint, and permissions in Entra ID — enabling Teams and Outlook to route messages to your ACA agent.
+
+**8.1 - Login to M365 Tenant**
+
+```powershell
+# Authenticate to the M365 Tenant (Tenant B)
+az login --tenant <M365-TENANT-ID>
+
+# Verify correct tenant
+az account show --query "{tenant:tenantId, user:user.name}" -o table
+```
+
+**8.2 - Run the Blueprint setup command**
+
+```powershell
+cd lesson-6-a365-prereq
+a365 setup blueprint --config a365.config.json
+```
+
+Expected output:
+```
+[INFO] Authenticating to tenant <M365-TENANT-ID>...
+[INFO] Creating Agent Blueprint: Financial Market Agent Blueprint
+[INFO] Agent Blueprint created successfully
+[INFO] App ID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+[INFO] Setup complete.
+```
+
+> If you see **"Forbidden: Access denied by Frontier access control"**, your M365 tenant is not yet enrolled in the Copilot Frontier program (see Caution block at the top of this lab).
+
+**8.3 - Capture the App ID from Blueprint output**
+
+From the CLI output, copy the **App ID** (a GUID) generated for the agent identity. You will set this on the ACA container app as `MICROSOFT_APP_ID`.
+
+**8.4 - Set MICROSOFT_APP_ID on ACA**
+
+```powershell
+$RG       = "rg-ai-agents-workshop"
+$ACA_NAME = "aca-lg-agent"
+$APP_ID   = "<APP-ID-FROM-BLUEPRINT-OUTPUT>"
+
+az containerapp update `
+  --name $ACA_NAME `
+  --resource-group $RG `
+  --set-env-vars "MICROSOFT_APP_ID=$APP_ID"
+```
+
+**8.5 - Verify in Entra ID portal**
+
+1. Go to the [Microsoft Entra admin center](https://entra.microsoft.com/) in the M365 Tenant
+2. Navigate to **Identity** → **Applications** → **App registrations** → **All applications**
+3. Search for "Financial Market Agent Blueprint"
+4. Confirm the registration exists with the correct App ID
+
+**Success Criteria**:
+- ✅ `a365 setup blueprint` completes without errors
+- ✅ Blueprint App ID captured
+- ✅ `MICROSOFT_APP_ID` set on ACA container app
+- ✅ Blueprint visible in Entra ID portal
+
+---
+
 ## Deliverables
 
 - [x] .NET SDK and A365 CLI installed
@@ -407,16 +513,21 @@ a365 config display
 - [x] Application (client) ID captured
 - [x] `a365.config.json` created and validated
 - [x] Comparison table completed
+- [x] A365 CLI installed and verified
+- [x] Agent Blueprint registered in M365 Tenant
+- [x] `MICROSOFT_APP_ID` set on ACA
 
 ## Evaluation Criteria
 
 | Criterion | Points | Description |
 |-----------|--------|-------------|
-| **App Registration** | 25 pts | Created correctly in M365 Tenant with single-tenant scope |
-| **Redirect URIs** | 15 pts | Both URIs configured (localhost + broker plugin with correct Client ID) |
-| **API Permissions** | 25 pts | All 5 delegated permissions with admin consent granted |
-| **Config File** | 25 pts | Valid `a365.config.json` with correct values and `needDeployment: false` |
+| **App Registration** | 20 pts | Created correctly in M365 Tenant with single-tenant scope |
+| **Redirect URIs** | 10 pts | Both URIs configured (localhost + broker plugin with correct Client ID) |
+| **API Permissions** | 20 pts | All 5 delegated permissions with admin consent granted |
+| **Config File** | 20 pts | Valid `a365.config.json` with correct values and `needDeployment: false` |
 | **Architecture Understanding** | 10 pts | Comparison table demonstrates cross-tenant understanding |
+| **A365 CLI Install** | 10 pts | CLI installed and `a365 config display` works |
+| **Blueprint Registration** | 10 pts | Blueprint created, App ID set on ACA |
 
 **Total**: 100 points
 
@@ -458,15 +569,17 @@ a365 config display
 - Task 4: 20 minutes
 - Task 5: 15 minutes
 - Task 6: 10 minutes
-- **Total**: 80 minutes
+- Task 7: 15 minutes
+- Task 8: 20 minutes
+- **Total**: ~115 minutes
 
 ## Next Steps
 
-- **Lab 5**: Use the Agent 365 SDK to set up the Agent Blueprint, publish to M365 Admin Center, and create agent instances in Teams
+- **Lab 7**: Publish the agent to the Microsoft 365 Admin Center and make it available to users
 - Test the full end-to-end flow: Teams → M365 → ACA → Azure OpenAI → Response
 
 ---
 
 **Difficulty**: Intermediate  
-**Prerequisites**: Lab 4, access to M365 Tenant with admin privileges  
-**Estimated Time**: 80 minutes
+**Prerequisites**: Lab 5 completed (Bot Framework `/api/messages` endpoint deployed to ACA), access to M365 Tenant with admin privileges  
+**Estimated Time**: ~115 minutes
