@@ -242,9 +242,13 @@ if (-not $graphSpId) {
 Write-Host "  Graph SP ID: $graphSpId"
 
 # 5b. Check if oauth2PermissionGrant already exists
+#     Note: Build URL in a variable to avoid PowerShell $-expansion issues
+#     with OData $filter in different pwsh invocation modes.
+$filterUrl = "https://graph.microsoft.com/v1.0/oauth2PermissionGrants" + '?$filter=' + "clientId eq '$spId' and resourceId eq '$graphSpId'"
+
 $existingGrant = az rest `
     --method GET `
-    --url "https://graph.microsoft.com/v1.0/oauth2PermissionGrants?\`$filter=clientId eq '$spId' and resourceId eq '$graphSpId'" `
+    --url $filterUrl `
     --query "value[0].id" `
     -o tsv 2>$null
 
