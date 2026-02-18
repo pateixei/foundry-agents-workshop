@@ -392,7 +392,206 @@ a365 --version
 
 ---
 
-## Passo 8: Script de Validação do Ambiente
+## Passo 8: Configuração do Tenant de Desenvolvedor Microsoft 365 (Dias 3–5)
+
+> [!IMPORTANT]
+> **Obrigatório para as Lições 5–8 (integração com Agent 365)**
+>
+> Você **DEVE** ter um tenant de desenvolvedor Microsoft 365 para completar as lições do Agent 365 (Dias 3–5). Isso é **separado** da sua assinatura do Azure e fornece um ambiente M365 gratuito para desenvolvimento e testes.
+
+### 8.1 Ingressar no Programa de Desenvolvedor Microsoft 365
+
+O Programa de Desenvolvedor Microsoft 365 fornece uma assinatura gratuita e renovável do Microsoft 365 E5 para construir e testar soluções M365.
+
+**Benefícios:**
+- Assinatura gratuita do Microsoft 365 E5 (renovável a cada 90 dias com uso ativo)
+- 25 licenças de usuário
+- Pacotes de dados de amostra pré-configurados (opcional)
+- Acesso a todos os serviços do Microsoft 365 (Teams, SharePoint, Exchange, etc.)
+- Acesso de Administrador Global ao seu tenant
+
+**Registro passo a passo:**
+
+1. **Navegue até o portal do Programa de Desenvolvedor**
+   - Acesse [https://developer.microsoft.com/microsoft-365/dev-program](https://developer.microsoft.com/microsoft-365/dev-program)
+   - Clique em **"Ingressar agora"** (ou **"Entrar"** se você já tem uma conta Microsoft)
+
+2. **Entre com uma conta Microsoft**
+   - Use sua **conta Microsoft pessoal** (por exemplo, @outlook.com, @hotmail.com, @live.com)
+   - **Importante**: NÃO use sua conta corporativa/escolar se quiser ter controle total. Contas corporativas/escolares podem ter:
+     - Políticas de TI que restringem a criação de tenants ou privilégios de Administrador Global
+     - Propriedade corporativa do tenant (não totalmente seu)
+     - Limitações no acesso a APIs ou integrações externas
+   - Se você não tem uma conta Microsoft pessoal, crie uma em [https://signup.live.com](https://signup.live.com)
+
+3. **Complete o formulário de registro**
+   - **País/Região**: Selecione seu país
+   - **Empresa**: Digite o nome da sua empresa ou "Desenvolvedor Individual"
+   - **Preferência de idioma**: Selecione seu idioma preferido
+   - **Aceitar termos**: Revise e aceite os termos e condições
+   - Clique em **"Avançar"**
+
+4. **Configure sua assinatura de desenvolvedor**
+   Você terá duas opções:
+   
+   **Opção A: Sandbox instantâneo (Recomendado para este workshop)**
+   - Clique em **"Configurar assinatura E5"**
+   - O sistema provisionará automaticamente um tenant com:
+     - Domínio: `<nome-aleatório>.onmicrosoft.com`
+     - Nome de usuário admin: `admin@<nome-aleatório>.onmicrosoft.com`
+     - Uma senha temporária (você será solicitado a alterá-la no primeiro login)
+   - **Vantagens**: Configuração instantânea (< 1 minuto), sem configuração necessária
+   - **Nota**: Anote suas credenciais de admin imediatamente — você não poderá recuperá-las depois
+
+   **Opção B: Sandbox configurável (Avançado)**
+   - Escolha **"Configurar assinatura E5"** e então selecione **"Configurável"**
+   - Você pode personalizar:
+     - Nome de usuário (admin@...)
+     - Prefixo do domínio (por exemplo, `minhaempresa.onmicrosoft.com`)
+     - Senha
+   - Pacotes de dados de amostra (opcional — adiciona usuários de amostra, emails, sites do SharePoint)
+   - Leva 2–5 minutos para provisionar
+   
+   > **Recomendação do Workshop**: Use **Opção A (Sandbox instantâneo)** para configuração mais rápida. Você sempre pode adicionar dados de amostra depois.
+
+5. **Salve suas credenciais**
+   
+   Após a conclusão do provisionamento, você verá:
+   ```
+   Sua assinatura de desenvolvedor Microsoft 365 está pronta!
+   
+   Domínio: dev123456.onmicrosoft.com
+   Nome de usuário: admin@dev123456.onmicrosoft.com
+   Senha: [senha temporária mostrada uma vez]
+   ```
+   
+   **🚨 CRÍTICO**: Salve essas credenciais em um local seguro (recomenda-se gerenciador de senhas). Você precisará delas para:
+   - Entrar no Centro de Administração do Microsoft 365
+   - Inscrever-se no Programa Copilot Frontier (obrigatório — veja abaixo)
+   - Configurar autenticação do A365 CLI
+   - Publicar e testar agentes no Teams
+
+### 8.2 Primeiro Login e Alteração de Senha
+
+1. Acesse [https://admin.microsoft.com](https://admin.microsoft.com)
+2. Entre com `admin@<seu-tenant>.onmicrosoft.com` e a senha temporária
+3. Você será solicitado a alterar sua senha imediatamente
+4. Configure a autenticação multifator (MFA) se solicitado — **recomendado** por segurança
+5. Complete o assistente de configuração do Microsoft 365 (opcional — você pode pular isso)
+
+### 8.3 Verifique seu Tenant
+
+Após entrar no Centro de Administração, verifique sua assinatura:
+
+1. Na navegação à esquerda, vá para **Cobrança** → **Seus produtos**
+2. Você deve ver:
+   - **Microsoft 365 E5 Developer (without Windows and Audio Conferencing)**
+   - Status: **Ativo**
+   - Assinatura expira em: **[90 dias a partir da criação]**
+3. Anote seu **ID do Tenant** (você precisará disso para o A365 CLI):
+   - Vá para **Configurações** → **Configurações da organização** → **Perfil da organização**
+   - Copie o **ID do Tenant** (um GUID como `12345678-1234-1234-1234-123456789012`)
+
+### 8.4 Inscrever-se no Programa Copilot Frontier (OBRIGATÓRIO)
+
+> [!CAUTION]
+> **🔴 OBRIGATÓRIO para as Lições do Agent 365**
+>
+> Sem a inscrição no Copilot Frontier, você **não pode** publicar ou testar agentes do Agent 365. O A365 CLI falhará com um erro similar a:
+> ```
+> Exemplo de erro: Proibido: Acesso negado pelo controle de acesso Frontier
+> ```
+
+**Etapas de inscrição:**
+
+1. **Ingressar no Programa Frontier**
+   - Acesse [https://adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/)
+   - Clique em **"Ingressar no programa"**
+   - Entre com sua **conta de administrador do tenant de desenvolvedor M365** (`admin@<seu-tenant>.onmicrosoft.com`)
+   - Complete o formulário de inscrição
+   - Aceite os termos do programa
+
+2. **Ativar Copilot Frontier em seu tenant**
+   - Acesse [https://admin.microsoft.com](https://admin.microsoft.com)
+   - Entre como Administrador Global (sua conta admin)
+   - Navegue para **Copilot** → **Configurações** (ou **Configurações** → **Copilot**)
+   - Vá para **Acesso de usuário** → **Copilot Frontier**
+   - Alterne **Ativar Copilot Frontier** para **Ligado**
+   - Clique em **"Salvar"**
+
+3. **Aguarde a propagação**
+   - Aguarde **até 24 horas** para que as alterações se propaguem pelos serviços do Microsoft 365
+   - **Recomendação**: Complete esta etapa **pelo menos 1 dia antes do Dia 3** do workshop
+
+4. **Verificar acesso ao Frontier (após propagação)**
+   ```bash
+   # Testar autenticação do A365 CLI (após configuração do Dia 3)
+   a365 auth login --tenant-id <SEU_ID_TENANT_M365>
+   a365 blueprint list
+   ```
+   Se bem-sucedido, você deve ver uma lista vazia ou blueprints existentes (não um erro "Forbidden").
+
+### 8.5 Renovação da Assinatura
+
+Sua assinatura de desenvolvedor Microsoft 365 E5 é **gratuita por 90 dias** e **automaticamente renovável** se você mostrar uso ativo de desenvolvimento.
+
+**Critérios de renovação:**
+- Uso ativo inclui: chamadas de API, logins de usuários, desenvolvimento de agentes, instalações de aplicativos do Teams
+- A Microsoft avalia o uso automaticamente ~2 semanas antes da expiração
+- Se ativo, a assinatura renova por mais 90 dias
+- Se inativo, você receberá um email de aviso 30 dias antes da expiração
+
+**Melhores práticas para garantir renovação:**
+- Use seu tenant regularmente (faça login, envie emails, teste agentes)
+- Construa e teste agentes ao longo do workshop
+- Mantenha seu perfil do programa de desenvolvedor atualizado
+
+**O que acontece se expirar?**
+- Você receberá vários emails de aviso antes da expiração
+- Se expirar, os dados do seu tenant são retidos por 30 dias
+- Você pode ingressar no programa novamente com um novo tenant (domínio diferente)
+
+### 8.6 Notas Importantes
+
+- **Azure ≠ Microsoft 365**: Sua assinatura do Azure e tenant M365 são **separados** e provavelmente em **tenants Entra ID diferentes**. Este é o "cenário cross-tenant" abordado na Lição 6.
+- **Conta Pessoal vs. Corporativa**: Para controle total, use uma **conta Microsoft pessoal** (não seu email corporativo) ao ingressar no Programa de Desenvolvedor.
+- **Múltiplos Tenants**: Você pode ter múltiplos tenants de desenvolvedor M365, mas apenas **um por conta Microsoft**.
+- **Persistência de Dados**: Trate o tenant de desenvolvedor como efêmero para workshops. Não armazene dados críticos de produção.
+- **Licenciamento**: A licença E5 inclui todos os serviços M365, mas alguns recursos (como conformidade avançada) podem exigir configuração adicional.
+
+### 8.7 Solução de Problemas
+
+**Problema: "Você já tem uma assinatura de desenvolvedor"**
+- Você ingressou anteriormente no programa com esta conta Microsoft
+- Acesse [https://developer.microsoft.com/microsoft-365/profile](https://developer.microsoft.com/microsoft-365/profile) para visualizar sua assinatura existente
+- Verifique a aba **Assinaturas** para os detalhes do seu tenant
+- Se você esqueceu as credenciais, talvez precise aguardar a expiração ou contatar o suporte
+
+**Problema: "Não é possível se inscrever com conta corporativa/escolar"**
+- O programa requer uma conta Microsoft pessoal para o registro inicial
+- Crie uma nova conta Microsoft pessoal em [https://signup.live.com](https://signup.live.com)
+- Use essa conta para ingressar no Programa de Desenvolvedor
+
+**Problema: "Assinatura não está renovando"**
+- Certifique-se de estar usando ativamente o tenant (chamadas de API, logins de usuários)
+- Verifique seu painel do Programa de Desenvolvedor para métricas de uso
+- Considere adicionar pacotes de dados de amostra ou usuários de teste para aumentar a atividade
+
+**Problema: "Não é possível ativar o Copilot Frontier"**
+- Verifique se você está conectado como Administrador Global
+- Certifique-se de que seu tenant está inscrito no Programa Frontier primeiro
+- Tente em um navegador diferente (Edge ou Chrome recomendados)
+- Limpe o cache e cookies do navegador
+- Aguarde 1 hora após a inscrição no Frontier antes de ativar no Centro de Administração
+
+**Problema: "ID do Tenant não encontrado"**
+- Acesse [https://admin.microsoft.com](https://admin.microsoft.com) → **Configurações** → **Configurações da organização** → **Perfil da organização**
+- Procure por **ID do Diretório** ou **ID do Tenant** (são a mesma coisa)
+- Alternativamente, use o Azure CLI: `az login --tenant <seu-tenant>.onmicrosoft.com --allow-no-subscriptions && az account show --query tenantId -o tsv`
+
+---
+
+## Passo 9: Script de Validação do Ambiente
 
 Execute esta verificação abrangente.
 
