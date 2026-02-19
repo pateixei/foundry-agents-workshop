@@ -16,15 +16,17 @@ Your organization wants to make the financial market agent (running in ACA from 
 - Create the `a365.config.json` pointing to your ACA agent endpoint
 
 > [!CAUTION]
-> **🔴 MANDATORY PREREQUISITE — Copilot Frontier Program Enrollment**
+> **🔴 MANDATORY PREREQUISITE — Microsoft 365 Copilot License + Frontier Access**
 >
-> Your M365 tenant **MUST** be enrolled in the **Microsoft Copilot Frontier preview program** before starting this lab. Without Frontier enrollment, the `a365 setup blueprint` command will fail with **"Forbidden: Access denied by Frontier access control"** and you will be unable to register agent blueprints or messaging endpoints.
+> Your M365 tenant requires **at least one active Microsoft 365 Copilot license** to use Agent 365. Without it, `a365 setup blueprint` will fail with **"Forbidden: Access denied by Frontier access control"**.
 >
-> **Enroll here → [https://adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/)**
+> > **Note:** The Frontier program no longer requires a separate enrollment form. Access is now granted automatically to tenants with a valid Microsoft 365 Copilot license.
 >
-> After enrolling, a Global Admin must also **enable Copilot Frontier** in the [Microsoft 365 Admin Center](https://admin.microsoft.com/) → Copilot → Settings → User access → Copilot Frontier.
+> **Steps to enable:**
+> 1. In the tenant, ensure at least one user has a **Microsoft 365 Copilot** license assigned (trial is sufficient → [Start free trial](https://www.microsoft.com/microsoft-365/copilot/microsoft-365-copilot))
+> 2. A Global Admin must go to [Microsoft 365 Admin Center](https://admin.microsoft.com/) → **Copilot** → **Settings** → **User access** → **Copilot Frontier** and enable it for the required users or the entire org
 >
-> ⏱️ **Allow up to 24 hours** for Frontier enrollment to propagate fully to your tenant.
+> The **Copilot → Settings → Copilot Frontier** option will only appear once a Copilot license is active in the tenant.
 
 ## Learning Outcomes
 
@@ -470,7 +472,7 @@ Expected output:
 [INFO] Setup complete.
 ```
 
-> If you see **"Forbidden: Access denied by Frontier access control"**, your M365 tenant is not yet enrolled in the Copilot Frontier program (see Caution block at the top of this lab).
+> If you see **"Forbidden: Access denied by Frontier access control"**, your M365 tenant either has no active Microsoft 365 Copilot license or Copilot Frontier has not been enabled in the Admin Center (see Caution block at the top of this lab).
 
 **8.3 - Capture the App ID from Blueprint output**
 

@@ -5,818 +5,452 @@
 ## 🎯 Learning Objectives
 
 By the end of this lesson, you will be able to:
-1. **Create** agent instances in Microsoft Teams (personal and shared)
-2. **Understand** the difference between personal, shared, and org-wide instances
-3. **Test** end-user experience with multi-turn conversations in Teams
-4. **Manage** instance lifecycle (create, suspend, resume, delete)
-5. **Configure** instance settings and customize behavior
-6. **Troubleshoot** common instance creation and interaction issues
+1. **Configure** the agent blueprint in Teams Developer Portal
+2. **Request** an agent instance from Microsoft Teams
+3. **Approve** the instance request as the M365 administrator
+4. **Interact** with the agent in a Teams chat
+5. **Monitor** agent activity in the Microsoft 365 admin center
+6. **Troubleshoot** common instance creation issues
 
 ---
 
 ## Overview
 
-After publishing your agent to the M365 Admin Center (Lesson 7), users can create **instances** of your agent in Microsoft Teams. An agent instance is a dedicated deployment of your agent that users interact with through the Teams interface.
+After publishing your agent (Lesson 7), users can request **agent instances** through Microsoft Teams. An agent instance gives the agent its own Microsoft Entra identity (an "agentic user") and makes it available as a chat participant in Teams — just like a human colleague.
 
-> **Think of it this way**: Published agent = App in the app store. Instance = App installed on your phone.
+> **Important design change:** The `a365 create-instance` CLI command has been **removed**. It bypassed required registration steps that are necessary for full agent functionality. Instance creation is now done entirely through the **Microsoft Teams UI** and **Microsoft 365 admin center**, following the official governance workflow.
 
-In this lesson, you'll learn how to:
-- Create personal and shared agent instances
-- Configure instance settings
-- Test your agent in Teams
-- Manage instance lifecycle (suspend, resume, delete)
-- Troubleshoot common instance creation issues
+### What is an agent instance?
+
+| Concept | Description |
+|---------|-------------|
+| **Blueprint** | The Entra app registration — the template defining the agent type, permissions, and config |
+| **Instance** | A specific instantiation of the blueprint — the agent gets its own Entra user identity |
+| **Agentic user** | An Entra user account for the agent (e.g. `fin-market-agent@domain.com`) — appears in Teams like a person |
 
 ---
-
-## Instance Types
-
-| Type | Scope | Use Case | Who Creates | Isolation |
-|------|-------|----------|-------------|-----------|
-| **Personal** | Individual user | Private research, personal tasks | End user | Fully isolated conversation history |
-| **Shared** | Team/Channel | Collaborative workflows, team visibility | Team owner | Shared context across team members |
-| **Org-wide** | All users | Company-wide services (IT helpdesk, HR) | M365 Admin | Organization-level access |
-
-> Each instance is **isolated**—separate conversation history, separate identity. A personal instance doesn't know about channel conversations, and vice versa.
 
 ## Prerequisites
 
-✅ **Completed Lessons 1-7**
-✅ **Agent Published** to M365 Admin Center and approved by admin
-✅ **Agent Deployed** to users or groups
-✅ **Microsoft Teams** installed (desktop or web)
-✅ **A365 CLI** installed and configured
-✅ **Permissions** to create agent instances in your organization
-
-## What is an Agent Instance?
-
-An **agent instance** is a dedicated deployment of your published agent that:
-- Runs within Microsoft Teams
-- Has its own configuration and settings
-- Can be personal (for individual use) or shared (for team collaboration)
-- Maintains separate conversation history and state
-- Can be suspended, resumed, or deleted independently
-
-### Personal vs. Shared Instances
-
-| Feature | Personal Instance | Shared Instance |
-|---------|------------------|-----------------|
-| **Visibility** | Only visible to creator | Visible to team members |
-| **Use Case** | Individual productivity | Team collaboration |
-| **Conversations** | Private to user | Accessible to team |
-| **Management** | User only | Team owners |
-| **Creation Command** | `a365 create-instance` | `a365 create-instance --shared` |
-
-## Step-by-Step Guide
-
-### Step 1: Verify Agent Publication Status
-
-Before creating instances, verify your agent is published and deployed:
-
-```powershell
-# Switch to PowerShell 7 (required for A365 CLI)
-pwsh
-
-# Navigate to your A365 config directory
-cd c:\Cloud\Code\a365-workshop\lesson-5-a365-prereq
-
-# Check publication status
-a365 publish status
-```
-
-**Expected Output:**
-```
-Agent Blueprint: Financial Market Agent Blueprint
-Status: Published
-Published Date: 2025-01-15T10:30:00Z
-Approval Status: Approved
-Deployment Scope: All Users
-```
-
-If status shows `Not Published` or `Pending Approval`, complete Lesson 7 first.
+✅ **Lesson 7 completed** — `a365 publish` ran successfully  
+✅ **Agent appears in admin center** — visible at [admin.cloud.microsoft/#/agents/all](https://admin.cloud.microsoft/#/agents/all)  
+✅ **`manifest/manifest.json`** exists in `lesson-6-a365-prereq\labs\solution\manifest\`  
+✅ **Frontier enabled** — your tenant has the Frontier preview enabled for your user account  
+✅ **Microsoft Teams** installed (desktop or web app)  
+✅ **Global Administrator** access (needed to approve instance requests)  
 
 ---
 
-### Step 2: List Available Agent Blueprints
+## Step 1: Get Your Blueprint ID
 
-See all published agents available in your organization:
-
-```powershell
-# List all published agents
-a365 list blueprints
-```
-
-**Expected Output:**
-```
-Agent Blueprints:
-1. Financial Market Agent Blueprint
-   - ID: 856d0c29-2359-4401-955f-b6f7e4396c58
-   - Status: Published
-   - Deployment: All Users
-   
-2. HR Assistant Agent
-   - ID: 7a8b9c0d-1234-5678-90ab-cdef12345678
-   - Status: Published
-   - Deployment: HR Department
-```
-
-Note the **Blueprint ID** for your agent - you'll need it for instance creation.
-
----
-
-### Step 3: Create a Personal Agent Instance
-
-Create a personal instance for individual use:
+You need the blueprint ID several places in this lesson.
 
 ```powershell
-# Create personal instance
-a365 create-instance `
-  --blueprint-id "856d0c29-2359-4401-955f-b6f7e4396c58" `
-  --display-name "My Financial Market Agent" `
-  --description "Personal agent for stock market research" `
-  --instance-type personal
+cd lesson-6-a365-prereq\labs\solution
+a365 config display -g
 ```
 
-**Command Parameters:**
-- `--blueprint-id`: The ID of your published agent blueprint
-- `--display-name`: Friendly name for your instance (appears in Teams)
-- `--description`: Brief description of the instance purpose
-- `--instance-type`: `personal` for individual use
+Copy the value of `agentBlueprintId` from the output. It will look like:
 
-**Expected Output:**
 ```
-Creating agent instance...
-✓ Instance created successfully
-
-Instance Details:
-- Instance ID: 3f4e5d6c-7a8b-9c0d-1e2f-3a4b5c6d7e8f
-- Display Name: My Financial Market Agent
-- Type: Personal
-- Status: Active
-- Created: 2025-01-15T14:30:00Z
-
-Next Steps:
-1. Open Microsoft Teams
-2. Search for "My Financial Market Agent" in the Apps section
-3. Start chatting with your agent
+agentBlueprintId: 809bce64-ea7f-4f64-94b1-6f0c582b2f21
 ```
 
 ---
 
-### Step 4: Create a Shared Agent Instance (Optional)
+## Step 2: Configure Agent in Teams Developer Portal
 
-For team collaboration, create a shared instance:
+Before creating instances, you must configure the agent blueprint in the Teams Developer Portal to connect it to the Microsoft 365 messaging infrastructure. Without this step, the agent won't receive messages from Teams.
 
-```powershell
-# Create shared instance
-a365 create-instance `
-  --blueprint-id "856d0c29-2359-4401-955f-b6f7e4396c58" `
-  --display-name "Team Financial Research Agent" `
-  --description "Shared agent for team market analysis" `
-  --instance-type shared `
-  --team-id "19:abc123def456@thread.tacv2"
-```
+1. **Open the Developer Portal configuration page:**
 
-**Additional Parameters for Shared Instances:**
-- `--team-id`: The Teams channel ID where the agent will be available
-- `--team-owners`: (Optional) Comma-separated list of user IDs who can manage the instance
+   ```
+   https://dev.teams.microsoft.com/tools/agent-blueprint/<your-blueprint-id>/configuration
+   ```
 
-**To Get Team ID:**
-1. Open Microsoft Teams
-2. Navigate to your team
-3. Click the three dots (...) next to the channel name
-4. Select "Get link to channel"
-5. Extract the team ID from the URL
+   Replace `<your-blueprint-id>` with your actual `agentBlueprintId` copied in Step 1.
 
-**Expected Output:**
-```
-Creating shared agent instance...
-✓ Instance created successfully
-✓ Agent added to team channel
+2. **Configure the agent:**
+   - Set **Agent Type** → `Bot Based`
+   - Set **Bot ID** → paste your `agentBlueprintId`
+   - Click **Save**
 
-Instance Details:
-- Instance ID: 8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f
-- Display Name: Team Financial Research Agent
-- Type: Shared
-- Team: Marketing Team
-- Status: Active
-- Created: 2025-01-15T14:45:00Z
+   ![Developer Portal configuration page showing Agent Type: Bot Based and Bot ID field]
 
-All team members can now access the agent in the channel.
-```
+3. **Verify the save:**
+   - ✅ Agent Type shows: `Bot Based`
+   - ✅ Bot ID matches your `agentBlueprintId`
+   - ✅ Page shows "Saved successfully"
+
+> **Tip:** If you don't have access to the Teams Developer Portal, contact your tenant administrator to complete this step.
 
 ---
 
-### Step 5: Verify Instance Creation
+## Step 3: Request an Agent Instance in Teams
 
-List all your created instances:
+1. Open **Microsoft Teams** (desktop or web)
 
-```powershell
-# List all instances
-a365 list instances
-```
+2. Click the **Apps** icon in the left sidebar (or use the top search bar)
 
-**Expected Output:**
-```
-Agent Instances:
-1. My Financial Market Agent
-   - Instance ID: 3f4e5d6c-7a8b-9c0d-1e2f-3a4b5c6d7e8f
-   - Type: Personal
-   - Status: Active
-   - Created: 2025-01-15T14:30:00Z
-   
-2. Team Financial Research Agent
-   - Instance ID: 8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f
-   - Type: Shared
-   - Team: Marketing Team
-   - Status: Active
-   - Created: 2025-01-15T14:45:00Z
-```
+3. Search for your agent by name — e.g. `Financial Market Agent`
 
-**Get detailed info about a specific instance:**
+4. Click on the agent card
 
-```powershell
-# Get instance details
-a365 get-instance --instance-id "3f4e5d6c-7a8b-9c0d-1e2f-3a4b5c6d7e8f"
-```
+5. Click **Request Instance** (or **Create Instance** if directly available)
+
+6. Optionally enter a custom display name for your instance
+
+7. Confirm — this sends an **approval request to your tenant admin**
+
+> **Note:** The instance creation process is asynchronous. After the admin approves, the agent user account is created in Entra and the agent becomes available in Teams. This can take a few minutes to a few hours.
 
 ---
 
-### Step 6: Test Your Agent in Microsoft Teams
+## Step 4: Approve the Instance Request (Admin)
 
-#### Testing Personal Instance
+As the admin, approve the pending request:
 
-1. **Open Microsoft Teams** (desktop or web app)
+1. Go to [https://admin.cloud.microsoft/#/agents/all/requested](https://admin.cloud.microsoft/#/agents/all/requested)
+2. Find the pending request for your agent
+3. Review the permissions and details
+4. Click **Approve**
 
-2. **Navigate to Apps:**
-   - Click the **Apps** icon in the left sidebar
-   - Or search directly in the Teams search bar
+After approval:
+- The agentic user account is created in Microsoft Entra
+- The agent becomes searchable and chattable in Teams
+- The agent appears under **All Agents** in the admin center
 
-3. **Find Your Agent:**
-   - Search for "My Financial Market Agent"
-   - Click on the agent card
+---
 
-4. **Start Chatting:**
-   - Click "Add" to add the agent to your chat list
-   - Click "Chat" to open a conversation
-   - Type your first message: `What's the current price of AAPL stock?`
+## Step 5: Test Your Agent in Teams
 
-5. **Verify Agent Response:**
-   - Agent should respond with stock price data
-   - Response may include Adaptive Card with rich formatting
-   - Check for proper tool execution (stock price lookup)
+> **Note:** After admin approval, it may take **a few minutes to a few hours** for the agent user to become searchable in Teams. This is an asynchronous background process.
 
-**Example Conversation:**
+1. In Microsoft Teams, search for your agent's display name in the **Search** bar or **New Chat**
+
+2. Open a chat with the agent
+
+3. Send a test message — for example:
+   ```
+   What's the current stock price for MSFT?
+   ```
+
+4. Verify the agent responds correctly:
+   - Agent shows typing indicator
+   - Agent responds within a few seconds
+   - Response includes relevant financial data
+
+### Example conversation
 
 ```
-You: What's the current price of AAPL stock?
+You: What's the current price of AAPL?
 
 Financial Market Agent:
 📈 Apple Inc. (AAPL)
 Current Price: $178.42
 Change: +2.34 (+1.33%)
-Last Updated: 2025-01-15 14:50 EST
-
-[View Chart] [Get Details]
+[Last 30 days data retrieval requested...]
 ```
-
-#### Testing Shared Instance
-
-1. **Navigate to Your Team Channel:**
-   - Open the team where you created the shared instance
-   - Select the channel
-
-2. **Access the Agent:**
-   - The agent should appear in the channel's app list
-   - Or mention the agent: `@Team Financial Research Agent`
-
-3. **Team Collaboration:**
-   - All team members can interact with the same agent
-   - Conversation history is visible to the team
-   - Agent maintains context across team conversations
 
 ---
 
-### Step 7: Configure Instance Settings (Advanced)
+## Step 6: Verify in Admin Center
 
-Customize your instance behavior:
+After your agent instance is created and active:
+
+1. Go to [https://admin.cloud.microsoft/#/agents/all](https://admin.cloud.microsoft/#/agents/all)
+2. Select your agent
+3. Open the **Activity** tab
+
+You should see:
+- ✅ Sessions listed with timestamps
+- ✅ Each session shows triggers and actions taken
+- ✅ Tool calls logged with timestamps
+
+---
+
+## Monitoring Agent Health
+
+### Check Azure Container App logs
 
 ```powershell
-# Update instance display name
-a365 update-instance `
-  --instance-id "3f4e5d6c-7a8b-9c0d-1e2f-3a4b5c6d7e8f" `
-  --display-name "Financial Markets AI Assistant"
-
-# Update instance description
-a365 update-instance `
-  --instance-id "3f4e5d6c-7a8b-9c0d-1e2f-3a4b5c6d7e8f" `
-  --description "AI-powered agent for real-time financial data and analysis"
-
-# Configure instance settings (if supported)
-a365 configure-instance `
-  --instance-id "3f4e5d6c-7a8b-9c0d-1e2f-3a4b5c6d7e8f" `
-  --settings '{"max_conversation_length": 100, "enable_notifications": true}'
+az containerapp logs show `
+  --name aca-lg-agent `
+  --resource-group <your-resource-group> `
+  --follow
 ```
 
-**Available Settings** (may vary by agent):
-- `max_conversation_length`: Maximum number of messages to retain in context
-- `enable_notifications`: Allow proactive notifications
-- `response_timeout`: Timeout for agent responses (seconds)
-- `tool_settings`: Configuration for specific tools
+Look for:
+- ✅ Incoming requests from Teams (`POST /api/messages`)
+- ✅ Successful authentication
+- ✅ Tool calls executing
+- ❌ Error messages or exceptions
+
+### Check messaging endpoint health
+
+```powershell
+curl https://aca-lg-agent.purplerock-e895e6b1.eastus.azurecontainerapps.io/health
+# Expected: {"status": "ok"} or HTTP 200
+```
+
+### Query Entra scopes and consent status
+
+```powershell
+cd lesson-6-a365-prereq\labs\solution
+
+# Check blueprint scopes
+a365 query-entra blueprint-scopes --config a365.config.json
+
+# Check instance scopes (after instance is created)
+a365 query-entra instance-scopes --config a365.config.json
+```
 
 ---
 
 ## Instance Lifecycle Management
 
-### Suspend Instance
-
-Temporarily disable an instance without deleting it:
+### CLI commands (Entra resources only)
 
 ```powershell
-# Suspend instance
-a365 suspend-instance --instance-id "3f4e5d6c-7a8b-9c0d-1e2f-3a4b5c6d7e8f"
+# Remove instance identity and user from Entra
+a365 cleanup instance --config a365.config.json
+
+# Remove blueprint and service principal from Entra
+a365 cleanup blueprint --config a365.config.json
 ```
 
-**When to suspend:**
-- Temporary maintenance
-- Agent endpoint updates
-- Testing new agent version
-- Investigating issues
+> **Note:** These CLI commands remove Entra resources only. To remove an agent instance from a user's Teams, the user removes the chat (or the admin removes the app from the tenant's installed apps in Teams Admin Center).
 
-**Expected Output:**
-```
-Suspending agent instance...
-✓ Instance suspended successfully
+### Admin center management
 
-Instance Status: Suspended
-Users cannot interact with the agent until it's resumed.
-```
+All instance lifecycle actions (suspend, resume, delete, permissions review) are managed through the admin center:
 
----
-
-### Resume Instance
-
-Reactivate a suspended instance:
-
-```powershell
-# Resume instance
-a365 resume-instance --instance-id "3f4e5d6c-7a8b-9c0d-1e2f-3a4b5c6d7e8f"
-```
-
-**Expected Output:**
-```
-Resuming agent instance...
-✓ Instance resumed successfully
-
-Instance Status: Active
-Users can now interact with the agent.
-```
-
----
-
-### Delete Instance
-
-Permanently remove an instance:
-
-```powershell
-# Delete instance
-a365 delete-instance --instance-id "3f4e5d6c-7a8b-9c0d-1e2f-3a4b5c6d7e8f"
-```
-
-**Warning:** This action is **permanent** and will:
-- Delete all conversation history
-- Remove the agent from Teams
-- Revoke user access
-- Cannot be undone
-
-**Expected Output:**
-```
-⚠️  Warning: This will permanently delete the instance and all data.
-Type 'yes' to confirm: yes
-
-Deleting agent instance...
-✓ Instance deleted successfully
-
-The agent has been removed from Teams.
-```
+- **All agents:** [https://admin.cloud.microsoft/#/agents/all](https://admin.cloud.microsoft/#/agents/all)
+- **Requested agents:** [https://admin.cloud.microsoft/#/agents/all/requested](https://admin.cloud.microsoft/#/agents/all/requested)
+- **Teams Admin Center:** [https://admin.teams.microsoft.com](https://admin.teams.microsoft.com) → Teams apps → Manage apps
 
 ---
 
 ## Troubleshooting
 
-### Issue 1: Cannot Find Agent in Teams
+### Agent doesn't appear in Teams search
 
-**Symptoms:**
-- Agent doesn't appear in Teams Apps section
-- Search returns no results
-- "Add" button is disabled
+**Symptom:** Agent published successfully but doesn't show up in Teams Apps search.
 
-**Solutions:**
+**Root cause:** Developer Portal configuration is missing or not saved.
 
-1. **Verify Deployment:**
+**Solution:**
+1. Get your blueprint ID:
    ```powershell
-   a365 publish status
+   a365 config display -g
+   # Copy agentBlueprintId
    ```
-   - Ensure status is `Published` and `Approved`
-   - Check deployment scope includes you or your group
-
-2. **Check Instance Status:**
-   ```powershell
-   a365 list instances
-   ```
-   - Verify instance status is `Active` (not `Suspended`)
-
-3. **Refresh Teams:**
-   - Sign out of Teams
-   - Sign back in
-   - Clear Teams cache: `%appdata%\Microsoft\Teams\Cache`
-
-4. **Wait for Propagation:**
-   - New instances can take 5-10 minutes to appear
-   - M365 directory sync delays may extend this
-
-5. **Verify Permissions:**
-   - Check with M365 admin if you have access
-   - Verify organizational policies allow custom agents
+2. Go to `https://dev.teams.microsoft.com/tools/agent-blueprint/<blueprint-id>/configuration`
+3. Set Agent Type → `Bot Based`, Bot ID → your blueprint ID, click **Save**
+4. Wait 5–10 minutes, then search again in Teams
 
 ---
 
-### Issue 2: Agent Not Responding
+### "Request Instance" button doesn't work or is missing
 
-**Symptoms:**
-- Agent shows in Teams but doesn't respond
-- Messages show "Failed to send"
-- Timeout errors
+**Symptom:** Agent appears in Teams Apps but can't be added; button is greyed out or nothing happens.
 
-**Solutions:**
+**Root cause:** Microsoft Agent 365 Frontier isn't enabled for the tenant or the user.
 
-1. **Check Messaging Endpoint:**
-   ```powershell
-   # Verify endpoint is accessible
-   curl https://aca-lg-agent.redmeadow-5d2fbed1.eastus.azurecontainerapps.io/health
-   ```
-   - Should return `{"status": "ok"}`
-
-2. **Verify Azure Container App:**
-   ```powershell
-   az containerapp show --name aca-lg-agent --resource-group rg-ag365sdk --query "properties.runningStatus"
-   ```
-   - Should return `"Running"`
-
-3. **Check Application Insights:**
-   - Navigate to Application Insights in Azure Portal
-   - Look for failed requests to `/api/messages`
-   - Review exception traces
-
-4. **Check Agent Logs:**
-   ```powershell
-   az containerapp logs show --name aca-lg-agent --resource-group rg-ag365sdk --follow
-   ```
-
-5. **Verify Bot Framework Configuration:**
-   - Ensure `/api/messages` endpoint is implemented
-   - Check Bot Framework Activity handling
-   - Verify Adaptive Card generation
+**Solution:**
+1. In the M365 admin center, go to **Settings** → **Copilot** → **Frontier**
+2. Verify your user is included in the Frontier access list
+3. Contact your tenant admin if access needs to be granted
 
 ---
 
-### Issue 3: Instance Creation Fails
+### Agent doesn't respond to messages
 
-**Symptoms:**
-- `a365 create-instance` command fails
-- Error: "Blueprint not found"
-- Error: "Insufficient permissions"
+**Symptom:** Instance created, agent visible in Teams, but messages go unanswered.
 
-**Solutions:**
-
-1. **Verify Blueprint ID:**
+**Checklist:**
+1. Verify Azure Container App is running:
    ```powershell
-   a365 list blueprints
+   az containerapp show `
+     --name aca-lg-agent `
+     --resource-group <your-resource-group> `
+     --query "properties.runningStatus"
+   # Expected: "Running"
    ```
-   - Ensure blueprint ID matches published agent
-
-2. **Check Permissions:**
-   - Verify you have `Agent.Create` permission
-   - Contact M365 admin to grant permissions
-
-3. **Validate Configuration:**
+2. Confirm endpoint is reachable:
    ```powershell
-   a365 config display
+   curl https://aca-lg-agent.purplerock-e895e6b1.eastus.azurecontainerapps.io/health
    ```
-   - Ensure tenant ID and client app ID are correct
+3. Check Container App logs for errors
+4. Verify Developer Portal configuration is saved (Step 2)
 
-4. **Check PowerShell Version:**
+---
+
+### License assignment fails
+
+**Symptom:** Admin center shows error when approving instance request — license can't be assigned.
+
+**Cause:** Insufficient licenses or incorrect license type.
+
+**Solution:**
+1. Go to **M365 admin center** → **Billing** → **Licenses** — verify available licenses
+2. Ensure **Microsoft 365 Copilot** is licensed for the tenant (required for Frontier/Agent 365)
+3. Manually assign license to the agentic user: **Users** → find the agent user → assign Microsoft 365 E5 / Teams Enterprise / M365 Copilot
+
+---
+
+### Agent user not found in Teams after hours
+
+**Symptom:** Admin approved the request, but agent user still not searchable in Teams after several hours.
+
+**Check:**
+1. Confirm approval status in admin center at [admin.cloud.microsoft/#/agents/all](https://admin.cloud.microsoft/#/agents/all)
+2. Check if the agentic user exists in Entra:
    ```powershell
-   $PSVersionTable.PSVersion
+   az ad user show --id fin-market-agent@M365CPI28789782.onmicrosoft.com
    ```
-   - Must be PowerShell 7.0 or higher
-
-5. **Re-authenticate:**
-   ```powershell
-   az logout
-   az login --tenant 08f651c3-3144-498c-a5e3-9345be97f2e3 --allow-no-subscriptions
-   ```
+3. If user exists, the Teams sync is pending — wait and retry
+4. If user doesn't exist, the instance wasn't fully provisioned — re-request via Teams
 
 ---
 
-### Issue 4: Shared Instance Not Visible to Team
+### `query-entra instance-scopes` returns `Request_ResourceNotFound`
 
-**Symptoms:**
-- Shared instance created successfully
-- Only creator can see the agent
-- Team members cannot access
-
-**Solutions:**
-
-1. **Verify Team ID:**
-   - Ensure correct team ID was used during creation
-   - Check channel exists and is active
-
-2. **Check Team Permissions:**
-   - Verify team members have appropriate roles
-   - Ensure organizational policies allow shared agents
-
-3. **Add Agent to Channel:**
-   ```powershell
-   a365 add-to-channel `
-     --instance-id "8f7e6d5c-4b3a-2c1d-0e9f-8a7b6c5d4e3f" `
-     --channel-id "19:abc123def456@thread.tacv2"
-   ```
-
-4. **Notify Team Members:**
-   - Send announcement in Teams channel
-   - Include instructions for accessing the agent
-
----
-
-## Best Practices
-
-### 1. Naming Conventions
-- Use clear, descriptive names: `Team Sales Agent` instead of `Agent 1`
-- Include purpose in description: `Analyzes sales data and generates reports`
-- Follow organization naming standards
-
-### 2. Instance Management
-- **Start Small:** Create personal instances first for testing
-- **Monitor Usage:** Track active instances to avoid sprawl
-- **Clean Up:** Delete unused instances to free resources
-- **Document:** Maintain list of instances and their purposes
-
-### 3. User Onboarding
-- **Provide Training:** Create quick start guides for users
-- **Set Expectations:** Explain agent capabilities and limitations
-- **Gather Feedback:** Collect user feedback for improvements
-- **Support Channels:** Establish support process for issues
-
-### 4. Security and Compliance
-- **Review Permissions:** Regularly audit who can create instances
-- **Monitor Conversations:** Implement logging for compliance
-- **Data Privacy:** Ensure agent handles sensitive data appropriately
-- **Access Control:** Use shared instances only when appropriate
-
-### 5. Performance Optimization
-- **Monitor Latency:** Track response times in Application Insights
-- **Scale Resources:** Increase ACA replicas if needed
-- **Cache Data:** Implement caching for frequently accessed data
-- **Optimize Tools:** Profile and optimize slow tool functions
-
----
-
-## Monitoring and Analytics
-
-### View Instance Usage
-
-Track how users interact with your agent:
-
-```powershell
-# Get usage statistics
-a365 get-usage --instance-id "3f4e5d6c-7a8b-9c0d-1e2f-3a4b5c6d7e8f"
-```
-
-**Metrics Available:**
-- Total conversations
-- Total messages sent/received
-- Average response time
-- Most used tools/features
-- Error rates
-- Active users
-
-### Application Insights
-
-Monitor agent performance in Azure Portal:
-
-1. **Navigate to Application Insights:**
-   - Azure Portal → Resource Groups → `rg-ag365sdk`
-   - Select Application Insights resource
-
-2. **Key Metrics to Monitor:**
-   - **Requests:** Total requests to `/api/messages`
-   - **Response Time:** P50, P95, P99 latencies
-   - **Failures:** Failed requests and exceptions
-   - **Dependencies:** External API calls (stock prices, etc.)
-   - **Custom Events:** Tool executions, Adaptive Card generations
-
-3. **Create Alerts:**
-   - High error rate (>5%)
-   - Slow response time (>2 seconds)
-   - Service availability (<99%)
-
-### Teams Admin Center
-
-View organizational agent usage:
-
-1. Navigate to [Teams Admin Center](https://admin.teams.microsoft.com)
-2. Go to **Teams apps → Manage apps**
-3. Find your agent
-4. View analytics:
-   - Active users
-   - Total installations
-   - Usage trends
-   - User feedback
-
----
-
-## Next Steps
-
-Congratulations! You've completed the Azure AI Foundry Agents Workshop. 🎉
-
-### Continue Learning
-
-1. **Explore Advanced Features:**
-   - Multi-turn conversations with memory
-   - Proactive notifications
-   - Integration with other M365 services (SharePoint, Outlook)
-   - Custom Adaptive Cards
-
-2. **Improve Your Agent:**
-   - Add more tools (weather, news, calendar)
-   - Implement error handling and retry logic
-   - Add authentication for sensitive operations
-   - Optimize performance and costs
-
-3. **Scale Your Deployment:**
-   - Deploy multiple agents for different use cases
-   - Implement CI/CD pipeline for automated deployments
-   - Create agent templates for rapid deployment
-   - Build enterprise agent governance
-
-4. **Learn More:**
-   - [Microsoft Agent 365 Documentation](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/agents)
-   - [Azure AI Foundry Documentation](https://learn.microsoft.com/en-us/azure/ai-services/)
-   - [Bot Framework Documentation](https://learn.microsoft.com/en-us/azure/bot-service/)
-   - [Teams App Development](https://learn.microsoft.com/en-us/microsoftteams/platform/)
-
----
-
----
-
-## End-User Testing Scenarios
-
-After creating instances, simulate real-world usage to validate the full workflow.
-
-### Scenario 1: Personal Research Workflow
-
-Test multi-step research in your personal instance:
+**Symptom:** Running `a365 query-entra instance-scopes --config a365.config.json` outputs:
 
 ```
-You: I'm considering investing in cloud computing stocks.
-     Can you provide prices for MSFT, GOOGL, and AMZN?
-
-Agent: [Calls tools for each stock, returns prices]
-
-You: Which has the best growth potential?
-
-Agent: [Provides comparative analysis using context from previous question]
+ERROR: Not Found({"error":{"code":"Request_ResourceNotFound","message":"Resource '' does not exist..."}})
+No OAuth2 permission grants found
 ```
 
-**Verify**: Agent retrieves multiple prices, provides comparison, and maintains conversation context.
+**Root cause:** The agentic user or service principal found in Entra has no OAuth2 permission grant records. This happens when A365 setup never fully completed (`botMessagingEndpoint: null`, `completed: false`). Common causes:
 
-### Scenario 2: Team Collaboration
+1. **Missing `location` or `resourceGroup` in `a365.config.json`** — the Frontier backend requires these to register the messaging endpoint, even with `needDeployment: false`. Without them, `a365 setup blueprint --endpoint-only` fails with `400 BadRequest: Location is required`, leaving `botMessagingEndpoint: null` and `completed: false`.
+2. **Admin consent was never granted** during setup — the service principal was created but permissions were not applied.
+3. **No instance created yet** — `AgenticAppId` and `AgenticUserId` are `null` in `a365.generated.config.json`. This command is only meaningful after an instance is created via Teams UI.
 
-In a shared channel instance, have multiple team members interact:
+**Solution:**
+
+1. First, verify `a365.config.json` contains the required fields:
+   ```json
+   "resourceGroup": "<your-resource-group>",
+   "location": "<your-azure-region>"
+   ```
+   If missing, add them — required even with `needDeployment: false`.
+
+2. Confirm setup completion:
+   ```powershell
+   a365 config display -g
+   # Check: completed: true and botMessagingEndpoint is not null
+   ```
+3. If `completed: false`, re-run endpoint registration then permissions:
+   ```powershell
+   a365 setup blueprint --endpoint-only
+   a365 setup permissions mcp
+   a365 setup permissions bot
+   ```
+4. If setup completed but consent is missing, grant admin consent manually:
+   - Go to [Azure Portal](https://portal.azure.com) → **Microsoft Entra ID** → **App registrations**
+   - Find the **Financial Market Agent Blueprint** app
+   - Go to **API permissions** → click **Grant admin consent for \<tenant\>**
+5. Re-run the command to confirm grants are now present:
+   ```powershell
+   a365 query-entra instance-scopes --config a365.config.json
+   ```
+
+> **Note:** If no instance has been created yet (`AgenticAppId: null` in `a365.generated.config.json`), this error is expected — the command will return meaningful data only after an instance is created via Teams UI and approved by an admin (Steps 3–4).
+
+---
+
+## Testing Scenarios
+
+### Scenario 1: Basic financial query
 
 ```
-Member 1: @Financial Advisor What are the top 3 tech stocks by market cap?
-Member 2: @Financial Advisor What's the PE ratio for these stocks?
-Member 3: @Financial Advisor Based on current trends, which would you recommend?
+You: What's the current price of MSFT?
+Agent: [Uses stock price tool, returns price with change data]
+
+You: How does that compare to last week?
+Agent: [Uses context from previous turn to answer comparatively]
 ```
 
-**Verify**: Agent responds to different members and maintains shared context.
+**Verify:** Multi-turn context is maintained.
 
-### Scenario 3: Error Handling
-
-Test agent robustness with edge cases:
+### Scenario 2: Error handling
 
 | Input | Expected Behavior |
 |-------|-------------------|
-| Invalid stock symbol (`INVALID`) | Graceful error: "I couldn't find that symbol" |
-| Ambiguous request (`Is it good?`) | Clarifying question: "What stock are you asking about?" |
+| Unknown ticker (`XYZINVALID`) | Graceful: "Symbol not found" |
+| Vague request (`Is it good?`) | Clarifying: "Which stock are you asking about?" |
 | Out-of-scope (`Tell me a joke`) | Redirect: "I specialize in financial information" |
-| Empty message | Graceful handling without crash |
 
-### Scenario 4: Adaptive Cards (if implemented in Lesson 5)
+### Scenario 3: Tool execution audit
 
-```
-You: Show me a dashboard for AAPL
-```
+After sending a request that uses tools (e.g. stock price lookup):
 
-**Verify**: Agent returns Adaptive Card with stock ticker, price, change %, and action buttons.
-
----
-
-## ❓ Frequently Asked Questions
-
-**Q: What's the difference between deleting an instance and unpublishing?**
-A: Deleting an instance removes one user's/team's deployment (conversation history lost). Unpublishing removes the agent from the catalog globally (no new instances, existing ones keep working).
-
-**Q: Can I update my agent code without affecting instances?**
-A: Yes! Instances point to the messaging endpoint. When you redeploy ACA with new code (same FQDN), all instances automatically get the new version.
-
-**Q: How long does it take for a new instance to appear in Teams?**
-A: Personal instances appear within 1-2 minutes. Shared instances may take 5-10 minutes due to M365 directory sync. If not visible after 15 minutes, try signing out and back into Teams.
-
-**Q: Can team members see my personal instance conversations?**
-A: No. Personal instances are fully isolated. Only you can see your conversation history. Shared instances are visible to all team members.
-
-**Q: How many instances can I create?**
-A: There's no hard limit per user, but organizational policies may restrict the number. Each instance consumes minimal resources—the heavy lifting is on the ACA backend.
-
-**Q: What happens when ACA scales to zero?**
-A: If your ACA has `minReplicas: 0`, the first request will experience a cold start (5-15 seconds). Configure `minReplicas: 1` for always-on availability.
-
----
-
-## 🏆 Self-Paced Challenges
-
-1. **Org-Wide Instance**: If you have admin rights, create an org-wide instance and verify all users in your tenant can discover it
-2. **Instance Comparison**: Create both a personal and shared instance with the same blueprint. Send the same question to both and document how context isolation works
-3. **Lifecycle Drill**: Create → Test → Suspend → Resume → Delete → Re-create an instance. Document the state at each step and what data persists
-4. **Channel Customization**: Create shared instances in 3 different channels with different display names. Verify each maintains independent context
-5. **Performance Profiling**: Send 10 rapid-fire questions to your instance and monitor response times in Application Insights. Identify if ACA scaling triggers
-6. **User Guide**: Write a 1-page end-user guide explaining how to find, install, and interact with the Financial Advisor Agent in Teams—as if for a non-technical colleague
+1. Go to admin center → your agent → **Activity** tab
+2. Verify tool calls are logged with timestamps and inputs/outputs
 
 ---
 
 ## Quick Reference
 
-### Common Commands
+| Action | Where |
+|--------|-------|
+| Get blueprint ID | `a365 config display -g` |
+| Configure for Teams | `https://dev.teams.microsoft.com/tools/agent-blueprint/<id>/configuration` |
+| Request instance | Microsoft Teams → Apps → Search → Request Instance |
+| Approve request | [admin.cloud.microsoft/#/agents/all/requested](https://admin.cloud.microsoft/#/agents/all/requested) |
+| View all agents | [admin.cloud.microsoft/#/agents/all](https://admin.cloud.microsoft/#/agents/all) |
+| Check scopes | `a365 query-entra blueprint-scopes` |
+| Remove instance | `a365 cleanup instance --config a365.config.json` |
+| Remove blueprint | `a365 cleanup blueprint --config a365.config.json` |
 
+---
+
+## ❓ Frequently Asked Questions
+
+**Q: Why was `a365 create-instance` removed?**  
+A: It bypassed required registration steps (Developer Portal configuration, admin approval workflow) that are necessary for agents to receive messages and operate with full governance. Instance creation via Teams ensures these steps are always completed. The command may return in a future version once it's on par with the recommended workflow.
+
+**Q: How long does instance creation take?**  
+A: The admin approval itself is fast (a few minutes). Creating the agentic user in Entra and propagating it through Teams can take a few minutes to a few hours. If not searchable after 2 hours, verify the user was created in Entra.
+
+**Q: Can team members see my personal instance conversations?**  
+A: No. Each user has a 1:1 chat with the agent. Conversation history is private to that user.
+
+**Q: What happens if I redeploy Azure Container Apps with a new URL?**  
+A: You need to update the messaging endpoint and re-publish:
 ```powershell
-# List published agents
-a365 list blueprints
-
-# Create personal instance
-a365 create-instance --blueprint-id <ID> --display-name "My Agent" --instance-type personal
-
-# Create shared instance
-a365 create-instance --blueprint-id <ID> --display-name "Team Agent" --instance-type shared --team-id <TEAM_ID>
-
-# List all instances
-a365 list instances
-
-# Get instance details
-a365 get-instance --instance-id <ID>
-
-# Suspend instance
-a365 suspend-instance --instance-id <ID>
-
-# Resume instance
-a365 resume-instance --instance-id <ID>
-
-# Delete instance
-a365 delete-instance --instance-id <ID>
-
-# Check publication status
-a365 publish status
-
-# View usage statistics
-a365 get-usage --instance-id <ID>
+a365 setup blueprint --endpoint-only --update-endpoint "https://new-url/api/messages" --config a365.config.json
+a365 publish
 ```
 
-### Endpoints
+**Q: What if ACA scales to zero (cold start)?**  
+A: If `minReplicas: 0`, the first message after an idle period triggers a cold start (5–30 seconds). Set `minReplicas: 1` in your Container App for always-on availability.
 
-- **Health Check:** `https://aca-lg-agent.redmeadow-5d2fbed1.eastus.azurecontainerapps.io/health`
-- **Bot Framework:** `https://aca-lg-agent.redmeadow-5d2fbed1.eastus.azurecontainerapps.io/api/messages`
-- **REST API:** `https://aca-lg-agent.redmeadow-5d2fbed1.eastus.azurecontainerapps.io/chat`
-
-### Key Files
-
-- **A365 Config:** `lesson-5-a365-prereq/a365.config.json`
-- **Agent Code:** `lesson-6-a365-langgraph/main.py`
-- **Requirements:** `lesson-6-a365-langgraph/requirements.txt`
+**Q: How do I remove an agent instance completely?**  
+A: Use `a365 cleanup instance` to remove the Entra identity. Users also need to remove the chat from Teams manually (or the admin can remove the app from all users via Teams Admin Center).
 
 ---
 
-## Resources
+## Next Steps
 
-- [Workshop Repository](https://github.com/pateixei/foundry-agents-workshop)
-- [Lesson 5: A365 SDK Integration](../lesson-6-a365-langgraph/README.md)
-- [Lesson 6: A365 Prerequisites](../lesson-5-a365-prereq/README.md)
-- [Lesson 7: Publishing Guide](../lesson-7-publish/README.md)
-- [Microsoft Learn: Build M365 Agents](https://learn.microsoft.com/en-us/training/paths/build-microsoft-365-agents/)
+🎉 **Congratulations — your agent is live in Microsoft Teams!**
+
+Explore further:
+- Add more tools to your agent (calendar, SharePoint, email via MCP servers)
+- Set up CI/CD with `a365 deploy` for automated code deployments
+- Explore observability dashboards in the admin center Activity tab
+- Add the Agent 365 SDK to your agent for notifications and richer telemetry
 
 ---
 
-**Questions or Issues?** Open an issue in the [GitHub repository](https://github.com/pateixei/foundry-agents-workshop/issues).
+## References
 
-Happy Building! 🚀
+- [Microsoft Agent 365 — Create Agent Instances](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/create-instance)
+- [Agent 365 Development Lifecycle](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/a365-dev-lifecycle)
+- [Agent 365 CLI — Removed `create-instance` command](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/agent-365-cli#important-updates)
+- [Microsoft 365 Admin Center — Agents](https://admin.cloud.microsoft/#/agents/all)
+- [Teams Developer Portal](https://dev.teams.microsoft.com)
+- [Agent 365 GitHub Samples](https://github.com/microsoft/Agent365-Samples)

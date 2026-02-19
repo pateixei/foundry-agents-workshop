@@ -4,6 +4,7 @@
 #
 # Usage:
 #   .\setup-entra-app.ps1 -M365TenantId <GUID> -M365Domain <domain> -AcaUrl <URL> -ManagerEmail <email>
+#   .\setup-entra-app.ps1 -M365TenantId <GUID> -M365Domain <domain> -AcaUrl <URL> -ManagerEmail <email> -ResourceGroup rg-ai-agents-workshop -AzureLocation eastus
 #
 # What this script does:
 #   1. Validates prerequisites (.NET SDK, Agent 365 CLI, Azure CLI login)
@@ -12,6 +13,8 @@
 #   4. Creates a service principal for the app
 #   5. Grants 5 delegated Microsoft Graph permissions with admin consent
 #   6. Generates a365.config.json
+#   7. Pre-caches MgGraph token via device code (avoids hidden WAM dialog)
+#   8. Runs 'a365 setup all --skip-infrastructure' (blueprint + permissions)
 #
 # Prerequisites:
 #   - .NET 8.0+ SDK installed
@@ -48,7 +51,13 @@ param(
     [string]$AgentUpnPrefix = "fin-market-agent",
 
     [Parameter(Mandatory = $false, HelpMessage = "Output directory for a365.config.json")]
-    [string]$OutputDir = "."
+    [string]$OutputDir = ".",
+
+    [Parameter(Mandatory = $false, HelpMessage = "Azure resource group where the ACA agent is deployed (from prereq/main.bicepparam)")]
+    [string]$ResourceGroup = "rg-ai-agents-workshop",
+
+    [Parameter(Mandatory = $false, HelpMessage = "Azure region where the ACA agent is deployed (from prereq/main.bicepparam)")]
+    [string]$AzureLocation = "eastus"
 )
 
 $ErrorActionPreference = "Stop"
@@ -69,7 +78,7 @@ Write-Host ""
 # -----------------------------------------------------------
 # 1. Validate Prerequisites
 # -----------------------------------------------------------
-Write-Host "[1/6] Validating prerequisites..." -ForegroundColor Yellow
+Write-Host "[1/8] Validating prerequisites..." -ForegroundColor Yellow
 
 # 1a. Check .NET SDK
 $dotnetVersion = $null
@@ -158,7 +167,7 @@ Write-Host ""
 # -----------------------------------------------------------
 # 2. Register Application in Entra ID
 # -----------------------------------------------------------
-Write-Host "[2/6] Registering application in Entra ID..." -ForegroundColor Yellow
+Write-Host "[2/8] Registering application in Entra ID..." -ForegroundColor Yellow
 
 # Check if app already exists
 $existingApp = az ad app list --display-name $AppDisplayName --query "[0].appId" -o tsv 2>$null
@@ -192,7 +201,7 @@ Write-Host ""
 # -----------------------------------------------------------
 # 3. Configure Redirect URIs
 # -----------------------------------------------------------
-Write-Host "[3/6] Configuring redirect URIs..." -ForegroundColor Yellow
+Write-Host "[3/8] Configuring redirect URIs..." -ForegroundColor Yellow
 
 $BROKER_URI = "ms-appx-web://Microsoft.AAD.BrokerPlugin/$CLIENT_ID"
 
@@ -213,7 +222,7 @@ Write-Host ""
 # -----------------------------------------------------------
 # 4. Create Service Principal
 # -----------------------------------------------------------
-Write-Host "[4/6] Creating service principal..." -ForegroundColor Yellow
+Write-Host "[4/8] Creating service principal..." -ForegroundColor Yellow
 
 # Check if SP already exists
 $spId = az ad sp list --filter "appId eq '$CLIENT_ID'" --query "[0].id" -o tsv 2>$null
@@ -240,7 +249,7 @@ Write-Host ""
 #    which handles beta permissions (AgentIdentityBlueprint.*)
 #    that may not be visible in the Entra portal UI.
 # -----------------------------------------------------------
-Write-Host "[5/6] Granting delegated permissions via Graph API..." -ForegroundColor Yellow
+Write-Host "[5/8] Granting delegated permissions via Graph API..." -ForegroundColor Yellow
 
 # 5a. Get Microsoft Graph service principal ID
 $graphSpId = az ad sp list `
@@ -265,51 +274,66 @@ $existingGrant = az rest `
     --query "value[0].id" `
     -o tsv 2>$null
 
+# Use a temp file for the request body to avoid az rest JSON parsing issues on Windows
+$tmpBody = Join-Path $env:TEMP "az_rest_body_$([System.IO.Path]::GetRandomFileName()).json"
+
 if ($existingGrant) {
-    Write-Host "  Permission grant already exists. Updating scopes..." -ForegroundColor Yellow
-
-    # Update existing grant with all required scopes
-    $updateBody = @{
-        scope = $REQUIRED_SCOPES
-    } | ConvertTo-Json -Compress
-
-    az rest `
-        --method PATCH `
+    # Check consentType — can only PATCH grants of the same consentType
+    $grantDetails = az rest --method GET `
         --url "https://graph.microsoft.com/v1.0/oauth2PermissionGrants/$existingGrant" `
-        --headers "Content-Type=application/json" `
-        --body $updateBody 2>$null
+        -o json 2>$null | ConvertFrom-Json
+    $existingConsentType = $grantDetails.consentType
 
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "  WARN: Failed to update existing grant. Trying to delete and recreate..." -ForegroundColor Yellow
+    if ($existingConsentType -eq "AllPrincipals") {
+        Write-Host "  Permission grant already exists (AllPrincipals). Updating scopes..." -ForegroundColor Yellow
+
+        @{ scope = $REQUIRED_SCOPES } | ConvertTo-Json -Compress | Set-Content $tmpBody -Encoding UTF8
+        az rest `
+            --method PATCH `
+            --url "https://graph.microsoft.com/v1.0/oauth2PermissionGrants/$existingGrant" `
+            --headers "Content-Type=application/json" `
+            --body "@$tmpBody" 2>$null
+
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "  WARN: PATCH failed. Deleting and recreating..." -ForegroundColor Yellow
+            az rest --method DELETE --url "https://graph.microsoft.com/v1.0/oauth2PermissionGrants/$existingGrant" 2>$null
+            $existingGrant = $null
+        } else {
+            Write-Host "  Scopes updated successfully." -ForegroundColor Green
+        }
+    } else {
+        # consentType mismatch (e.g. "Principal" vs "AllPrincipals") — delete and recreate
+        Write-Host "  Existing grant has consentType '$existingConsentType'. Deleting to recreate as AllPrincipals..." -ForegroundColor Yellow
         az rest --method DELETE --url "https://graph.microsoft.com/v1.0/oauth2PermissionGrants/$existingGrant" 2>$null
         $existingGrant = $null
-    } else {
-        Write-Host "  Scopes updated successfully." -ForegroundColor Green
     }
 }
 
 if (-not $existingGrant) {
     # Create new oauth2PermissionGrant with admin consent for all principals
-    $grantBody = @{
+    @{
         clientId    = $spId
         consentType = "AllPrincipals"
         resourceId  = $graphSpId
         scope       = $REQUIRED_SCOPES
-    } | ConvertTo-Json -Compress
+    } | ConvertTo-Json -Compress | Set-Content $tmpBody -Encoding UTF8
 
     az rest `
         --method POST `
         --url "https://graph.microsoft.com/v1.0/oauth2PermissionGrants" `
         --headers "Content-Type=application/json" `
-        --body $grantBody 2>$null
+        --body "@$tmpBody" 2>$null
 
     if ($LASTEXITCODE -ne 0) {
+        Remove-Item $tmpBody -ErrorAction SilentlyContinue
         Write-Host "  ERRO: Failed to create permission grant." -ForegroundColor Red
         Write-Host "  Ensure you have Global Administrator or Privileged Role Administrator role." -ForegroundColor Yellow
         exit 1
     }
     Write-Host "  Permission grant created." -ForegroundColor Green
 }
+
+Remove-Item $tmpBody -ErrorAction SilentlyContinue
 
 # 5c. Display granted permissions
 Write-Host ""
@@ -326,7 +350,7 @@ Write-Host ""
 # -----------------------------------------------------------
 # 6. Generate a365.config.json
 # -----------------------------------------------------------
-Write-Host "[6/6] Generating a365.config.json..." -ForegroundColor Yellow
+Write-Host "[6/8] Generating a365.config.json..." -ForegroundColor Yellow
 
 # Ensure ACA URL doesn't have a trailing slash
 $AcaUrlClean = $AcaUrl.TrimEnd('/')
@@ -345,12 +369,80 @@ $config = @{
     needDeployment              = $false
     messagingEndpoint           = "$AcaUrlClean/api/messages"
     agentDescription            = "$AgentDisplayName (LangGraph on ACA) - A365 Workshop"
+    resourceGroup               = $ResourceGroup
+    location                    = $AzureLocation
 }
 
 $configPath = Join-Path $OutputDir "a365.config.json"
 $config | ConvertTo-Json -Depth 5 | Set-Content -Path $configPath -Encoding UTF8
 
 Write-Host "  Created: $configPath" -ForegroundColor Green
+Write-Host ""
+
+# -----------------------------------------------------------
+# 7. Pre-cache MgGraph Token (avoid hidden WAM dialog)
+#
+#    a365 setup blueprint spawns a pwsh -NonInteractive subprocess that
+#    calls Connect-MgGraph. On Windows, MSAL defaults to WAM (Windows
+#    Web Account Manager) which shows a Win32 dialog hidden behind VS Code.
+#    Pre-authenticating here with -UseDeviceAuthentication caches the token
+#    on disk so the subprocess reuses it silently.
+# -----------------------------------------------------------
+Write-Host "[7/8] Pre-caching Microsoft Graph token (device code)..." -ForegroundColor Yellow
+Write-Host "  This avoids the hidden WAM dialog in the next step." -ForegroundColor White
+Write-Host ""
+
+$mgScopes = @(
+    'Application.ReadWrite.All',
+    'Directory.Read.All',
+    'DelegatedPermissionGrant.ReadWrite.All',
+    'AgentIdentityBlueprint.ReadWrite.All'
+)
+
+try {
+    pwsh -NoProfile -Command "
+        Import-Module Microsoft.Graph.Authentication -ErrorAction Stop
+        Connect-MgGraph -TenantId '$M365TenantId' -ClientId '$CLIENT_ID' -Scopes @('$($mgScopes -join "','")')  -UseDeviceAuthentication -NoWelcome -ErrorAction Stop
+        Write-Host 'MgGraph token cached OK'
+    "
+    if ($LASTEXITCODE -ne 0) { throw "Connect-MgGraph failed" }
+    Write-Host "  MgGraph token cached." -ForegroundColor Green
+} catch {
+    Write-Host "  WARN: Could not pre-cache MgGraph token: $_" -ForegroundColor Yellow
+    Write-Host "  The next step may show a browser/WAM login prompt - complete it when it appears." -ForegroundColor Yellow
+}
+Write-Host ""
+
+# -----------------------------------------------------------
+# 8. Run a365 setup all --skip-infrastructure
+#
+#    --skip-infrastructure: skips Azure resource provisioning
+#    (App Service, storage, etc.) — not needed here since the
+#    agent is already deployed on ACA from Lesson 4.
+#    Only creates the Agent Blueprint in Entra ID, sets up OAuth
+#    permissions, and registers the messaging endpoint.
+# -----------------------------------------------------------
+Write-Host "[8/8] Running a365 setup all --skip-infrastructure..." -ForegroundColor Yellow
+Write-Host "  Config: $configPath" -ForegroundColor White
+Write-Host ""
+
+Push-Location (Split-Path $configPath -Parent)
+try {
+    a365 setup all --skip-infrastructure --config (Split-Path $configPath -Leaf) -v
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host ""
+        Write-Host "  WARN: a365 setup exited with code $LASTEXITCODE." -ForegroundColor Yellow
+        Write-Host "  Review the output above and the log at:" -ForegroundColor Yellow
+        Write-Host "  %LOCALAPPDATA%\Microsoft.Agents.A365.DevTools.Cli\logs\a365.setup.log" -ForegroundColor Cyan
+        Write-Host ""
+        Write-Host "  To retry only the endpoint registration:" -ForegroundColor Yellow
+        Write-Host "    a365 setup blueprint --endpoint-only --config $(Split-Path $configPath -Leaf)" -ForegroundColor Cyan
+    } else {
+        Write-Host "  a365 setup completed successfully." -ForegroundColor Green
+    }
+} finally {
+    Pop-Location
+}
 Write-Host ""
 
 # -----------------------------------------------------------
@@ -379,16 +471,24 @@ Write-Host "--------------------------------------" -ForegroundColor Yellow
 Write-Host " Validate the configuration:"
 Write-Host "--------------------------------------" -ForegroundColor Yellow
 Write-Host ""
-Write-Host "  # Display config" -ForegroundColor White
+Write-Host "  # Display effective config" -ForegroundColor White
 Write-Host "  cd $OutputDir && a365 config display" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "--------------------------------------" -ForegroundColor Yellow
-Write-Host " Next Steps (Lab 6):"
+Write-Host " If endpoint registration failed (Frontier):"
 Write-Host "--------------------------------------" -ForegroundColor Yellow
 Write-Host ""
-Write-Host "  # Create Agent Blueprint" -ForegroundColor White
-Write-Host "  a365 agent-identity create-blueprint" -ForegroundColor Cyan
+Write-Host "  Ensure the 'Agent ID Developer' role is assigned to your admin" -ForegroundColor White
+Write-Host "  account in Entra ID, and that Copilot Frontier is enabled in" -ForegroundColor White
+Write-Host "  M365 Admin Center -> Copilot -> Settings -> User access." -ForegroundColor White
 Write-Host ""
-Write-Host "  # Publish to M365 Admin Center" -ForegroundColor White
-Write-Host "  a365 agent-identity publish" -ForegroundColor Cyan
+Write-Host "  # Retry endpoint only:" -ForegroundColor White
+Write-Host "  a365 setup blueprint --endpoint-only --config a365.config.json" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "--------------------------------------" -ForegroundColor Yellow
+Write-Host " Next Steps (Lab 7/8):"
+Write-Host "--------------------------------------" -ForegroundColor Yellow
+Write-Host ""
+Write-Host "  # Publish agent to M365 Admin Center" -ForegroundColor White
+Write-Host "  a365 publish" -ForegroundColor Cyan
 Write-Host ""

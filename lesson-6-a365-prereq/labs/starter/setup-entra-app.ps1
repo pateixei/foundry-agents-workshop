@@ -3,7 +3,7 @@
 # Lesson 5 - A365 Prerequisites (STARTER)
 #
 # Usage:
-#   .\setup-entra-app.ps1 -M365TenantId <GUID> -M365Domain <domain> -AcaUrl <URL> -ManagerEmail <email>
+#   .\.setup-entra-app.ps1 -M365TenantId <GUID> -M365Domain <domain> -AcaUrl <URL> -ManagerEmail <email> [-ResourceGroup <rg>] [-AzureLocation <location>]
 #
 # What this script does:
 #   1. Validates prerequisites (.NET SDK, Agent 365 CLI, Azure CLI login)
@@ -52,7 +52,13 @@ param(
     [string]$AgentUpnPrefix = "fin-market-agent",
 
     [Parameter(Mandatory = $false, HelpMessage = "Output directory for a365.config.json")]
-    [string]$OutputDir = "."
+    [string]$OutputDir = ".",
+
+    [Parameter(Mandatory = $false, HelpMessage = "Azure resource group where the ACA agent is deployed")]
+    [string]$ResourceGroup = "rg-ai-agents-workshop",
+
+    [Parameter(Mandatory = $false, HelpMessage = "Azure region where the ACA agent is deployed")]
+    [string]$AzureLocation = "eastus"
 )
 
 $ErrorActionPreference = "Stop"
@@ -359,6 +365,8 @@ $AcaUrlClean = $AcaUrl.TrimEnd('/')
 #   - needDeployment:             $false   <-- IMPORTANT: must be boolean false
 #   - messagingEndpoint:          "$AcaUrlClean/api/messages"
 #   - agentDescription:           "$AgentDisplayName (LangGraph on ACA) - A365 Workshop"
+#   - resourceGroup:              $ResourceGroup
+#   - location:                   $AzureLocation
 #
 # Hint: Use @{ key = value } syntax to create a PowerShell hashtable,
 #       then pipe it to ConvertTo-Json and Set-Content to write the file.

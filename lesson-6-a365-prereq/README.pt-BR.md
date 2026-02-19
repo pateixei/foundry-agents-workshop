@@ -18,7 +18,7 @@ Ao final desta lição, você será capaz de:
 
 Esta lição cobre a configuração e implantação completa de agentes no **Microsoft Agent 365** (A365), desde a configuração até a publicação e criação de instâncias de agente no Microsoft 365.
 
-> **IMPORTANTE**: O Agent 365 requer participação no [programa Frontier preview](https://adoption.microsoft.com/copilot/frontier-program/).
+> **IMPORTANTE**: O Agent 365 requer pelo menos uma **licença ativa do Microsoft 365 Copilot** no tenant M365 e o Copilot Frontier habilitado no Admin Center. Não é necessário formulário de inscrição separado — o acesso é concedido automaticamente quando uma licença Copilot válida está presente.
 
 ---
 
@@ -84,7 +84,8 @@ Isso significa:
 - O Custom Client App Registration deve ser feito no **Tenant B** (M365)
 - O usuário do CLI precisa de roles no **Tenant B**: Global Administrator, Agent ID Administrator ou Agent ID Developer
 - **Nenhuma assinatura Azure é necessária** no Tenant M365 para criar infraestrutura (não criaremos nenhum recurso Azure via CLI)
-- Campos de infraestrutura Azure no `a365.config.json` (`resourceGroup`, `appServicePlanName`, etc.) podem conter valores placeholder — não serão utilizados
+- Campos de infraestrutura Azure como `appServicePlanName` e `webAppName` não são necessários — nenhuma nova infraestrutura Azure será criada
+- `resourceGroup` e `location` **devem** ser configurados com o resource group e região Azure do ACA — o CLI do A365 precisa deles para registrar o messaging endpoint no backend Frontier
 
 ---
 
@@ -105,14 +106,16 @@ Referência: [Ciclo de Vida de Desenvolvimento do Agent 365](https://learn.micro
 
 ---
 
-## Pré-requisito 0 - Programa Frontier Preview
+## Pré-requisito 0 - Licença do Microsoft 365 Copilot + Acesso ao Frontier
 
-O Agent 365 requer acesso ao programa Frontier preview:
+O Agent 365 requer uma **licença do Microsoft 365 Copilot** no tenant M365. Não é necessário formulário de inscrição separado.
 
-1. Acesse [https://adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/)
-2. Faça login com sua conta do **Tenant M365** (Tenant B)
-3. Solicite acesso ao programa
-4. Aguarde a aprovação (pode levar alguns dias)
+1. Certifique-se de que pelo menos um usuário no tenant M365 possui uma licença do **Microsoft 365 Copilot** (um trial de 30 dias é suficiente → [Iniciar trial gratuito](https://www.microsoft.com/microsoft-365/copilot/microsoft-365-copilot))
+2. Faça login no [Centro de Administração do Microsoft 365](https://admin.microsoft.com/) com uma conta de Global Admin
+3. Navegue até **Copilot** → **Configurações** → **Acesso de usuários** → **Copilot Frontier**
+4. Habilite o Frontier para os usuários necessários ou para toda a organização
+
+> **Nota:** A opção **Copilot Frontier** só aparece no Admin Center quando há uma licença válida do Microsoft 365 Copilot ativa no tenant. Se a opção estiver ausente, verifique a atribuição de licença primeiro.
 
 ---
 
@@ -285,7 +288,9 @@ Crie o arquivo `a365.config.json` com o seguinte conteúdo:
   "deploymentProjectPath": ".",
   "needDeployment": false,
   "messagingEndpoint": "https://<your-aca-app>.<aca-env-hash>.<region>.azurecontainerapps.io/api/messages",
-  "agentDescription": "Financial market agent (LangGraph on ACA) - A365 Workshop"
+  "agentDescription": "Financial market agent (LangGraph on ACA) - A365 Workshop",
+  "resourceGroup": "<RESOURCE-GROUP-DA-LICAO-4>",
+  "location": "<REGIAO-AZURE-DA-LICAO-4>"
 }
 ```
 
@@ -299,8 +304,10 @@ Crie o arquivo `a365.config.json` com o seguinte conteúdo:
 | `messagingEndpoint` | URL do ACA + `/api/messages` | Endpoint que o A365 usa para enviar mensagens ao agente |
 | `agentUserPrincipalName` | `name@tenant.onmicrosoft.com` | UPN do agente no Entra (domínio do Tenant M365) |
 | `managerEmail` | Email no Tenant M365 | Gerente responsável pelo agente |
+| `resourceGroup` | Nome do resource group da lição 4 | Resource group Azure contendo o ACA — **obrigatório** para registro do endpoint no Frontier |
+| `location` | Nome da região Azure (ex: `"eastus"`) | Região Azure do ACA — **obrigatório** para registro do endpoint no Frontier |
 
-> **Nota**: Campos de infraestrutura Azure (`subscriptionId`, `resourceGroup`, `appServicePlanName`, `webAppName`) foram **omitidos** porque `needDeployment: false`. Se o CLI exigir esses campos, adicione valores placeholder.
+> **Nota**: Campos como `subscriptionId`, `appServicePlanName` e `webAppName` podem ser omitidos com `needDeployment: false` — nenhuma infraestrutura Azure será criada. Porém, `resourceGroup` e `location` **devem** ser fornecidos: o A365 CLI os usa para registrar o messaging endpoint no backend Frontier.
 
 ### 4.3 - Verificar a configuração
 
@@ -320,6 +327,8 @@ a365 config display
 - [ ] `messagingEndpoint` aponta para o ACA da lição 4
 - [ ] `agentUserPrincipalName` usa o domínio `@<tenant-m365>.onmicrosoft.com`
 - [ ] `managerEmail` usa o domínio do Tenant M365
+- [ ] `resourceGroup` é o resource group onde o ACA está implantado (da lição 4)
+- [ ] `location` é a região Azure do ACA (ex: `"eastus"`)
 
 ---
 
@@ -627,6 +636,7 @@ Ao final desta lição, você terá:
 | `a365 setup` falha com permissões | Role insuficiente | Precisa de Global Admin, Agent ID Admin ou Agent ID Developer |
 | Blueprint não aparece no Entra | Setup incompleto | Execute `a365 setup all` novamente |
 | Endpoint não registrado | needDeployment=false sem messagingEndpoint | Execute `a365 setup blueprint --endpoint-only` |
+| `a365 setup blueprint --endpoint-only` falha com `400 BadRequest` | `location` ou `resourceGroup` ausentes no `a365.config.json` | Adicione `"resourceGroup": "<rg>"` e `"location": "<região>"` ao `a365.config.json` — obrigatórios mesmo com `needDeployment: false` |
 
 ### Etapa 5 (Publicação)
 

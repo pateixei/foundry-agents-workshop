@@ -5,379 +5,303 @@
 ## 🎯 Objetivos de Aprendizagem
 
 Ao final desta lição, você será capaz de:
-1. **Publicar** o Agent Blueprint no Microsoft 365 Admin Center
-2. **Navegar** pelo fluxo de aprovação do administrador (envio → validação → aprovação → publicação)
-3. **Configurar** o escopo de implantação (usuários específicos, grupos ou toda a organização)
-4. **Monitorar** o uso e a saúde do agente publicado por meio de análises
-5. **Gerenciar** o ciclo de vida do agente (atualizar, despublicar, reverter)
-6. **Compreender** o modelo de governança (controles administrativos, descoberta por usuários, aplicação de políticas)
+1. **Executar** `a365 publish` para empacotar e enviar o agente ao Microsoft 365 Admin Center
+2. **Personalizar** o manifesto do agente (nome, versão, descrições, ícones)
+3. **Verificar** a publicação bem-sucedida no registro do Microsoft 365 Admin Center
+4. **Compreender** o pipeline completo de publicação: manifesto → pacote → upload → acesso → federação → permissões Graph
+5. **Solucionar** problemas comuns de publicação
 
 ---
 
 ## Visão Geral
 
-Esta lição orienta você na publicação do seu Agent Blueprint registrado no Microsoft 365 Admin Center, tornando-o disponível para implantação a usuários e grupos na sua organização.
+Após concluir as etapas de configuração da Lição 6 (criação do blueprint, permissões, registro do endpoint), você publica o agente no Microsoft 365 Admin Center usando o comando `a365 publish`.
+
+A publicação cria um **pacote de app do Teams** a partir do blueprint do agente e o torna visível no Microsoft 365 Admin Center como um agente gerenciado. Após a publicação, os administradores podem criar instâncias do agente no Microsoft Teams.
+
+> **Importante:** `a365 publish` requer que o programa de preview Frontier esteja habilitado para o tenant e que o usuário tenha a função de **Agent ID Developer**, **Agent ID Administrator** ou **Global Administrator**.
 
 ---
 
-## Arquitetura: Fluxo de Publicação
+## Arquitetura: Pipeline de Publicação
 
 ```
-Desenvolvedor                M365 Admin                  Usuários Finais
-   |                           |                            |
-   | 1. a365 publish           |                            |
-   |-------------------------->|                            |
-   |                           |                            |
-   |                      2. Revisão no                     |
-   |                      Admin Center                      |
-   |                           |                            |
-   |                      3. Aprovar/Rejeitar               |
-   |                           |                            |
-   |                      4. Publicar no Catálogo           |
-   |                           |--------------------------->|
-   |                           |                            |
-   |                           |                       5. Descobrir
-   |                           |                       & Instalar
+Máquina do Desenvolvedor            Serviços Microsoft
+        |                                    |
+        |  a365 publish                      |
+        |  1. Atualiza manifest.json         |
+        |  2. Pausa para personalização      |
+        |  3. Pacote → manifest.zip          |
+        |  4. Adiciona permissões API  ----->|  Microsoft Entra ID
+        |  5. Upload do pacote        ------>|  M365 Titles Service
+        |  6. Configura acesso de usuários   |
+        |  7. Config. identidade federada -->|  Aplicativo Blueprint (Entra)
+        |  8. Concede permissões Graph       |
+        |       ✅ Publicado                 |
+        |                                    |  admin.cloud.microsoft
+        |                                    |  Aba Registry: agente visível
 ```
 
-### Papéis de Governança
-
-| Papel | Capacidade |
-|-------|------------|
-| **Agent Developer** | Registrar Blueprint, enviar para publicação |
-| **M365 Administrator** | Revisar, aprovar/rejeitar, definir políticas de descoberta |
-| **End User** | Descobrir agentes publicados, criar instâncias, interagir |
-
-> **A aprovação do administrador garante**: Nenhum agente não autorizado, conformidade com a política da empresa, branding adequado e validação de segurança.
+---
 
 ## Pré-requisitos
 
-Antes de publicar, certifique-se de que você:
+Antes de executar `a365 publish`, certifique-se de que:
 
-1. ✅ Concluiu a configuração da Lição 6 (`a365 setup all`)
-2. ✅ Agent Blueprint registrado no Entra ID
-3. ✅ Agente implantado e saudável no ACA
-4. ✅ Endpoint de mensagens acessível
-5. ✅ Função de Global Administrator ou Agent Administrator
+1. ✅ **Lição 6 concluída** — os seguintes comandos de setup executaram com sucesso:
+   ```powershell
+   a365 setup blueprint --endpoint-only   # ou a365 setup all no primeiro setup
+   a365 setup permissions mcp
+   a365 setup permissions bot
+   ```
+2. ✅ **Blueprint do agente existe** — `a365.generated.config.json` contém um `agentBlueprintId` não vazio
+3. ✅ **Endpoint de mensagens acessível** — endpoint retorna HTTP 200
+4. ✅ **Autenticado** — sessão ativa de `az login` para o tenant M365
+5. ✅ **Função necessária** — Global Administrator, Agent ID Administrator ou Agent ID Developer
+6. ✅ **Arquivos de configuração presentes** — `a365.config.json` e `a365.generated.config.json` no diretório de trabalho
 
-## Processo de Publicação
-
-### Etapa 1: Verificar Status do Agent Blueprint
-
-```powershell
-cd lesson-5-a365-prereq
-a365 blueprint list
-```
-
-**Saída esperada**:
-```
-Agent Blueprint: Financial Market Agent Blueprint
-ID: <blueprint-id>
-Status: Registered
-Messaging Endpoint: https://aca-lg-agent...azurecontainerapps.io/api/messages
-```
-
-### Etapa 2: Publicar no M365
+### Verificar prontidão
 
 ```powershell
-a365 publish
+cd lesson-6-a365-prereq\labs\solution
+
+# Exibir a configuração atual e confirmar que agentBlueprintId está preenchido
+a365 config display -g
 ```
 
-**O que isso faz**:
-- Envia o agent blueprint para o M365 Admin Center
-- Cria o pacote do agente
-- Inicia o fluxo de aprovação
-- Define a prontidão para implantação
-
-**Saída esperada**:
-```
-Publishing agent blueprint...
-✓ Agent package created
-✓ Submitted to M365 Admin Center
-✓ Approval request sent to administrators
-
-Status: Pending Admin Approval
-Agent ID: <agent-id>
-```
-
-### Etapa 3: Aprovação de Administrador no M365 Admin Center
-
-1. Navegue até o [Microsoft 365 Admin Center](https://admin.microsoft.com)
-2. Vá em **Settings** → **Integrated apps**
-3. Encontre "Financial Market Agent Blueprint"
-4. Clique em **Review** e verifique:
-   - Permissões solicitadas
-   - Acesso a dados
-   - Endpoint de mensagens
-5. Clique em **Approve**
-
-**Prazo**: A aprovação normalmente leva de 2 a 5 minutos para se propagar.
-
-### Etapa 4: Verificar Status da Publicação
-
-```powershell
-a365 status
-```
-
-**Saída esperada**:
-```
-Agent: Financial Market Agent Blueprint
-Publication Status: Published
-Approval Status: Approved
-Available for Deployment: Yes
-```
-
-### Etapa 5: Implantar para Usuários/Grupos
-
-#### Opção A: Implantar para Todos os Usuários
-
-No M365 Admin Center:
-1. Selecione seu agente aprovado
-2. Clique em **Deploy**
-3. Escolha "Deploy to everyone"
-4. Confirme a implantação
-
-#### Opção B: Implantar para Grupos Específicos
-
-1. Selecione seu agente
-2. Clique em **Deploy**
-3. Escolha "Deploy to specific groups"
-4. Selecione os grupos (Finance Team, IT Department, etc.)
-5. Confirme a implantação
-
-#### Opção C: Testar com Usuários Específicos Primeiro
-
-```powershell
-# Deploy to specific users via CLI (if available)
-a365 deploy --users "user1@domain.com,user2@domain.com"
-```
-
-### Etapa 6: Verificar Implantação
-
-```powershell
-a365 deployment status
-```
-
-**Verifique o progresso da implantação**:
-```
-Deployment Status: Active
-Deployed to: 15 users
-Groups: Finance Team, Management
-Last Updated: 2026-02-13 23:15:00
-```
-
-## Configuração Pós-Publicação
-
-### Atualizar Metadados do Agente
-
-```powershell
-a365 blueprint update --display-name "Financial Market Assistant" --description "Updated description"
-```
-
-### Atualizar Endpoint de Mensagens
-
-Se você reimplantar seu ACA:
-```powershell
-a365 blueprint update --messaging-endpoint "https://new-endpoint/api/messages"
-```
-
-### Gerenciar Escopo de Implantação
-
-```powershell
-# Add users
-a365 deploy add-users --users "user3@domain.com"
-
-# Add groups
-a365 deploy add-groups --groups "Sales Team"
-
-# Remove users
-a365 deploy remove-users --users "user1@domain.com"
-```
-
-## Troubleshooting
-
-### Falha na Publicação
-
-**Sintoma**: `a365 publish` retorna erro
-
-**Causas comuns**:
-1. Blueprint não registrado → Execute `a365 setup blueprint`
-2. Permissões ausentes → Verifique a função de Global Admin
-3. Endpoint não acessível → Teste o endpoint de saúde
-4. Configuração inválida → Verifique `a365.config.json`
-
-**Solução**:
-```powershell
-# Verify setup
-a365 config display
-a365 blueprint list
-
-# Re-register if needed
-a365 setup blueprint --skip-infrastructure
-```
-
-### Aprovação Pendente por Muito Tempo
-
-**Sintoma**: Status travado em "Pending Approval" por mais de 30 minutos
-
-**Soluções**:
-1. Verifique o M365 Admin Center para solicitações pendentes
-2. Confirme que o administrador possui as permissões necessárias
-3. Limpe o cache do navegador e tente novamente a aprovação
-4. Entre em contato com o suporte da Microsoft para aprovações travadas
-
-### Agente Não Aparece no Admin Center
-
-**Sintoma**: Agente publicado não está visível
-
-**Soluções**:
-1. Aguarde 5-10 minutos para sincronização
-2. Atualize a página do Admin Center
-3. Verifique o status da publicação: `a365 status`
-4. Confirme que está logado no tenant correto
-
-### Implantação Não Chega aos Usuários
-
-**Sintoma**: Usuários não veem o agente no Teams/Outlook
-
-**Soluções**:
-1. Verifique o status da implantação: `a365 deployment status`
-2. Confirme que o usuário está no grupo implantado
-3. Aguarde 10-15 minutos para propagação
-4. Peça ao usuário para reiniciar o Teams/Outlook
-5. Verifique se o usuário possui as licenças M365 necessárias
-
-## Monitoramento do Agente Publicado
-
-### Visualizar Análises de Uso
-
-M365 Admin Center → Integrated apps → Seu Agente → Analytics:
-- Total de mensagens
-- Usuários ativos
-- Taxas de erro
-- Tempos de resposta
-
-### Verificar Saúde pelo M365
-
-A plataforma M365 faz ping periodicamente no seu endpoint `/health`. Monitore:
-```powershell
-az containerapp logs show --name aca-lg-agent --resource-group rg-ag365sdk --follow
-```
-
-### Revisar Application Insights
-
-Para telemetria detalhada:
-1. Azure Portal → Application Insights
-2. Verifique **Live Metrics** para atividade em tempo real
-3. Revise **Failures** para erros
-4. Analise **Performance** para requisições lentas
-
-## Despublicação / Remoção do Agente
-
-### Quando Despublicar
-
-| Cenário | Ação | Efeito |
-|---------|------|--------|
-| Bug crítico (conselho incorreto) | Despublicar imediatamente | Novas instâncias bloqueadas, existentes continuam |
-| Vulnerabilidade de segurança | Despublicar + notificar admin | Interromper todo o acesso o mais rápido possível |
-| Violação de política (tratamento de PII) | Despublicar + auditoria | Revisar o tratamento de dados |
-| Manutenção planejada | Despublicação opcional | Pode manter publicado se o endpoint permanecer ativo |
-
-### Despublicar do M365
-
-```powershell
-a365 unpublish
-```
-
-**O que isso faz**:
-- Remove o agente do catálogo do M365
-- Interrompe novas implantações
-- Instâncias existentes permanecem ativas
-
-### Limpeza Completa
-
-```powershell
-# Delete all instances first (Lesson 8)
-a365 instance delete-all
-
-# Then unpublish
-a365 unpublish
-
-# Finally remove blueprint
-a365 blueprint delete
-```
-
-## Melhores Práticas
-
-1. **Teste Antes da Implantação Ampla**
-   - Implante primeiro para um grupo de teste
-   - Verifique a funcionalidade
-   - Colete feedback
-   - Depois implante para toda a organização
-
-2. **Comunique aos Usuários**
-   - Anuncie a disponibilidade do novo agente
-   - Forneça instruções de uso
-   - Compartilhe exemplos de consultas
-   - Ofereça um canal de suporte
-
-3. **Monitore Após a Publicação**
-   - Observe as taxas de erro
-   - Acompanhe a adoção pelos usuários
-   - Revise o feedback
-   - Itere com base no uso
-
-4. **Mantenha o Endpoint Saudável**
-   - Monitore o endpoint `/health`
-   - Configure alertas para indisponibilidade
-   - Mantenha o SLA de disponibilidade
-
-5. **Controle de Versão**
-   - Marque versões do agente com tags
-   - Documente alterações
-   - Teste antes de atualizar o endpoint
-   - Comunique atualizações aos usuários
-
-## ❓ Perguntas Frequentes
-
-**P: Quanto tempo leva a aprovação do administrador?**
-R: No workshop, a aprovação é praticamente instantânea (você é o administrador). Em produção, depende da política organizacional — de horas a dias. Acompanhe pelo Admin Center se demorar mais de 30 minutos.
-
-**P: O que acontece com as instâncias existentes quando eu despublico?**
-R: As instâncias existentes continuam funcionando (não são excluídas). NOVAS instâncias não podem ser criadas. Os usuários não percebem interrupção até que o administrador remova explicitamente as instâncias.
-
-**P: Posso publicar na loja pública de apps do Teams?**
-R: No workshop, usamos `isPrivate: true` (somente organização). A publicação na loja pública requer revisão pela Microsoft e verificações de conformidade adicionais.
-
-**P: Quais permissões o administrador revisa?**
-R: O administrador valida: permissões do Microsoft Graph (User.Read, Conversations.Send), segurança do endpoint de mensagens (HTTPS obrigatório), links de política de privacidade e práticas de tratamento de dados.
-
-**P: Posso atualizar um agente publicado sem nova aprovação?**
-R: Atualizações de endpoint (nova URL do ACA) exigem nova publicação. Alterações de código por trás do mesmo endpoint não — as instâncias recebem automaticamente a nova versão.
-
-**P: E se vários agentes forem publicados?**
-R: Os usuários veem todos os agentes publicados na loja de apps do Teams (seção da organização). Cada um tem seu próprio status de aprovação e escopo de implantação.
+Procure por `agentBlueprintId` — deve ser um UUID não vazio. Se estiver vazio, reexecute a configuração da Lição 6.
 
 ---
 
-## 🏆 Desafios Autoguiados
+## Etapa 1: Executar `a365 publish`
 
-1. **Manifesto de Publicação**: Crie um `publication-manifest.json` completo com ícone personalizado, informações do desenvolvedor, URL de privacidade e termos de uso para seu agente
-2. **Implantação com Escopo**: Implante o agente para um grupo de segurança específico (não para toda a organização) e verifique que apenas membros do grupo podem descobri-lo
-3. **Simulação de Rollback**: Publique, despublique e depois republique seu agente. Documente o estado exato em cada etapa — o que acontece com as instâncias existentes?
-4. **Painel de Análises**: Após publicar, gere tráfego de teste e explore as Análises de Uso no M365 Admin Center. Documente as métricas disponíveis.
-5. **Política de Governança**: Escreva uma política de governança de uma página para sua organização definindo: quem pode enviar agentes, critérios de aprovação, campos obrigatórios no manifesto e SLA para revisão do administrador
+Execute o comando de publicação a partir do diretório que contém o `a365.config.json`:
+
+```powershell
+cd lesson-6-a365-prereq\labs\solution
+a365 publish
+```
+
+> **Nota:** `a365 publish` **não** aceita a flag `--config`. Ele sempre detecta automaticamente o `a365.config.json` no diretório de trabalho atual. Certifique-se de usar `cd` para o diretório correto antes de executar.
+
+### O que o comando faz (em ordem)
+
+| # | Ação | Resultado |
+|---|------|-----------|
+| 1 | Atualiza `manifest.json` com o ID do blueprint | `manifest/manifest.json` criado |
+| 2 | **Pausa** — solicita para abrir e personalizar o manifesto | (prompt interativo) |
+| 3 | Empacota manifesto + ícones em um zip | `manifest/manifest.zip` criado |
+| 4 | Adiciona permissões de API necessárias ao app cliente personalizado | Concessão de permissão no Entra |
+| 5 | Faz upload do pacote para o serviço M365 Titles | Entrada do agente no Admin Center |
+| 6 | Configura acesso ao título para todos os usuários | Disponibilidade: Todos os Usuários |
+| 7 | Configura identidade de carga de trabalho / credenciais federadas no app blueprint | 2 FICs no app blueprint |
+| 8 | Concede permissões do Microsoft Graph ao service principal do blueprint | Consentimento do Graph |
+
+---
+
+## Etapa 2: Personalizar o Manifesto do Agente
+
+Quando o CLI pausar, ele exibe saída semelhante a:
+
+```
+=== MANIFESTO ATUALIZADO ===
+Localização: ...\manifest\manifest.json
+
+=== PERSONALIZE O MANIFESTO DO SEU AGENTE ===
+  Version ('version')          - incremente para republicar (ex: 1.0.0 → 1.0.1)
+  Agent Name ('name.short')    - DEVE ter no máximo 30 caracteres
+  Agent Name ('name.full')     - nome descritivo completo
+  Descriptions                 - 'description.short' e 'description.full'
+  Developer Info               - developer.name, websiteUrl, privacyUrl
+  Icons                        - substitua color.png e outline.png
+
+Abrir manifesto no editor padrão agora? (Y/n):
+```
+
+Abra `manifest/manifest.json` e atualize os campos principais:
+
+```json
+{
+  "version": "1.0.0",
+  "name": {
+    "short": "Financial Market Agent",
+    "full": "Financial Market Agent (A365 Workshop)"
+  },
+  "description": {
+    "short": "Agente de IA para dados financeiros em tempo real.",
+    "full": "Agente baseado em LangGraph que fornece preços de ações, notícias financeiras e insights de portfólio via plataforma Microsoft Agent 365."
+  },
+  "developer": {
+    "name": "Workshop Developer",
+    "websiteUrl": "https://example.com",
+    "privacyUrl": "https://example.com/privacy",
+    "termsOfUseUrl": "https://example.com/terms"
+  }
+}
+```
+
+> **Regras:**
+> - `name.short` deve ter **≤ 30 caracteres**
+> - `version` deve ser **maior** que qualquer versão publicada anteriormente
+> - **Não** altere os campos `id` ou `bots[0].botId` — foram injetados pelo CLI e devem corresponder ao ID do blueprint
+
+Quando terminar de editar, volte ao terminal e digite:
+
+```
+continue
+```
+
+---
+
+## Etapa 3: Verificar Publicação Bem-sucedida
+
+### Saída esperada do CLI
+
+```
+✅ Upload succeeded
+✅ Title access configured for all users
+✅ Microsoft Graph permissions granted successfully
+✅ Agent blueprint configuration completed successfully
+✅ Publish completed successfully!
+```
+
+### Verificar arquivos de manifesto criados
+
+```powershell
+Test-Path lesson-6-a365-prereq\labs\solution\manifest\manifest.json   # → True
+Test-Path lesson-6-a365-prereq\labs\solution\manifest\manifest.zip    # → True
+```
+
+### Verificar no Microsoft 365 Admin Center
+
+1. Acesse [https://admin.cloud.microsoft/#/agents/all](https://admin.cloud.microsoft/#/agents/all)
+2. Abra a aba **Registry**
+3. Seu agente (ex: "Financial Market Agent") deve aparecer com **Disponibilidade: Todos os Usuários** ✅
+
+> **Nota:** Pode levar **5–10 minutos** após a publicação para o agente aparecer. Atualize a página se não estiver visível.
+
+### Verificar credenciais de identidade federada
+
+1. [Portal Azure](https://portal.azure.com) → **Microsoft Entra ID** → **Registros de aplicativo** → buscar o app blueprint
+2. **Certificados e segredos** → **Credenciais federadas**
+3. Você deve ver **2 credenciais de identidade federada (FICs)** ✅
+
+---
+
+## Opções Disponíveis do `a365 publish`
+
+```
+a365 publish [opções]
+
+Opções:
+  --dry-run         Mostra alterações sem gravar arquivos ou chamar APIs
+  --skip-graph      Pula identidade federada Graph e atribuições de função
+  --mos-env <env>   Identificador de ambiente MOS (ex: prod, dev) [padrão: prod]
+  --mos-token <t>   Substitui token pessoal MOS — ignora script e cache
+  -v, --verbose     Habilita logging detalhado
+```
+
+**Exemplo dry-run** — visualizar o que aconteceria sem fazer alterações:
+
+```powershell
+a365 publish --dry-run
+```
+
+---
+
+## Solução de Problemas
+
+### Erro `Agent already exists`
+
+**Causa:** O mesmo número de versão já está publicado.  
+**Correção:** Incremente `version` em `manifest/manifest.json` e execute `a365 publish` novamente.
+
+```json
+"version": "1.0.1"
+```
+
+### Erro `Permissions missing`
+
+**Causa:** Permissões do blueprint ou MCP não foram concluídas na configuração.  
+**Correção:**
+```powershell
+cd lesson-6-a365-prereq\labs\solution
+a365 setup permissions mcp --config a365.config.json
+a365 setup permissions bot --config a365.config.json
+a365 publish
+```
+
+### Agente não aparece no Admin Center após 10+ minutos
+
+1. Verifique se todas as linhas ✅ apareceram na saída do CLI — se não, reexecute `a365 publish`
+2. Use `admin.cloud.microsoft` (não `admin.microsoft.com`) — o registro de Agents está na nova URL
+3. Confirme que está conectado ao tenant M365 correto no navegador
+4. Verifique se `agentBlueprintId` em `a365.generated.config.json` não está vazio
+
+### `manifest.json` com ID do blueprint faltando (mostra placeholder)
+
+**Causa:** `a365 publish` foi executado antes de `a365 setup all` concluir com sucesso.  
+**Correção:** Verifique se `a365.generated.config.json` tem `agentBlueprintId`, depois reexecute `a365 publish`.
+
+---
+
+## Comandos de Limpeza
+
+```powershell
+# Remove a identidade da instância do agente do Entra (se instâncias foram criadas na Lição 8)
+a365 cleanup instance --config a365.config.json
+
+# Remove o registro do blueprint do Entra (também remove do Admin Center)
+a365 cleanup blueprint --config a365.config.json
+
+# Remove recursos Azure (App Service, App Service Plan)
+a365 cleanup azure --config a365.config.json
+```
+
+---
+
+## Referência Rápida
+
+| Comando | Finalidade |
+|---------|------------|
+| `a365 publish` | Empacotar e publicar agente no M365 Admin Center |
+| `a365 publish --dry-run` | Visualizar alterações de publicação sem executar |
+| `a365 config display -g` | Exibir configuração atual (verificar agentBlueprintId) |
+| `a365 query-entra blueprint-scopes` | Listar escopos e status de consentimento do blueprint |
+| `a365 cleanup blueprint` | Remover blueprint do Entra |
+| `a365 cleanup instance` | Remover instância/usuário do agente do Entra |
+
+---
+
+## ❓ Perguntas Frequentes
+
+**P: Preciso publicar novamente após alterar o código do agente?**  
+R: Não. Alterações de código atrás da mesma URL de endpoint de mensagens têm efeito imediato. Republique apenas quando o manifesto mudar (nome, ícone, permissões) ou a URL do endpoint mudar.
+
+**P: Preciso de aprovação de administrador antes que o agente apareça no Admin Center?**  
+R: Não — `a365 publish` envia diretamente ao registro do Admin Center do tenant. No workshop, você é o administrador. A aprovação do administrador ocorre na *criação de instâncias* (Lição 8).
+
+**P: Posso republicar sem deletar a versão antiga?**  
+R: Sim. Incremente `version` em `manifest/manifest.json` e execute `a365 publish` novamente.
+
+**P: E se eu precisar alterar a URL do endpoint de mensagens?**  
+R: Execute o comando de atualização do endpoint primeiro, depois republique:
+```powershell
+a365 setup blueprint --endpoint-only --update-endpoint "https://nova-url/api/messages" --config a365.config.json
+a365 publish
+```
 
 ---
 
 ## Próximos Passos
 
-- **Lição 8**: Criando instâncias do agente no Teams para usuários
-- Aprenda sobre gerenciamento do ciclo de vida de instâncias
-- Explore instâncias pessoais vs compartilhadas
+**Lição 8**: Configure o agente no Teams Developer Portal, solicite uma instância do agente no Teams e comece a interagir com seu agente.
+
+---
 
 ## Referências
 
-- [M365 Admin Center](https://admin.microsoft.com)
-- [Microsoft Agent 365 Publishing](https://learn.microsoft.com/microsoft-agent-365/developer/)
-- [Integrated Apps Management](https://learn.microsoft.com/microsoft-365/admin/manage/manage-deployment-of-add-ins)
+- [Microsoft Agent 365 — Publicar no Admin Center](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/publish)
+- [Ciclo de Vida do Desenvolvimento Agent 365](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/a365-dev-lifecycle)
+- [Referência CLI Agent 365 — comando publish](https://learn.microsoft.com/en-us/microsoft-agent-365/developer/reference/cli/publish)
+- [Microsoft 365 Admin Center — Registro de Agents](https://admin.cloud.microsoft/#/agents/all)
