@@ -279,10 +279,8 @@ a365-workshop/
 ├── lesson-2-hosted-maf/  # Hosted agent with Microsoft Agent Framework
 ├── lesson-3-hosted-langgraph/ # Hosted agent with LangGraph on Foundry
 ├── lesson-4-aca-langgraph/    # Connected agent on Azure Container Apps
-├── lesson-6-a365-langgraph/  # Full A365 SDK (LangGraph + Bot Framework + OTel)
-├── lesson-5-a365-prereq/     # Agent 365 cross-tenant setup
-├── lesson-7-publish/         # Publish to M365 Admin Center
-├── lesson-8-instances/       # Create agent instances in Teams
+├── lesson-5-a365-langgraph/  # Full A365 SDK (LangGraph + Bot Framework + OTel)
+├── lesson-6-a365-setup/      # Complete A365 setup, publish & instances
 ├── test/                     # Test client (chat.py)
 ```
 

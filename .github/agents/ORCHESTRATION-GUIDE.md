@@ -257,10 +257,8 @@ project-root/
 ├── lesson-2-hosted-maf/
 ├── lesson-3-hosted-langgraph/
 ├── lesson-4-aca-langgraph/
-├── lesson-5-a365-prereq/
-├── lesson-6-a365-sdk/
-├── lesson-7-publish/
-├── lesson-8-instances/
+├── lesson-5-a365-langgraph/
+├── lesson-6-a365-setup/
 │
 ├── prereq/
 └── test/

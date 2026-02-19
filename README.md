@@ -16,9 +16,7 @@ Practical workshop to build, deploy, and manage AI agents using **Microsoft Foun
 | [3](lesson-3-hosted-langgraph/) | Hosted Agent (LangGraph) | LangGraph + adapter | LangGraph container hosted in Foundry |
 | [4](lesson-4-aca-langgraph/) | Connected Agent (ACA) | FastAPI + LangGraph | Own container in ACA, registered in Foundry Control Plane |
 | [5](lesson-5-a365-langgraph/) | A365 SDK Integration | Azure Monitor + Bot Framework | Enhanced agent with observability, Bot Framework, Adaptive Cards |
-| [6](lesson-6-a365-prereq/) | Agent 365 (Prereqs) | A365 CLI | Preparation to publish agents in Microsoft 365 |
-| [7](lesson-7-publish/) | Publishing to M365 | A365 CLI + Admin Center | Step-by-step guide to publish agent to M365 Admin Center |
-| [8](lesson-8-instances/) | Creating Instances | Teams + A365 CLI | Guide to create personal and shared agent instances in Teams |
+| [6](lesson-6-a365-setup/) | Agent 365: Complete Setup, Publish & Instances | A365 CLI + Teams | Full A365 lifecycle: config, blueprint, publish to M365 Admin Center, create agent instances in Teams |
 
 ## Workshop Materials
 
@@ -121,32 +119,15 @@ Enhanced Financial Market Agent integrated with Microsoft Agent 365 SDK. Adds:
 
 The agent now supports both REST API (`/chat`) and Bot Framework Activity endpoints, enabling seamless integration with Microsoft 365 while maintaining backward compatibility.
 
-### Lesson 6 - Microsoft Agent 365 (Prerequisites)
+### Lesson 6 - Microsoft Agent 365: Complete Setup, Publish & Instances
 
-A365 CLI configuration, app registration in Entra ID, and Agent Blueprint setup to publish agents in Microsoft 365 (Teams, Outlook). Covers the cross-tenant scenario (Azure != M365).
-
-### Lesson 7 - Publishing to Microsoft 365
-
-Step-by-step guide to publish your agent to the M365 Admin Center using the A365 CLI. Covers:
-- Agent Blueprint publication workflow
-- Admin approval process in M365 Admin Center
-- Deployment scope configuration (all users, specific groups, test users)
-- Post-publication updates and maintenance
-- Troubleshooting common publication issues
-
-Once published and approved, your agent becomes available for users to create instances in Teams and other M365 services.
-
-### Lesson 8 - Creating Agent Instances in Teams
-
-Complete guide to creating and managing agent instances in Microsoft Teams:
-- **Personal Instances** for individual productivity
-- **Shared Instances** for team collaboration
-- Instance lifecycle management (suspend, resume, delete)
-- Testing agents directly in Teams
-- Monitoring usage and performance analytics
-- Troubleshooting instance creation and connectivity issues
-
-Users can interact with agents through the Teams chat interface, with support for Adaptive Cards and rich media responses.
+Unified end-to-end A365 lesson covering the full agent lifecycle for Microsoft 365. Includes:
+- **A365 CLI configuration** and authentication for cross-tenant scenarios (Azure Tenant A + M365 Tenant B)
+- **Agent Blueprint registration** in M365 Entra ID
+- **Publishing** the agent with `a365 publish` and navigating the M365 Admin Center approval workflow
+- **Teams Developer Portal** configuration and instance request flow
+- **Admin approval**, activation, and user discovery in Teams
+- **Testing** in Teams (personal and team chat), monitoring via Application Insights
 
 ## Approach comparison
 

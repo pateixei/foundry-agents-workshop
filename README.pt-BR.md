@@ -16,9 +16,7 @@ Workshop prático para construir, implantar e gerenciar agentes de IA usando o *
 | [3](lesson-3-hosted-langgraph/) | Agente Hospedado (LangGraph) | LangGraph + adaptador | Contêiner LangGraph hospedado no Foundry |
 | [4](lesson-4-aca-langgraph/) | Agente Conectado (ACA) | FastAPI + LangGraph | Contêiner próprio no ACA, registrado no Control Plane do Foundry |
 | [5](lesson-5-a365-langgraph/) | Integração A365 SDK | Azure Monitor + Bot Framework | Agente aprimorado com observabilidade, Bot Framework, Adaptive Cards |
-| [6](lesson-6-a365-prereq/) | Agent 365 (Pré-requisitos) | A365 CLI | Preparação para publicar agentes no Microsoft 365 |
-| [7](lesson-7-publish/) | Publicação no M365 | A365 CLI + Admin Center | Guia passo a passo para publicar agente no M365 Admin Center |
-| [8](lesson-8-instances/) | Criando Instâncias | Teams + A365 CLI | Guia para criar instâncias de agente pessoais e compartilhadas no Teams |
+| [6](lesson-6-a365-setup/) | Agent 365: Setup Completo, Publicação e Instâncias | A365 CLI + Teams | Ciclo de vida completo do A365: config, blueprint, publicação no M365 Admin Center, criação de instâncias no Teams |
 ## Materiais do Workshop
 
 Além do código das lições, este repositório inclui recursos abrangentes de facilitação e para estudantes:
@@ -153,32 +151,15 @@ Agente de Mercado Financeiro aprimorado integrado com o SDK do Microsoft Agent 3
 
 O agente agora suporta tanto API REST (`/chat`) quanto endpoints Bot Framework Activity, permitindo integração transparente com o Microsoft 365 mantendo compatibilidade retroativa.
 
-### Lição 6 - Microsoft Agent 365 (Pré-requisitos)
+### Lição 6 - Microsoft Agent 365: Setup Completo, Publicação e Instâncias
 
-Configuração do A365 CLI, registro de aplicativo no Entra ID e configuração do Agent Blueprint para publicar agentes no Microsoft 365 (Teams, Outlook). Cobre o cenário cross-tenant (Azure != M365).
-
-### Lição 7 - Publicação no Microsoft 365
-
-Guia passo a passo para publicar seu agente no M365 Admin Center usando o A365 CLI. Cobre:
-- Fluxo de publicação do Agent Blueprint
-- Processo de aprovação administrativa no M365 Admin Center
-- Configuração de escopo de implantação (todos os usuários, grupos específicos, usuários de teste)
-- Atualizações e manutenção pós-publicação
-- Resolução de problemas comuns de publicação
-
-Uma vez publicado e aprovado, seu agente fica disponível para que os usuários criem instâncias no Teams e em outros serviços M365.
-
-### Lição 8 - Criando Instâncias de Agente no Teams
-
-Guia completo para criar e gerenciar instâncias de agente no Microsoft Teams:
-- **Instâncias Pessoais** para produtividade individual
-- **Instâncias Compartilhadas** para colaboração em equipe
-- Gerenciamento do ciclo de vida das instâncias (suspender, retomar, excluir)
-- Testar agentes diretamente no Teams
-- Monitoramento de uso e análise de desempenho
-- Resolução de problemas na criação e conectividade de instâncias
-
-Os usuários podem interagir com agentes através da interface de chat do Teams, com suporte a Adaptive Cards e respostas com mídia rica.
+Lição A365 unificada de ponta a ponta cobrindo o ciclo de vida completo do agente no Microsoft 365. Inclui:
+- **Configuração do A365 CLI** e autenticação para cenários cross-tenant (Azure Tenant A + M365 Tenant B)
+- **Registro do Agent Blueprint** no Entra ID do M365
+- **Publicação** do agente com `a365 publish` e fluxo de aprovação no M365 Admin Center
+- **Configuração do Teams Developer Portal** e fluxo de solicitação de instância
+- **Aprovação do admin**, ativação e descoberta do agente no Teams
+- **Testes** no Teams (chat pessoal e de equipe), monitoramento via Application Insights
 
 ## Comparação de abordagens
 
@@ -209,10 +190,7 @@ foundry-agents-workshop/
     demos/ labs/ media/
   lesson-5-a365-langgraph/         # Integração A365 SDK (observabilidade, Bot Framework)
     demos/ labs/
-  lesson-6-a365-prereq/            # Pré-requisitos do Agent 365
-    demos/ labs/
-  lesson-7-publish/                # Guia de publicação (M365 Admin Center)
-  lesson-8-instances/              # Guia de criação de instâncias (Teams)
+  lesson-6-a365-setup/            # Setup completo do Agent 365 (config, publicação, instâncias)
   instructor-guide/                # Todos os materiais do instrutor (guia, agenda, scripts, checklists)
   student-kit/                     # Guia de setup e links de recursos para estudantes
   test/

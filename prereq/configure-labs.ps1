@@ -299,7 +299,7 @@ $solutionDirs = @(
     (Join-Path $WorkspaceRoot "lesson-3-hosted-langgraph" "labs" "solution"),
     (Join-Path $WorkspaceRoot "lesson-4-aca-langgraph" "labs" "solution"),
     (Join-Path $WorkspaceRoot "lesson-5-a365-langgraph" "labs" "solution"),
-    (Join-Path $WorkspaceRoot "lesson-6-a365-prereq" "labs" "solution")
+    (Join-Path $WorkspaceRoot "lesson-6-a365-setup" "labs" "solution")
 )
 
 foreach ($solDir in $solutionDirs) {
@@ -374,4 +374,4 @@ Write-Host "    2. Lesson 1: cd lesson-1-declarative/labs/solution && python cre
 Write-Host "    3. Lesson 2: cd lesson-2-hosted-maf/labs/solution && ./deploy.ps1" -ForegroundColor White
 Write-Host "    4. Lesson 3: cd lesson-3-hosted-langgraph/labs/solution && ./deploy.ps1" -ForegroundColor White
 Write-Host "    5. Lesson 4: cd lesson-4-aca-langgraph/labs/solution && ./deploy.ps1" -ForegroundColor White
-Write-Host "    6. Lesson 5: cd lesson-5-a365-langgraph/labs/solution && ./deploy.ps1" -ForegroundColor White  Write-Host "    7. Lesson 6: cd lesson-6-a365-prereq/solution && ./setup-entra-app.ps1 (requires M365TenantId, M365Domain, AcaUrl, ManagerEmail)" -ForegroundColor WhiteWrite-Host ""
+Write-Host "    6. Lesson 5: cd lesson-5-a365-langgraph/labs/solution && ./deploy.ps1" -ForegroundColor White  Write-Host "    7. Lesson 6: cd lesson-6-a365-setup/solution && ./setup-entra-app.ps1 (requires M365TenantId, M365Domain, AcaUrl, ManagerEmail)" -ForegroundColor WhiteWrite-Host ""

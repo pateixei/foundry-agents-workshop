@@ -171,7 +171,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
 **Instructor demonstrates, students follow**:
 
 ```powershell
-cd lesson-6-a365-prereq
+cd lesson-6-a365-setup
 
 # Create config file
 a365 config init
@@ -681,14 +681,32 @@ Invoke-RestMethod -Uri "https://<aca-fqdn>/api/messages" -Method Post -Body $act
 
 ---
 
-### 14:30 | Wrap Modules 5-6
+### 14:30 | Wrap Modules 5-6 (SDK + A365 Setup)
 
 **Summary**:
-> "You've integrated A365 SDK (Module 5) and configured A365 CLI (Module 6)."
+> "You've integrated A365 SDK (Module 5), configured A365 CLI, and registered the Agent Blueprint (Module 6)."
 >
-> "Next modules: Publish to M365 Admin Center (Module 7) and create agent instances in Teams (Module 8)."
+> "Next: Publish to M365 Admin Center (Step 3) and create agent instances in Teams (Steps 4-8) — covered later today."
 >
-> "Tomorrow (Day 4): Publishing workflow and end-user testing."
+> "Break (15 min) — then: Publishing workflow (14:45)."
+
+---
+
+### 14:45-17:00 | Module 6 Continued: Publish, Teams Config & End-User Testing
+
+> **Reference**: See `lesson-6-a365-setup/README.md` Steps 3-8 for the full student-facing workflow.
+> Instructional script for the publishing and instances portions is located in `instructor-guide/MODULES-7-8-PUBLISH-INSTANCES-SCRIPT.md` — that file's content is now considered **part of Module 6** and should be delivered immediately after the Blueprint Registration section above.
+
+**Deliver in order**:
+1. **Step 3: Publish agent** — `a365 publish` command, publication manifest, M365 Admin Center submission (30 min)
+2. **Step 4-5: Teams Developer Portal** — App configuration, instance request (20 min)
+3. **Step 6: Admin approval** — Admin portal walkthrough + approval (20 min)
+4. **Steps 7-8: Test & Monitor in Teams** — Personal chat, team chat, Application Insights (30 min)
+
+**Final Wrap Module 6**:
+> "Congratulations! Your agent is live in Microsoft Teams. End users can discover, install, and interact with it."
+>
+> "Tomorrow (Day 5): Agent evaluation and production best practices."
 
 ---
 
@@ -710,7 +728,7 @@ Invoke-RestMethod -Uri "https://<aca-fqdn>/api/messages" -Method Post -Body $act
 ### After Modules 5-6:
 - [ ] Update `7-DELIVERY-LOG.md` with A365-specific issues
 - [ ] Document cross-tenant auth troubleshooting
-- [ ] Verify all students ready for Module 7 (Blueprint registered)
+- [ ] Verify all students ready for publish step (Blueprint registered)
 
 ---
 
@@ -741,6 +759,9 @@ az login --tenant <m365-tenant-id>
 - ✅ 90%+ see telemetry in Application Insights
 - ✅ 75%+ implement `/api/messages` endpoint
 - ✅ 100% understand cross-tenant architecture
+- ✅ 85%+ successfully submit agent for publication (`a365 publish`)
+- ✅ 80%+ configure agent in Teams Developer Portal
+- ✅ 75%+ complete end-to-end Teams test (personal or team chat)
 
 ---
 

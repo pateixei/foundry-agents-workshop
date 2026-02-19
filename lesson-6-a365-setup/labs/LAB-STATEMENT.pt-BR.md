@@ -312,7 +312,7 @@ az account show --query "{tenant:tenantId, user:user.name}" -o table
 **5.2 - Navegar até o diretório da lição**
 
 ```powershell
-cd lesson-6-a365-prereq
+cd lesson-6-a365-setup
 ```
 
 **5.3 - Criar o arquivo de configuração**
@@ -429,7 +429,7 @@ a365 -h
 **7.3 - Exibir a configuração**
 
 ```powershell
-cd lesson-6-a365-prereq
+cd lesson-6-a365-setup
 a365 config display
 ```
 
@@ -459,7 +459,7 @@ az account show --query "{tenant:tenantId, user:user.name}" -o table
 **8.2 - Executar o comando de configuração do Blueprint**
 
 ```powershell
-cd lesson-6-a365-prereq
+cd lesson-6-a365-setup
 a365 setup blueprint --config a365.config.json
 ```
 

@@ -295,8 +295,7 @@ R: Permissões delegadas atuam em nome do usuário (User.Read). Permissões de a
 
 ## Próximos Passos
 
-- **Lição 7**: Publicar no M365 Admin Center
-- **Lição 8**: Criar instâncias de agente no Teams
+- **[Lição 6](../lesson-6-a365-setup/README.pt-BR.md)**: Setup Completo do A365, Publicação e Instâncias — configure o A365 CLI, registre o Agent Blueprint, publique no M365 Admin Center e crie instâncias de agente no Teams
 
 ---
 

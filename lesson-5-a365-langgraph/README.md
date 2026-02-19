@@ -198,7 +198,7 @@ az containerapp update --name aca-lg-agent --resource-group $rgName \
 
 **LESSON 6** - Update A365 config with new endpoint:
 ```powershell
-cd ../lesson-6-a365-prereq
+cd ../lesson-6-a365-setup
 a365 setup blueprint --skip-infrastructure
 ```
 
@@ -366,8 +366,7 @@ A: Delegated permissions act on behalf of the user (User.Read). Application perm
 
 ## Next Steps
 
-- **Lesson 7**: Publish to M365 Admin Center
-- **Lesson 8**: Create agent instances in Teams
+- **[Lesson 6](../lesson-6-a365-setup/README.md)**: Complete A365 Setup, Publish & Instances — configure A365 CLI, register Agent Blueprint, publish to M365 Admin Center, and create agent instances in Teams
 
 ---
 

@@ -476,7 +476,7 @@ Each day follows this pattern:
 **✅ Checkpoint**: Agent enhanced with A365 SDK features
 
 **01:45-02:00 | Lesson 6: A365 Prerequisites**
-- 📖 Read: `lesson-6-a365-prereq/README.md` (5 min)
+- 📖 Read: `lesson-6-a365-setup/README.md` (5 min)
 - 🛠️ Student Lab (10 min):
   - Install A365 CLI: `a365 --version`
   - Configure for cross-tenant scenario
@@ -491,8 +491,8 @@ Each day follows this pattern:
 
 ### Hour 3: Publishing to M365 Admin Center (02:00-03:00)
 
-**02:00-02:15 | Lesson 7: Publishing Workflow**
-- 📖 Read: `lesson-7-publish/README.md` (5 min)
+**02:00-02:15 | Lesson 6 — Step 3: Publishing Workflow**
+- 📖 Read: `lesson-6-a365-setup/README.md#step-3---publish-to-m365-admin-center` (5 min)
 - 📊 Presentation: "Publishing Process" (10 min)
   - Agent Blueprint submission
   - Admin Center approval workflow
@@ -516,9 +516,9 @@ Each day follows this pattern:
 
 ### Hour 4: Creating Agent Instances in Teams (03:00-04:00)
 
-**03:00-03:30 | Lesson 8: Teams Integration**
-- 📖 Read: `lesson-8-instances/README.md` (5 min)
-- 🎬 Demo: Create agent instance in Teams (10 min)
+**03:00-03:30 | Lesson 6 — Steps 4–8: Teams Integration**
+- 📖 Read: `lesson-6-a365-setup/README.md#step-4---configure-agent-in-teams-developer-portal` (5 min)
+- 🎦 Demo: Configure Teams Developer Portal & request instance (10 min)
 - 🛠️ Student Lab (15 min):
   - Create personal agent instance in Teams
   - Create shared team instance
@@ -539,10 +539,10 @@ Each day follows this pattern:
 - 📝 Prep: Think about your capstone project idea
 
 **✅ Day 4 Success Criteria**:
-- ✅ Agent published to M365 (demo)
-- ✅ Agent instance created in Teams
-- ✅ Understand end-to-end publishing workflow
-- ✅ A365 SDK integration complete
+- ✅ Agent published to M365 Admin Center (Lesson 6, Step 3)
+- ✅ Agent instance configured in Teams Developer Portal and approved (Lesson 6, Steps 4-6)
+- ✅ Agent tested in Teams chat (Lesson 6, Step 7)
+- ✅ Understand end-to-end A365 lifecycle (config → blueprint → publish → instance → test)
 
 ---
 
