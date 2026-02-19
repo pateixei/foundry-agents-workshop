@@ -233,8 +233,7 @@ project-root/
 │   ├── MODULE-2-HOSTED-MAF-SCRIPT.md
 │   ├── MODULE-3-HOSTED-LANGGRAPH-SCRIPT.md
 │   ├── MODULE-4-ACA-DEPLOYMENT-SCRIPT.md
-│   ├── MODULES-5-6-A365-SETUP-SDK-SCRIPT.md
-│   └── MODULES-7-8-PUBLISH-INSTANCES-SCRIPT.md
+│   └── MODULES-5-6-A365-SETUP-SDK-SCRIPT.md (includes publish + instances)
 │
 ├── TECHNICAL-VALIDATION-REPORT.md  # Technical validation summary
 ├── capability-host.md              # Capability Host reference

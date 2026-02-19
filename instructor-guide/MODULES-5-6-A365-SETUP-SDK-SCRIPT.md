@@ -3,7 +3,7 @@
 ---
 
 **Modules**: 5-6 - Agent 365 Prerequisites & SDK Integration  
-**Duration**: 180 minutes (Day 3 Hours 3-4 + Day 4 Hour 1: 11:15-14:30)  
+**Duration**: 240 minutes (Day 4 Hours 1-4: 00:00-04:00)  
 **Instructor**: Technical SME + M365 Specialist  
 **Location**: `instructor-guide/MODULES-5-6-A365-SETUP-SDK-SCRIPT.md`  
 **Agent**: 3 (Instructional Designer)  
@@ -24,7 +24,7 @@ By the end of these modules, students will be able to:
 
 ## 📊 Module Overview
 
-### Module 5: A365 SDK Integration (120 min - Day 3 Hour 3 + Day 4 Hour 1)
+### Module 5: A365 SDK Integration (105 min - Day 4 Hours 1-2)
 | Element | Duration | Method |
 |---------|----------|--------|
 | **SDK Overview** | 15 min | A365 SDK capabilities |
@@ -33,13 +33,15 @@ By the end of these modules, students will be able to:
 | **Adaptive Cards** | 25 min | Rich M365 responses |
 | **Deploy & Test** | 20 min | Deployment + Teams testing |
 
-### Module 6: A365 Prerequisites (60 min - Day 3 Hour 4)
+### Module 6: A365 Setup, Publish & Instances (135 min - Day 4 Hours 2-4)
 | Element | Duration | Method |
 |---------|----------|--------|
 | **Cross-Tenant Scenario** | 15 min | Presentation (Azure vs M365 tenant) |
 | **A365 CLI Setup** | 20 min | Installation + configuration |
 | **Agent Blueprint Registration** | 20 min | CLI commands + Entra ID verification |
-| **Troubleshooting** | 5 min | Common auth issues |
+| **Publish to Admin Center** | 35 min | Step 3 guided workflow |
+| **Teams Instance Workflow** | 35 min | Steps 4-8 demo + lab |
+| **Troubleshooting** | 10 min | Common auth/publish issues |
 
 ---
 
@@ -171,34 +173,22 @@ Copyright (c) Microsoft Corporation. All rights reserved.
 **Instructor demonstrates, students follow**:
 
 ```powershell
-cd lesson-6-a365-setup
+cd lesson-6-a365-setup\labs\solution
 
-# Create config file
-a365 config init
+# Create config file manually (agenda-aligned with Lesson 6 README)
+notepad a365.config.json
 ```
 
-**CLI prompts** (show expected Q&A):
-```
-? Tenant ID (M365 Tenant): <paste-your-m365-tenant-id>
-? Subscription ID (Azure): <paste-your-azure-subscription-id>
-? Agent Name: financial-advisor-aca
-? Messaging Endpoint: https://aca-lg-agent.nicebeach-abc123.eastus.azurecontainerapps.io/api/messages
-? Need Azure deployment (create App Service)? No  ← IMPORTANT: We use existing ACA!
-```
+**Use the Lesson 6 template**:
+- `tenantId`: M365 Tenant (Tenant B)
+- `clientAppId`: App registration from prerequisite step
+- `needDeployment`: `false`
+- `messagingEndpoint`: ACA `/api/messages` endpoint from lesson 4
+- `resourceGroup` + `location`: values from lesson 4 deployment
 
-**Generated file**: `a365.config.json`
-
-**Show content**:
-```json
-{
-  "tenantId": "<m365-tenant-id>",
-  "subscriptionId": "<azure-subscription-id>",
-  "agentName": "financial-advisor-aca",
-  "messagingEndpoint": "https://aca-lg-agent.nicebeach-abc123.eastus.azurecontainerapps.io/api/messages",
-  "needDeployment": false,
-  "resourceGroup": "rg-a365-placeholder",  // Not used (needDeployment=false)
-  "appServicePlanName": "placeholder"       // Not used
-}
+**Validation**:
+```powershell
+a365 config display
 ```
 
 **Explain `needDeployment: false`**:
@@ -287,7 +277,7 @@ az role assignment list --assignee $(az ad signed-in-user show --query id -o tsv
 **Student Task**:
 ```powershell
 # Run A365 setup
-a365 setup blueprint
+a365 setup all
 ```
 
 **What this does** (narrate step-by-step):
@@ -692,10 +682,10 @@ Invoke-RestMethod -Uri "https://<aca-fqdn>/api/messages" -Method Post -Body $act
 
 ---
 
-### 14:45-17:00 | Module 6 Continued: Publish, Teams Config & End-User Testing
+### Hour 3-4 | Module 6 Continued: Publish, Teams Config & End-User Testing
 
-> **Reference**: See `lesson-6-a365-setup/README.md` Steps 3-8 for the full student-facing workflow.
-> Instructional script for the publishing and instances portions is located in `instructor-guide/MODULES-7-8-PUBLISH-INSTANCES-SCRIPT.md` — that file's content is now considered **part of Module 6** and should be delivered immediately after the Blueprint Registration section above.
+> **Reference**: Use `lesson-6-a365-setup/README.md` Steps 3-8 as the master workflow.
+> This section is the canonical instructor flow for publish + instance lifecycle.
 
 **Deliver in order**:
 1. **Step 3: Publish agent** — `a365 publish` command, publication manifest, M365 Admin Center submission (30 min)

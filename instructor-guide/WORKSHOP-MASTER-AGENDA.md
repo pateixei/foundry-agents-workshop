@@ -155,7 +155,7 @@ Each day follows this pattern:
 - 📖 Read together: `lesson-2-hosted-maf/README.md` (5 min)
 - 🎬 Instructor Demo (10 min):
   - Code walkthrough: `src/agent/finance_agent.py`
-  - Explain MAF tool decorators
+  - Explain MAF plain Python tools and registration via tool list
   - Show Dockerfile and container structure
   - Preview deploy.ps1 automation
 - 🛠️ Student Lab (15 min):
@@ -171,7 +171,7 @@ Each day follows this pattern:
 **03:00-03:30 | Lesson 2: Hosted Agent (MAF) - Part 2 (Deployment)**
 - 🛠️ Student Lab (30 min):
   ```powershell
-  cd lesson-2-hosted-maf/foundry-agent
+  cd lesson-2-hosted-maf/labs/solution
   .\deploy.ps1
   ```
   - Build container image in ACR
@@ -239,7 +239,7 @@ Each day follows this pattern:
   - **Task 1** (15 min): Add a new custom tool (e.g., currency converter)
   - **Task 2** (15 min): Implement error handling and logging
   - **Task 3** (15 min): Test tool locally, then redeploy
-  - **Stretch Goal**: Implement streaming response
+  - **Stretch Goal**: Implement async tools or structured logging
 
 **01:45-02:00 | Code Review & Discussion**
 - 👥 Pair share: Show your custom tool
@@ -284,7 +284,7 @@ Each day follows this pattern:
 **03:00-03:30 | Lesson 3: Hosted Agent (LangGraph) - Part 2 (Deployment)**
 - 🛠️ Student Lab (30 min):
   ```powershell
-  cd lesson-3-hosted-langgraph/langgraph-agent
+  cd lesson-3-hosted-langgraph/labs/solution
   .\deploy.ps1
   ```
   - Build LangGraph container
@@ -356,7 +356,7 @@ Each day follows this pattern:
 **01:15-01:50 | Lab: Deploy Connected Agent**
 - 🛠️ Student Lab (35 min):
   ```powershell
-  cd lesson-4-aca-langgraph/aca-agent
+  cd lesson-4-aca-langgraph/labs/solution
   .\deploy.ps1
   ```
   - Deploy ACA infrastructure (Bicep)

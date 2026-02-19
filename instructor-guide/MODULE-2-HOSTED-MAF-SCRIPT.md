@@ -13,7 +13,7 @@
 ## 🎯 Learning Objectives
 
 By the end of this module, students will be able to:
-1. **Implement** custom Python tools using Microsoft Agent Framework decorators
+1. **Implement** custom Python tools using Microsoft Agent Framework plain functions and tool lists
 2. **Build** and containerize a MAF agent application
 3. **Deploy** containerized agent to Azure Container Registry (ACR)
 4. **Register** agent as Hosted Agent in Foundry
@@ -181,7 +181,7 @@ labs/solution/
 
 **Say**:
 > "Clean separation of concerns:"
-> - `finance_agent.py` - Agent logic with MAF decorators
+> - `finance_agent.py` - Agent logic with MAF tool registration list
 > - `finance_tools.py` - Business logic (stock API, calculations)
 > - `app.py` - HTTP server (provided by MAF SDK)
 > - `Dockerfile` - Containerization
@@ -524,7 +524,7 @@ python test_agent.py
 
 **Student Task**:
 ```powershell
-cd lesson-2-hosted-maf/foundry-agent
+cd lesson-2-hosted-maf/labs/solution
 
 # Execute deployment
 .\deploy.ps1
@@ -591,7 +591,7 @@ Step 8/8 : CMD ["python", "-m", "src.main"]
 
 **Instructor demonstrates**:
 ```powershell
-cd lesson-2-hosted-maf/foundry-agent
+cd lesson-2-hosted-maf/labs/solution
 
 # Check agent status
 az cognitiveservices agent status `
@@ -756,8 +756,7 @@ az cognitiveservices agent logs --name financial-advisor-maf --follow
 
 1. **Check tool registration**:
    ```python
-   # In finance_agent.py - verify decorator is present
-   # Verify function is in the TOOLS list
+   # In finance_agent.py - verify function is in the TOOLS list
    TOOLS = [get_stock_quote, get_exchange_rate, get_market_summary]
    # ← Is your new tool included here?
    ```
@@ -1164,7 +1163,7 @@ az role assignment create `
 
 **Documentation Links**:
 - 📘 Microsoft Agent Framework documentation
-- 📘 Tool decorator API reference
+- 📘 MAF tool registration reference
 - 📘 Foundry Hosted Agents guide
 - 🎥 Video: "Building Production Agents with MAF" (15 min)
 - 💻 Sample code: MAF patterns repository

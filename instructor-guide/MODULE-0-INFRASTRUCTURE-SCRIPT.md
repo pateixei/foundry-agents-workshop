@@ -89,11 +89,11 @@ Before starting deployment, ensure you have:
 **Action**:
 ```powershell
 # Navigate to your working directory
-cd c:\Cloud\Code  # (or your preferred location)
+cd c:\courses  # (or your preferred location)
 
 # Clone repository
-git clone https://github.com/[INSTRUCTOR-REPO]/a365-workshop.git
-cd a365-workshop
+git clone https://github.com/pateixei/foundry-agents-workshop.git
+cd .\foundry-agents-workshop
 
 # Verify structure
 ls  # Should see: prereq/, lesson-1-declarative/, lesson-2-hosted-maf/, etc.
@@ -149,7 +149,7 @@ ls
 
 **Open and review** `main.bicep` (optional, for understanding):
 ```powershell
-notepad main.bicep  # or VS Code: code main.bicep
+code main.bicep  # Open in VS Code or optionally use Notepad: notepad main.bicep
 ```
 
 **What's being deployed?**
@@ -292,7 +292,7 @@ param acrName = 'acrworkshop${uniqueString(resourceGroup().id)}'
 
 1. **Open `setup-output.txt`** (created by deploy.ps1):
    ```powershell
-   notepad setup-output.txt
+   code setup-output.txt
    ```
 
 2. **Verify it contains**:

@@ -373,7 +373,7 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
 
 **Student Task**:
 ```powershell
-cd lesson-4-aca-langgraph/aca-agent
+cd lesson-4-aca-langgraph/labs/solution
 
 # Review Bicep parameters (no changes needed by default)
 notepad aca.bicep

@@ -38,7 +38,6 @@ Content deliverables in **`instructor-guide/`**:
   - `MODULE-3-HOSTED-LANGGRAPH-SCRIPT.md`
   - `MODULE-4-ACA-DEPLOYMENT-SCRIPT.md`
   - `MODULES-5-6-A365-SETUP-SDK-SCRIPT.md`
-  - `MODULES-7-8-PUBLISH-INSTANCES-SCRIPT.md`
 
 Process/planning artifacts in **`.workshop/`**:
 - **`.workshop/MODULE-MAPS.md`**: Module map with:

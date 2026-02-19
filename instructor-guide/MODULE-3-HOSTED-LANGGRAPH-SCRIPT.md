@@ -303,7 +303,7 @@ app = workflow.compile()
 
 **Student Task**:
 ```powershell
-cd lesson-3-hosted-langgraph/langgraph-agent
+cd lesson-3-hosted-langgraph/labs/solution
 
 # Open main.py in editor
 code main.py
@@ -828,7 +828,7 @@ app = workflow.compile(checkpointer=checkpointer)
 
 **Learning Evidence**:
 - ✅ Students can explain: adapter role in Foundry
-- ✅ Students can compare: MAF decorators vs LangGraph nodes
+- ✅ Students can compare: MAF tool-list registration vs LangGraph nodes
 - ✅ Students can assess: deployment effort for their agents
 
 **Engagement Indicators**:
