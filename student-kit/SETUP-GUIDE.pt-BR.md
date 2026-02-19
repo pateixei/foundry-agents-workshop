@@ -20,16 +20,14 @@ Antes de começar, certifique-se de que você tem:
 | 3 | Assinatura Azure com papel de **Contributor** | [azure.com/free](https://azure.com/free) ou corporativa |
 | 4 | Conta no GitHub | Para clonar o repositório do workshop |
 | 5 | Tenant de Desenvolvedor Microsoft 365 (Dias 3-5) | [developer.microsoft.com/microsoft-365/dev-program](https://developer.microsoft.com/microsoft-365/dev-program) |
-| 6 | Inscrição no **Programa Copilot Frontier** (Dias 3-5) | [adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/) |
+| 6 | **Licença Microsoft 365 Copilot** (pelo menos uma ativa) + Copilot Frontier habilitado (Dias 3-5) | Necessário para usar recursos do Agent 365 — veja o Passo 8.4 |
 
-> [!CAUTION]
-> **🔴 OBRIGATÓRIO — Inscrição no Programa Copilot Frontier (Dias 3–5)**
+> [!IMPORTANT]
+> **🟡 NECESSÁRIO — Copilot Frontier deve estar habilitado no seu tenant M365 (Dias 3–5)**
 >
-> Seu tenant M365 **DEVE** estar inscrito no **programa Microsoft Copilot Frontier preview** para completar as Lições 5–8 (Agent 365). Sem esta inscrição, o A365 CLI falhará com **"Forbidden: Access denied by Frontier access control"** ao registrar blueprints de agentes.
+> Para concluir as Lições 5–6 (Agent 365), o Copilot Frontier deve estar **habilitado no seu tenant M365**. Não é mais necessária inscrição em nenhum programa separado — porém, **seu tenant deve ter pelo menos uma licença Microsoft 365 Copilot ativa** para que o botão Frontier apareça no Admin Center.
 >
-> **Inscreva-se aqui → [https://adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/)**
->
-> Após a inscrição, um Global Admin deve habilitar o Copilot Frontier no [Centro de Admin do Microsoft 365](https://admin.microsoft.com/) → Copilot → Configurações → Acesso de usuários → Copilot Frontier. **Aguarde até 24 horas** para propagação.
+> Um Administrador Global deve habiliá-lo em [Centro de Admin do Microsoft 365](https://admin.microsoft.com/) → **Copilot** → **Configurações** → **Acesso de usuários** → **Copilot Frontier** → togglear **Ligado**. **Aguarde até 24 horas** para propagação. Veja o Passo 8.4 para instruções detalhadas.
 
 > **Usuários WSL (Windows Subsystem for Linux)**: Todas as instruções de Linux se aplicam dentro do seu terminal WSL. Certifique-se de que o WSL 2 está instalado: `wsl --install -d Ubuntu` a partir de um prompt PowerShell elevado. Abra um terminal WSL via `wsl` ou Windows Terminal → Ubuntu.
 
@@ -465,7 +463,7 @@ O Programa de Desenvolvedor Microsoft 365 fornece uma assinatura gratuita e reno
    
    **🚨 CRÍTICO**: Salve essas credenciais em um local seguro (recomenda-se gerenciador de senhas). Você precisará delas para:
    - Entrar no Centro de Administração do Microsoft 365
-   - Inscrever-se no Programa Copilot Frontier (obrigatório — veja abaixo)
+   - Verificar se o Copilot Frontier está habilitado no seu tenant (veja o Passo 8.4 abaixo)
    - Configurar autenticação do A365 CLI
    - Publicar e testar agentes no Teams
 
@@ -490,24 +488,22 @@ Após entrar no Centro de Administração, verifique sua assinatura:
    - Vá para **Configurações** → **Configurações da organização** → **Perfil da organização**
    - Copie o **ID do Tenant** (um GUID como `12345678-1234-1234-1234-123456789012`)
 
-### 8.4 Inscrever-se no Programa Copilot Frontier (OBRIGATÓRIO)
+### 8.4 Habilitar o Copilot Frontier (Necessário para as Lições do Agent 365)
 
-> [!CAUTION]
-> **🔴 OBRIGATÓRIO para as Lições do Agent 365**
+> [!IMPORTANT]
+> **🟡 Necessário para as Lições do Agent 365 (Lições 5–6)**
 >
-> Sem a inscrição no Copilot Frontier, você **não pode** publicar ou testar agentes do Agent 365. O A365 CLI falhará com um erro similar a:
-> ```
-> Exemplo de erro: Proibido: Acesso negado pelo controle de acesso Frontier
-> ```
+> O Copilot Frontier deve estar **habilitado no seu tenant M365** antes de executar comandos do A365 CLI. Não é necessária inscrição em nenhum programa — mas seu tenant deve ter **pelo menos uma licença Microsoft 365 Copilot ativa** para que o botão Frontier esteja disponível no Admin Center.
+>
+> Se o seu tenant não tiver licenças M365 Copilot, as configurações do Frontier não aparecerão. A assinatura do programa de desenvolvedor M365 (E5 Developer) **não** inclui uma licença Copilot por padrão.
 
-**Etapas de inscrição:**
+**Etapas:**
 
-1. **Ingressar no Programa Frontier**
-   - Acesse [https://adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/)
-   - Clique em **"Ingressar no programa"**
-   - Entre com sua **conta de administrador do tenant de desenvolvedor M365** (`admin@<seu-tenant>.onmicrosoft.com`)
-   - Complete o formulário de inscrição
-   - Aceite os termos do programa
+1. **Verificar se você tem pelo menos uma licença Microsoft 365 Copilot ativa**
+   - Acesse [https://admin.microsoft.com](https://admin.microsoft.com)
+   - Navegue para **Cobrança** → **Seus produtos**
+   - Confirme que o **Microsoft 365 Copilot** está listado e **Ativo**
+   - Se ausente, adicione uma licença trial ou paga antes de continuar
 
 2. **Ativar Copilot Frontier em seu tenant**
    - Acesse [https://admin.microsoft.com](https://admin.microsoft.com)
