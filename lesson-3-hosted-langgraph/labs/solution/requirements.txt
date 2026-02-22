@@ -1,0 +1,5 @@
+azure-ai-agentserver-langgraph==1.0.0b10
+langchain-openai>=0.3.0
+langchain-core>=0.3.0
+langgraph>=0.3.0
+azure-identity>=1.17.0

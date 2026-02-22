@@ -1,0 +1,213 @@
+<mxfile host="app.diagrams.net" modified="2026-02-06" agent="GitHub Copilot" version="24.0">
+  <diagram id="azure-architecture" name="Architecture">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="a365-workshop - Architecture Diagram" style="text;html=1;fontSize=20;fontStyle=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="500" y="20" width="600" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Resource Group boundary -->
+        <mxCell id="rg" value="Resource Group: rg-ag365" style="rounded=1;whiteSpace=wrap;fillColor=none;strokeColor=#0078D4;strokeWidth=2;dashed=1;dashPattern=8 4;verticalAlign=top;fontSize=14;fontStyle=1;fontColor=#0078D4;spacingTop=5;arcSize=6;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="70" width="1440" height="790" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== MONITORING GROUP ========== -->
+        <mxCell id="grp_mon" value="Monitoring" style="rounded=1;whiteSpace=wrap;fillColor=#FFF8E1;strokeColor=#F9A825;strokeWidth=1;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#F57F17;spacingTop=3;arcSize=6;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="80" y="120" width="420" height="300" as="geometry"/>
+        </mxCell>
+
+        <!-- Log Analytics -->
+        <mxCell id="log_icon" value="Log Analytics&lt;br&gt;Workspace" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/analytics/Log_Analytics_Workspaces.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="150" y="210" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Application Insights -->
+        <mxCell id="appi_icon" value="Application&lt;br&gt;Insights" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/devops/Application_Insights.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="370" y="210" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrow: App Insights -> Log Analytics -->
+        <mxCell id="mon_link" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F57F17;strokeWidth=1;dashed=1;dashPattern=4 4;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;" edge="1" source="appi_icon" target="log_icon" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="mon_link_lbl" value="logs sink" style="edgeLabel;fontSize=9;fontColor=#F57F17;labelBackgroundColor=none;" vertex="1" connectable="0" parent="mon_link">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- ========== FOUNDRY GROUP ========== -->
+        <mxCell id="grp_ai" value="Microsoft Foundry" style="rounded=1;whiteSpace=wrap;fillColor=#F3E5F5;strokeColor=#7B1FA2;strokeWidth=1;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#6A1B9A;spacingTop=3;arcSize=6;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="540" y="120" width="520" height="300" as="geometry"/>
+        </mxCell>
+
+        <!-- Foundry Account (AIServices / Cognitive Services) -->
+        <mxCell id="hub_icon" value="Foundry Account&lt;br&gt;ai-foundry001&lt;br&gt;(AIServices)" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/ai_machine_learning/Cognitive_Services.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="590" y="200" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Model Deployment -->
+        <mxCell id="model_icon" value="Model Deployment&lt;br&gt;gpt-4.1" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/ai_machine_learning/Machine_Learning.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="770" y="200" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Foundry Project -->
+        <mxCell id="prj_icon" value="Foundry Project&lt;br&gt;ag365-prj001" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/ai_machine_learning/AI_Studio.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="950" y="200" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrow: Hub -> Model -->
+        <mxCell id="hub_model" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;" edge="1" source="hub_icon" target="model_icon" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="hub_model_lbl" value="hosts" style="edgeLabel;fontSize=9;fontColor=#7B1FA2;labelBackgroundColor=none;" vertex="1" connectable="0" parent="hub_model">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- Arrow: Model -> Project -->
+        <mxCell id="hub_prj" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;" edge="1" source="model_icon" target="prj_icon" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="hub_prj_lbl" value="child project" style="edgeLabel;fontSize=9;fontColor=#7B1FA2;labelBackgroundColor=none;" vertex="1" connectable="0" parent="hub_prj">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- ========== CONTAINER GROUP ========== -->
+        <mxCell id="grp_ctr" value="Container Infrastructure" style="rounded=1;whiteSpace=wrap;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=1;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#1B5E20;spacingTop=3;arcSize=6;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="80" y="480" width="920" height="340" as="geometry"/>
+        </mxCell>
+
+        <!-- ACR -->
+        <mxCell id="acr_icon" value="Container Registry&lt;br&gt;acr123" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/containers/Container_Registries.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="150" y="580" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Container Apps Environment -->
+        <mxCell id="cae_icon" value="Container Apps&lt;br&gt;Environment&lt;br&gt;cae-ai001" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/containers/Kubernetes_Services.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="440" y="580" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Container App (LangGraph Agent) -->
+        <mxCell id="ca_icon" value="Container App&lt;br&gt;ca-lg-agent&lt;br&gt;(LangGraph)" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/containers/App_Services.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="730" y="580" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrow: ACR -> CAE -->
+        <mxCell id="acr_cae" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=1;dashed=1;dashPattern=4 4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;" edge="1" source="acr_icon" target="cae_icon" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="acr_cae_lbl" value="image pull" style="edgeLabel;fontSize=9;fontColor=#2E7D32;labelBackgroundColor=none;" vertex="1" connectable="0" parent="acr_cae">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- Arrow: CAE -> CA -->
+        <mxCell id="cae_ca" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;" edge="1" source="cae_icon" target="ca_icon" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="cae_ca_lbl" value="hosts" style="edgeLabel;fontSize=9;fontColor=#2E7D32;labelBackgroundColor=none;" vertex="1" connectable="0" parent="cae_ca">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- ========== CROSS-GROUP CONNECTIONS ========== -->
+
+        <!-- CA -> Foundry (API calls) -->
+        <mxCell id="ca_hub" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0078D4;strokeWidth=2;dashed=1;dashPattern=6 3;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=block;endFill=1;" edge="1" source="ca_icon" target="hub_icon" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="755" y="460"/>
+              <mxPoint x="615" y="460"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ca_hub_lbl" value="OpenAI API calls" style="edgeLabel;fontSize=10;fontStyle=1;fontColor=#0078D4;labelBackgroundColor=none;" vertex="1" connectable="0" parent="ca_hub">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- CA -> App Insights (telemetry) -->
+        <mxCell id="ca_appi" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F9A825;strokeWidth=1;dashed=1;dashPattern=4 4;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=block;endFill=1;" edge="1" source="ca_icon" target="appi_icon" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="755" y="440"/>
+              <mxPoint x="395" y="440"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ca_appi_lbl" value="telemetry" style="edgeLabel;fontSize=9;fontColor=#F9A825;labelBackgroundColor=none;" vertex="1" connectable="0" parent="ca_appi">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- CAE -> Log Analytics (container logs) -->
+        <mxCell id="cae_log" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F9A825;strokeWidth=1;dashed=1;dashPattern=4 4;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=block;endFill=1;" edge="1" source="cae_icon" target="log_icon" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="465" y="450"/>
+              <mxPoint x="175" y="450"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cae_log_lbl" value="container logs" style="edgeLabel;fontSize=9;fontColor=#F9A825;labelBackgroundColor=none;" vertex="1" connectable="0" parent="cae_log">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- ========== USERS / INTERNET ========== -->
+        <mxCell id="globe_icon" value="Users / Internet" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/general/Globe.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="580" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Globe -> CA (HTTPS) -->
+        <mxCell id="globe_ca" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0078D4;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;" edge="1" source="globe_icon" target="ca_icon" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="globe_ca_lbl" value="HTTPS" style="edgeLabel;fontSize=10;fontStyle=1;fontColor=#0078D4;labelBackgroundColor=none;" vertex="1" connectable="0" parent="globe_ca">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- ========== LEGEND ========== -->
+        <mxCell id="legend_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#CCCCCC;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="120" width="360" height="210" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend_title" value="Legend" style="text;html=1;fontSize=13;fontStyle=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1115" y="125" width="100" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg1" value="" style="line;strokeColor=#F9A825;strokeWidth=2;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
+          <mxGeometry x="1115" y="165" width="40" height="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg1t" value="Monitoring / Logs" style="text;fontSize=10;align=left;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="157" width="120" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg2" value="" style="line;strokeColor=#0078D4;strokeWidth=2;dashed=1;dashPattern=6 3;" vertex="1" parent="1">
+          <mxGeometry x="1115" y="195" width="40" height="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg2t" value="API Calls (OpenAI-compatible)" style="text;fontSize=10;align=left;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="187" width="170" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg3" value="" style="line;strokeColor=#0078D4;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1115" y="225" width="40" height="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg3t" value="HTTPS Ingress" style="text;fontSize=10;align=left;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="217" width="120" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg4" value="" style="line;strokeColor=#2E7D32;strokeWidth=1;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
+          <mxGeometry x="1115" y="255" width="40" height="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg4t" value="Image Pull / Hosting" style="text;fontSize=10;align=left;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="247" width="120" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg5" value="" style="line;strokeColor=#7B1FA2;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1115" y="285" width="40" height="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg5t" value="Foundry Resources" style="text;fontSize=10;align=left;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="277" width="120" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- Note -->
+        <mxCell id="note" value="All AI model access via Foundry Account&#xa;OpenAI-compatible endpoint&#xa;No standalone Azure OpenAI resource needed" style="shape=note;size=15;fillColor=#E3F2FD;strokeColor=#0078D4;fontSize=10;align=left;spacingLeft=5;whiteSpace=wrap;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="360" width="360" height="60" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

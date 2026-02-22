@@ -1,0 +1,94 @@
+<mxfile host="65bd71144e">
+    <diagram id="lesson1-dec-deployment" name="Lesson 1 - Processo de Deployment: Declarative Agent">
+        <mxGraphModel dx="1245" dy="668" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="Lesson 1 - Processo de Deployment: Declarative Agent (Prompt-Based)" style="text;html=1;fontSize=20;fontStyle=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="20" width="1000" height="40" as="geometry"/>
+                </mxCell>
+                <!-- Step 1 -->
+                <mxCell id="step1_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;arcSize=6;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="100" width="1480" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="step1_num" value="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=none;fontSize=18;fontStyle=1;fontColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="75" y="110" width="35" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="step1_title" value="Escrever create_agent.py" style="text;html=1;fontSize=14;fontStyle=1;align=left;fillColor=none;strokeColor=none;fontColor=#1565C0;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="112" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="step1_desc" value="Definir o agente usando PromptAgentDefinition do SDK azure-ai-projects.&lt;br&gt;Nao ha Dockerfile, nao ha build de container. Apenas um script Python." style="text;html=1;fontSize=10;align=left;fillColor=none;strokeColor=none;fontColor=#555555;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="140" width="500" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="step1_code" value="from azure.ai.projects import AIProjectClient&#xa;from azure.ai.projects.models import PromptAgentDefinition&#xa;&#xa;client = AIProjectClient(endpoint, DefaultAzureCredential())&#xa;&#xa;agent_def = PromptAgentDefinition(&#xa;    model=&quot;gpt-4.1&quot;,&#xa;    instructions=SYSTEM_PROMPT,&#xa;    tools=[]  # optional: BingGroundingAgentTool, etc.&#xa;)&#xa;&#xa;agent = client.agents.create_agent(&#xa;    model=&quot;gpt-4.1&quot;,&#xa;    name=&quot;fin-market-declarative&quot;,&#xa;    agent_definition=agent_def&#xa;)" style="shape=mxgraph.basic.rect;fillColor=#263238;strokeColor=#37474F;fontSize=9;fontColor=#4FC3F7;fontFamily=Consolas;align=left;spacingLeft=10;whiteSpace=wrap;verticalAlign=top;spacingTop=5;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="110" width="400" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="step1_prereq" value="Pre-requisitos:&#xa;- pip install azure-ai-projects azure-identity&#xa;- FOUNDRY_PROJECT_ENDPOINT env var&#xa;- RBAC: Azure AI User no Project" style="shape=note;html=1;size=12;fillColor=#FFF9C4;strokeColor=#F9A825;fontSize=9;align=left;spacingLeft=5;whiteSpace=wrap;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1150" y="120" width="250" height="70" as="geometry"/>
+                </mxCell>
+                <!-- Arrow 1→2 -->
+                <mxCell id="arrow12" value="" style="shape=flexArrow;fillColor=#1565C0;strokeColor=none;startWidth=12;endWidth=12;startSize=5;endSize=5;opacity=60;" parent="1" vertex="1">
+                    <mxGeometry x="760" y="310" width="80" height="25" as="geometry"/>
+                </mxCell>
+                <!-- Step 2 -->
+                <mxCell id="step2_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;arcSize=6;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="350" width="1480" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="step2_num" value="2" style="ellipse;whiteSpace=wrap;html=1;fillColor=#2E7D32;strokeColor=none;fontSize=18;fontStyle=1;fontColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="75" y="360" width="35" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="step2_title" value="Executar python create_agent.py" style="text;html=1;fontSize=14;fontStyle=1;align=left;fillColor=none;strokeColor=none;fontColor=#2E7D32;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="362" width="350" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="step2_desc" value="O SDK registra o agente no Foundry via REST API.&lt;br&gt;Tempo: &lt;b&gt;segundos&lt;/b&gt;. Sem Docker build, sem ACR push, sem Capability Host." style="text;html=1;fontSize=10;align=left;fillColor=none;strokeColor=none;fontColor=#555555;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="392" width="500" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="step2_cmd" value="$ python lesson-1-declarative/create_agent.py&#xa;&#xa;Agent created:&#xa;  Name: fin-market-declarative&#xa;  ID: asst_xxxxxxxxxxxxx&#xa;  Model: gpt-4.1" style="shape=mxgraph.basic.rect;fillColor=#263238;strokeColor=#37474F;fontSize=9;fontColor=#A5D6A7;fontFamily=Consolas;align=left;spacingLeft=10;whiteSpace=wrap;verticalAlign=top;spacingTop=5;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="360" width="400" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="step2_flow" value="Developer → SDK → Foundry REST API → Agent Registered" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=10;fontColor=#1B5E20;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1150" y="380" width="250" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="step2_time" value="⏱ ~5 segundos" style="text;html=1;fontSize=12;fontStyle=1;fontColor=#2E7D32;align=center;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1200" y="430" width="150" height="25" as="geometry"/>
+                </mxCell>
+                <!-- Arrow 2→3 -->
+                <mxCell id="arrow23" value="" style="shape=flexArrow;fillColor=#2E7D32;strokeColor=none;startWidth=12;endWidth=12;startSize=5;endSize=5;opacity=60;" parent="1" vertex="1">
+                    <mxGeometry x="760" y="530" width="80" height="25" as="geometry"/>
+                </mxCell>
+                <!-- Step 3 -->
+                <mxCell id="step3_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#F3E5F5;strokeColor=#7B1FA2;strokeWidth=2;arcSize=6;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="570" width="1480" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="step3_num" value="3" style="ellipse;whiteSpace=wrap;html=1;fillColor=#7B1FA2;strokeColor=none;fontSize=18;fontStyle=1;fontColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="75" y="580" width="35" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="step3_title" value="Testar o Agente" style="text;html=1;fontSize=14;fontStyle=1;align=left;fillColor=none;strokeColor=none;fontColor=#7B1FA2;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="582" width="250" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="step3_desc" value="Usar chat.py --lesson 1 ou testar diretamente no portal do Azure AI Foundry.&lt;br&gt;O agente esta &lt;b&gt;imediatamente disponivel&lt;/b&gt; apos o registro." style="text;html=1;fontSize=10;align=left;fillColor=none;strokeColor=none;fontColor=#555555;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="612" width="500" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="step3_chat" value="$ python chat.py --lesson 1&#xa;&#xa;Conectado ao agente: fin-market-declarative&#xa;User: Qual a cotação do dólar?&#xa;Agent: A cotação atual do USD/BRL é R$ 5,67..." style="shape=mxgraph.basic.rect;fillColor=#263238;strokeColor=#37474F;fontSize=9;fontColor=#CE93D8;fontFamily=Consolas;align=left;spacingLeft=10;whiteSpace=wrap;verticalAlign=top;spacingTop=5;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="575" width="400" height="95" as="geometry"/>
+                </mxCell>
+                <mxCell id="step3_portal" value="Opcoes de Teste:&lt;br&gt;- chat.py --lesson 1 (CLI)&lt;br&gt;- Portal: ai.azure.com → Agents → Test&lt;br&gt;- Responses API direta (REST)" style="shape=note;html=1;size=12;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontSize=9;align=left;spacingLeft=5;whiteSpace=wrap;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1150" y="585" width="250" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="step3_portal_edit" value="Portal Editavel:&lt;br&gt;Apos deploy, voce pode editar&lt;br&gt;instructions, model e tools&lt;br&gt;diretamente no portal do Foundry." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=9;fontColor=#1B5E20;arcSize=6;dashed=1;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1150" y="670" width="250" height="55" as="geometry"/>
+                </mxCell>
+                <!-- Summary -->
+                <mxCell id="summary_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#ECEFF1;strokeColor=#78909C;dashed=1;arcSize=6;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="780" width="1480" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="summary_title" value="Resumo do Fluxo:" style="text;html=1;fontSize=11;fontStyle=1;align=left;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="75" y="785" width="200" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="summary_text" value="Escrever create_agent.py → python create_agent.py (5 seg) → Agente registrado no Foundry → Testar via chat.py ou portal&lt;br&gt;&lt;b&gt;Total: ~1 minuto&lt;/b&gt; (vs. 15-30 min para agentes Hosted). Sem Docker, sem ACR, sem Capability Host, sem RBAC complexo." style="text;html=1;fontSize=10;align=left;fillColor=none;strokeColor=none;fontColor=#555555;spacingLeft=5;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="75" y="808" width="1400" height="40" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

@@ -1,0 +1,6 @@
+{
+  "name": "langgraph-financial-agent",
+  "version": "1.0",
+  "entry": "main:app",
+  "runtime": "python"
+}

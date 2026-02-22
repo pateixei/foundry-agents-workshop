@@ -1,0 +1,181 @@
+@description('Nome do Resource Group')
+param resourceGroupName string
+
+@description('Região do Azure onde os recursos serão criados')
+param location string
+
+@description('Nome do deployment do modelo de AI')
+param aiModelDeployment string = 'gpt-4o-mini'
+
+@description('Nome do Azure Container Registry para armazenar imagens dos agentes')
+param acrName string
+
+@description('Nome do Log Analytics Workspace')
+param logAnalyticsName string
+
+@description('Nome do Application Insights')
+param appInsightsName string
+
+@description('Nome do Microsoft Foundry account (AI Foundry)')
+param aiHubName string
+
+@description('Nome do Microsoft Foundry project para hospedar o Agent Framework Agent')
+param aiProjectName string
+
+@description('Versão do modelo')
+param modelVersion string = '2025-01-15'
+
+@description('Capacidade do deployment (TPM em milhares)')
+param modelCapacity int = 100
+
+@description('Nome da Storage Account para o Capability Host (hosted agents)')
+param storageAccountName string
+
+// Log Analytics Workspace
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+  name: logAnalyticsName
+  location: location
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
+    retentionInDays: 30
+  }
+}
+
+// Application Insights
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: appInsightsName
+  location: location
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    WorkspaceResourceId: logAnalytics.id
+  }
+}
+
+// Model Deployment no Foundry account (visivel no portal do Foundry)
+resource modelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2025-06-01' = {
+  parent: aiFoundry
+  name: aiModelDeployment
+  sku: {
+    name: 'Standard'
+    capacity: modelCapacity
+  }
+  properties: {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4o-mini'
+      version: modelVersion
+    }
+  }
+}
+
+
+// Azure Container Registry
+resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
+  name: acrName
+  location: location
+  sku: {
+    name: 'Basic'
+  }
+  properties: {
+    adminUserEnabled: true
+  }
+}
+
+// Container Apps Environment (para hospedar agentes conectados via ACA)
+resource containerAppsEnv 'Microsoft.App/managedEnvironments@2024-03-01' = {
+  name: 'cae-${resourceGroupName}'
+  location: location
+  properties: {
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: logAnalytics.properties.customerId
+        sharedKey: logAnalytics.listKeys().primarySharedKey
+      }
+    }
+  }
+}
+
+
+
+// Microsoft Foundry account (AI Foundry)
+resource aiFoundry 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
+  name: aiHubName
+  location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
+  sku: {
+    name: 'S0'
+  }
+  kind: 'AIServices'
+  properties: {
+    allowProjectManagement: true
+    customSubDomainName: aiHubName
+    publicNetworkAccess: 'Enabled'
+    disableLocalAuth: false
+  }
+}
+
+// Microsoft Foundry project (para hospedar o Agent Framework Agent)
+resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = {
+  name: aiProjectName
+  parent: aiFoundry
+  location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {}
+}
+
+// Storage Account para o Capability Host (dados de agentes, threads, vector stores)
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {
+    supportsHttpsTrafficOnly: true
+    minimumTlsVersion: 'TLS1_2'
+  }
+}
+
+// Capability Host (habilita hosted agents no Foundry - necessario para lessons 2 e 3)
+// Cria no nivel da conta (account-level). O Foundry propaga para os projetos automaticamente.
+// IMPORTANTE: enablePublicHostingEnvironment é OBRIGATÓRIO para hosted agents funcionarem.
+// Sem esta propriedade, o agente fica preso em "Starting" e falha após 15 minutos.
+resource capabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-10-01-preview' = {
+  name: 'default'
+  parent: aiFoundry
+  properties: {
+    capabilityHostKind: 'Agents'
+    enablePublicHostingEnvironment: true
+  }
+  dependsOn: [
+    aiProject
+    storageAccount
+  ]
+}
+
+// Outputs
+output openAIEndpoint string = aiFoundry.properties.endpoint
+output openAIServiceName string = aiFoundry.name
+output aiModelDeployment string = aiModelDeployment
+output acrLoginServer string = acr.properties.loginServer
+output acrName string = acr.name
+output aiFoundryName string = aiFoundry.name
+output aiFoundryEndpoint string = aiFoundry.properties.endpoint
+output aiProjectName string = aiProject.name
+output aiProjectEndpoint string = 'https://${aiFoundry.properties.customSubDomainName}.services.ai.azure.com/api/projects/${aiProject.name}'
+output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey
+output appInsightsConnectionString string = appInsights.properties.ConnectionString
+output containerAppsEnvName string = containerAppsEnv.name
+output containerAppsEnvId string = containerAppsEnv.id
+output storageAccountName string = storageAccount.name
+output storageAccountId string = storageAccount.id
+output resourceGroupName string = resourceGroupName

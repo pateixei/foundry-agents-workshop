@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+*.whl
+
+# Virtual environments
+.venv/
+venv/
+env/
+.conda/
+
+# Environment variables (may contain secrets)
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+#github agents
+.github/agents/*.agent.md
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Azure
+*.json.bak
+
+# Bicep compiled output (regenerate from .bicep)
+prereq/main.json
+
+# A365 CLI generated config (contains secrets)
+a365.generated.config.json
+a365.config.json
+
+#workshop
+.workshop/
+context.md
+context.pt-BR.md
+

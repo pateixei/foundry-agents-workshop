@@ -1,0 +1,261 @@
+<mxfile host="65bd71144e">
+    <diagram id="lesson3-architecture" name="Lesson 3 - LangGraph Hosted Agent Architecture">
+        <mxGraphModel dx="1245" dy="668" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="Lesson 3 - LangGraph Hosted Agent Architecture" style="text;html=1;fontSize=20;fontStyle=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="20" width="800" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="rg" value="Resource Group: rg-ag365sdk" style="rounded=1;whiteSpace=wrap;fillColor=none;strokeColor=#0078D4;strokeWidth=2;dashed=1;dashPattern=8 4;verticalAlign=top;fontSize=14;fontStyle=1;fontColor=#0078D4;spacingTop=5;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="70" width="1520" height="790" as="geometry"/>
+                </mxCell>
+                <mxCell id="user_icon" value="Client Application" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/general/Globe.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="100" y="360" width="55" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="user_detail" value="Python SDK / REST&lt;br&gt;azure-ai-projects" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=9;fontColor=#333333;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="72" y="440" width="110" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="grp_foundry" value="Microsoft Foundry" style="rounded=1;whiteSpace=wrap;fillColor=#F3E5F5;strokeColor=#7B1FA2;strokeWidth=1;verticalAlign=top;fontSize=14;fontStyle=1;fontColor=#6A1B9A;spacingTop=5;arcSize=2;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="250" y="110" width="900" height="600" as="geometry"/>
+                </mxCell>
+                <mxCell id="account_icon" value="Foundry Account&lt;br&gt;ai-foundry001&lt;br&gt;(AIServices)" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/ai_machine_learning/Cognitive_Services.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="180" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="api_icon" value="Responses API&lt;br&gt;Gateway" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/integration/API_Management_Services.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="365" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="api_detail" value="/openai/responses&lt;br&gt;api-version=2025-11-15-preview" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE7F6;strokeColor=#7B1FA2;fontSize=8;fontColor=#4A148C;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="265" y="445" width="100" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="prj_icon" value="Foundry Project&lt;br&gt;ag365-prj001" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/ai_machine_learning/AI_Studio.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="470" y="180" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="caphost_icon" value="Capability Host&lt;br&gt;accountcaphost" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/compute/Cloud_Services_Classic.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="180" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="grp_container" value="Hosted Agent Container: lg-market-agent:v3" style="rounded=1;whiteSpace=wrap;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=1;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#E65100;spacingTop=5;arcSize=4;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="430" y="310" width="680" height="370" as="geometry"/>
+                </mxCell>
+                <mxCell id="adapter_box" value="azure-ai-agentserver&lt;br&gt;-langgraph 1.0.0b10&lt;br&gt;from_langgraph(agent).run()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9800;strokeColor=#E65100;fontSize=9;fontStyle=1;fontColor=#FFFFFF;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="540" y="360" width="160" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="langgraph_box" value="LangGraph ReAct Agent&lt;br&gt;StateGraph(MessagesState)&lt;br&gt;llm_call -&gt; should_continue -&gt; tool_node" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4CAF50;strokeColor=#2E7D32;fontSize=10;fontStyle=1;fontColor=#FFFFFF;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="540" y="460" width="200" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="react_loop" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;curved=1;endArrow=block;endFill=1;" parent="1" source="langgraph_box" target="langgraph_box" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="760" y="495"/>
+                            <mxPoint x="760" y="530"/>
+                            <mxPoint x="760" y="530"/>
+                            <mxPoint x="760" y="495"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="react_loop_lbl" value="ReAct&#xa;loop" style="edgeLabel;fontSize=8;fontStyle=2;fontColor=#2E7D32;labelBackgroundColor=none;" parent="react_loop" vertex="1" connectable="0">
+                    <mxGeometry x="0.5" relative="1" as="geometry">
+                        <mxPoint x="15" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="grp_tools" value="Python Tools" style="rounded=1;whiteSpace=wrap;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=1;verticalAlign=top;fontSize=11;fontStyle=1;fontColor=#1565C0;spacingTop=3;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="540" y="555" width="330" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="tool1" value="get_stock_price()" style="rounded=1;whiteSpace=wrap;fillColor=#BBDEFB;strokeColor=#1565C0;fontSize=9;fontFamily=Courier New;fontColor=#0D47A1;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="555" y="585" width="92" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="tool2" value="get_market_summary()" style="rounded=1;whiteSpace=wrap;fillColor=#BBDEFB;strokeColor=#1565C0;fontSize=8;fontFamily=Courier New;fontColor=#0D47A1;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="655" y="585" width="100" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="tool3" value="get_exchange_rate()" style="rounded=1;whiteSpace=wrap;fillColor=#BBDEFB;strokeColor=#1565C0;fontSize=9;fontFamily=Courier New;fontColor=#0D47A1;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="762" y="585" width="95" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="tools_note" value="simulated market data" style="text;html=1;fontSize=8;fontStyle=2;fontColor=#999999;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="625" y="625" width="120" height="15" as="geometry"/>
+                </mxCell>
+                <mxCell id="env_box" value="Environment Variables&lt;br&gt;AZURE_AI_PROJECT_ENDPOINT&lt;br&gt;AZURE_AI_MODEL_DEPLOYMENT_NAME&lt;br&gt;AZURE_OPENAI_ENDPOINT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#9E9E9E;fontSize=8;fontStyle=1;fontColor=#616161;dashed=1;dashPattern=4 4;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="560" width="180" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="grp_openai" value="Azure OpenAI (via Foundry)" style="rounded=1;whiteSpace=wrap;fillColor=#E8EAF6;strokeColor=#3F51B5;strokeWidth=1;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#283593;spacingTop=3;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="870" y="140" width="210" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="model_icon" value="Model Deployment&lt;br&gt;gpt-4.1" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/ai_machine_learning/Machine_Learning.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="945" y="175" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="model_detail" value="init_chat_model(&quot;azure_openai:gpt-4.1&quot;)&lt;br&gt;api_version / azure_endpoint" style="text;html=1;fontSize=8;fontStyle=2;fontColor=#5C6BC0;align=center;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="875" y="250" width="200" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="acr_icon" value="Container Registry&lt;br&gt;acr123" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/containers/Container_Registries.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1250" y="210" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="acr_image" value="lg-market-agent:v3" style="rounded=1;whiteSpace=wrap;fillColor=#E3F2FD;strokeColor=#0078D4;fontSize=9;fontFamily=Courier New;fontColor=#0D47A1;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1225" y="290" width="100" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="grp_rbac" value="Identity &amp; RBAC" style="rounded=1;whiteSpace=wrap;fillColor=#FFF8E1;strokeColor=#F9A825;strokeWidth=1;verticalAlign=top;fontSize=11;fontStyle=1;fontColor=#F57F17;spacingTop=3;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1195" y="370" width="160" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="identity_icon" value="Managed Identity&lt;br&gt;(Project Principal)" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/identity/Managed_Identities.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1250" y="420" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="role1" value="AcrPull" style="rounded=1;whiteSpace=wrap;fillColor=#FF9800;strokeColor=#E65100;fontSize=10;fontStyle=1;fontColor=#FFFFFF;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1210" y="510" width="130" height="28" as="geometry"/>
+                </mxCell>
+                <mxCell id="role1_scope" value="scope: Container Registry" style="text;html=1;fontSize=8;fontStyle=2;fontColor=#999999;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1210" y="538" width="130" height="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="role2" value="Cognitive Services&lt;br&gt;OpenAI User" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9800;strokeColor=#E65100;fontSize=9;fontStyle=1;fontColor=#FFFFFF;arcSize=6;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1210" y="560" width="130" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="role2_scope" value="scope: Foundry Account" style="text;html=1;fontSize=8;fontStyle=2;fontColor=#999999;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="1210" y="595" width="130" height="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_user_api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0078D4;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;" parent="1" source="user_icon" target="api_icon" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_user_api_lbl" value="HTTPS" style="edgeLabel;fontSize=10;fontStyle=1;fontColor=#0078D4;labelBackgroundColor=none;" parent="e_user_api" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_acct_prj" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;" parent="1" source="account_icon" target="prj_icon" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_acct_prj_lbl" value="child project" style="edgeLabel;fontSize=9;fontColor=#7B1FA2;labelBackgroundColor=none;" parent="e_acct_prj" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_prj_cap" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;" parent="1" source="prj_icon" target="caphost_icon" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_prj_cap_lbl" value="hosting" style="edgeLabel;fontSize=9;fontColor=#7B1FA2;labelBackgroundColor=none;" parent="e_prj_cap" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_api_adapter" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;" parent="1" source="api_icon" target="adapter_box" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_api_adapter_lbl" value="route to agent" style="edgeLabel;fontSize=9;fontColor=#E65100;labelBackgroundColor=none;" parent="e_api_adapter" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" relative="1" as="geometry">
+                        <mxPoint x="-30" y="-20" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_adapter_lg" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=block;endFill=1;" parent="1" source="adapter_box" target="langgraph_box" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_lg_tools" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1565C0;strokeWidth=1;dashed=1;dashPattern=4 4;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=block;endFill=1;" parent="1" source="langgraph_box" target="grp_tools" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_lg_tools_lbl" value="tool calls" style="edgeLabel;fontSize=9;fontColor=#1565C0;labelBackgroundColor=none;" parent="e_lg_tools" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_lg_openai" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3F51B5;strokeWidth=2;dashed=1;dashPattern=6 3;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;" parent="1" source="langgraph_box" target="model_icon" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="850" y="495"/>
+                            <mxPoint x="850" y="200"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_lg_openai_lbl" value="LLM inference" style="edgeLabel;fontSize=9;fontStyle=1;fontColor=#3F51B5;labelBackgroundColor=none;" parent="e_lg_openai" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_cap_container" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=1;dashed=1;dashPattern=4 4;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=block;endFill=1;" parent="1" source="caphost_icon" target="grp_container" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_cap_container_lbl" value="manages" style="edgeLabel;fontSize=9;fontColor=#E65100;labelBackgroundColor=none;" parent="e_cap_container" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_id_acr" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F9A825;strokeWidth=1;dashed=1;dashPattern=4 4;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=block;endFill=1;" parent="1" source="identity_icon" target="acr_icon" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_id_acr_lbl" value="image pull" style="edgeLabel;fontSize=9;fontColor=#F9A825;labelBackgroundColor=none;" parent="e_id_acr" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_id_openai" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F9A825;strokeWidth=1;dashed=1;dashPattern=4 4;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;" parent="1" source="identity_icon" target="model_icon" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1180" y="445"/>
+                            <mxPoint x="1180" y="200"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_id_openai_lbl" value="auth (OpenAI User)" style="edgeLabel;fontSize=8;fontColor=#F9A825;labelBackgroundColor=none;" parent="e_id_openai" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_acr_container" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0078D4;strokeWidth=1;dashed=1;dashPattern=4 4;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;endArrow=block;endFill=1;" parent="1" source="acr_icon" target="grp_container" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1140" y="235"/>
+                            <mxPoint x="1140" y="310"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_acr_container_lbl" value="container image" style="edgeLabel;fontSize=9;fontColor=#0078D4;labelBackgroundColor=none;" parent="e_acr_container" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="legend_bg" value="" style="rounded=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#CCCCCC;arcSize=6;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="530" width="300" height="210" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend_title" value="Legend" style="text;html=1;fontSize=13;fontStyle=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="95" y="535" width="100" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg1" value="" style="line;strokeColor=#0078D4;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="95" y="575" width="40" height="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg1t" value="HTTPS (Client to API)" style="text;fontSize=10;align=left;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="145" y="567" width="180" height="18" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg2" value="" style="line;strokeColor=#E65100;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="95" y="600" width="40" height="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg2t" value="Agent Routing (API to Container)" style="text;fontSize=10;align=left;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="145" y="592" width="200" height="18" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg3" value="" style="line;strokeColor=#3F51B5;strokeWidth=2;dashed=1;dashPattern=6 3;" parent="1" vertex="1">
+                    <mxGeometry x="95" y="625" width="40" height="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg3t" value="LLM Inference Calls" style="text;fontSize=10;align=left;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="145" y="617" width="180" height="18" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg4" value="" style="line;strokeColor=#1565C0;strokeWidth=1;dashed=1;dashPattern=4 4;" parent="1" vertex="1">
+                    <mxGeometry x="95" y="650" width="40" height="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg4t" value="Tool Calls (LangGraph)" style="text;fontSize=10;align=left;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="145" y="642" width="180" height="18" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg5" value="" style="line;strokeColor=#F9A825;strokeWidth=1;dashed=1;dashPattern=4 4;" parent="1" vertex="1">
+                    <mxGeometry x="95" y="675" width="40" height="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg5t" value="Identity &amp; RBAC (Managed Identity)" style="text;fontSize=10;align=left;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="145" y="667" width="210" height="18" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg6" value="" style="line;strokeColor=#7B1FA2;strokeWidth=1;" parent="1" vertex="1">
+                    <mxGeometry x="95" y="700" width="40" height="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg6t" value="Foundry Resource Hierarchy" style="text;fontSize=10;align=left;fillColor=none;strokeColor=none;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="145" y="692" width="200" height="18" as="geometry"/>
+                </mxCell>
+                <mxCell id="note" value="Auth token audience: https://ai.azure.com/.default&lt;br&gt;Container uses Managed Identity (no keys)&lt;br&gt;Agent registered via: az cognitiveservices agent create" style="shape=note;html=1;size=15;fillColor=#E3F2FD;strokeColor=#0078D4;fontSize=10;align=left;spacingLeft=5;whiteSpace=wrap;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="760" width="350" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="container_icon" value="Container&lt;br&gt;Port 8088" style="aspect=fixed;html=1;align=center;image;image=img/lib/azure2/containers/App_Services.svg;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#333333;labelBackgroundColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="365" width="45" height="45" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

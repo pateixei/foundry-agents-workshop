@@ -1,0 +1,23 @@
+name: fin-market-agent
+description: Agente especialista em mercado financeiro brasileiro e internacional usando Microsoft Agent Framework
+
+runtime:
+  language: python
+  entrypoint: src/main.py:run
+
+model:
+  provider: azure-openai
+  deployment: gpt-4.1
+
+tools:
+  - type: python
+    path: tools/
+
+observability:
+  tracing: foundry
+  otel:
+    enabled: true
+    export: azure-monitor
+
+permissions:
+  identity: managed

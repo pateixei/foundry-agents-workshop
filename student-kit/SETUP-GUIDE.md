@@ -1,0 +1,737 @@
+# Student Environment Setup Guide
+
+> 🇧🇷 **[Leia em Português (pt-BR)](SETUP-GUIDE.pt-BR.md)**
+
+**Workshop**: Microsoft Foundry AI Agents Workshop — 5-Day Intensive  
+**Version**: 0.7  
+**Estimated Time**: 30–45 minutes  
+**Last Verified**: February 15, 2026  
+
+---
+
+## Prerequisites Checklist
+
+Before starting, ensure you have:
+
+| # | Requirement | Notes |
+|---|-------------|-------|
+| 1 | Laptop with admin/sudo rights | Windows 10+, macOS 12+, or Ubuntu 22.04+ (native or WSL) |
+| 2 | Internet ≥ 10 Mbps | Required for Azure, Docker, pip |
+| 3 | Azure subscription with **Contributor** role | [azure.com/free](https://azure.com/free) or enterprise |
+| 4 | GitHub account | To clone workshop repo |
+| 5 | Microsoft 365 Developer Tenant (Days 3-5) | [developer.microsoft.com/microsoft-365/dev-program](https://developer.microsoft.com/microsoft-365/dev-program) |
+| 6 | **Microsoft 365 Copilot license** (at least one active) + Copilot Frontier enabled (Days 3-5) | Required to use Agent 365 features — see Step 8.4 |
+
+> [!IMPORTANT]
+> **🟡 REQUIRED — Copilot Frontier must be enabled in your M365 tenant (Days 3–5)**
+>
+> To complete Lessons 5–6 (Agent 365), your M365 tenant must have **Copilot Frontier enabled**. No separate program enrollment is required anymore — however, **your tenant must have at least one active Microsoft 365 Copilot license** for the Frontier toggle to appear in the Admin Center.
+>
+> A Global Admin must enable it at [Microsoft 365 Admin Center](https://admin.microsoft.com/) → **Copilot** → **Settings** → **User access** → **Copilot Frontier** → toggle **On**. **Allow up to 24 hours** for propagation. See Step 8.4 for detailed instructions.
+
+> **WSL Users (Windows Subsystem for Linux)**: All Linux instructions apply inside your WSL terminal. Ensure WSL 2 is installed: `wsl --install -d Ubuntu` from an elevated PowerShell prompt. Open a WSL terminal via `wsl` or Windows Terminal → Ubuntu.
+
+---
+
+## Step 1: Install Core Tools
+
+### 1.1 Python 3.11+
+
+**Windows (PowerShell)**:
+```powershell
+winget install Python.Python.3.11
+```
+
+**Linux / WSL (Debian/Ubuntu)**:
+```bash
+sudo apt update && sudo apt install -y python3.11 python3.11-venv python3-pip
+```
+
+**macOS (Homebrew)**:
+```bash
+brew install python@3.11
+```
+
+**Verify**:
+```bash
+python3 --version   # Expected: Python 3.11.x or higher
+```
+
+### 1.2 Azure CLI 2.60+
+
+**Windows (PowerShell)**:
+```powershell
+winget install Microsoft.AzureCLI
+```
+
+**Linux / WSL (Debian/Ubuntu)**:
+```bash
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+```
+
+**macOS (Homebrew)**:
+```bash
+brew install azure-cli
+```
+
+**Bicep Upgrade** 
+```bash 
+az bicep upgrade
+```
+**Verify**:
+```bash
+az version   # Expected: "azure-cli": "2.60.0" or higher
+```
+
+### 1.3 Docker
+
+**Windows**: Download [Docker Desktop](https://www.docker.com/products/docker-desktop/) and ensure WSL 2 backend is enabled (Settings → General → Use the WSL 2 based engine).
+
+**Linux / WSL (Debian/Ubuntu)**:
+```bash
+# Install Docker Engine (not Docker Desktop)
+sudo apt update
+sudo apt install -y ca-certificates curl gnupg
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin
+
+# Add your user to docker group (avoids sudo for docker commands)
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+> **WSL Tip**: If Docker Desktop for Windows is installed and WSL integration is enabled (Settings → Resources → WSL Integration), you can use `docker` directly from WSL without installing Docker Engine separately.
+
+**Verify**:
+```bash
+docker --version       # Expected: Docker version 24.x+
+docker info            # Should show server running
+```
+
+### 1.4 Git
+
+**Windows (PowerShell)**:
+```powershell
+winget install Git.Git
+```
+
+**Linux / WSL (Debian/Ubuntu)**:
+```bash
+sudo apt install -y git
+```
+
+**macOS**: Usually pre-installed. If not: `xcode-select --install`
+
+**Verify**:
+```bash
+git --version   # Expected: git version 2.40+
+```
+
+### 1.5 .NET 8.0 SDK (Required for Days 3–5: A365 CLI)
+
+**Windows (PowerShell)**:
+```powershell
+winget install Microsoft.DotNet.SDK.8
+```
+
+**Linux / WSL (Debian/Ubuntu)**:
+```bash
+# Add Microsoft package repository
+wget https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+rm packages-microsoft-prod.deb
+
+sudo apt update
+sudo apt install -y dotnet-sdk-8.0
+```
+
+**macOS (Homebrew)**:
+```bash
+brew install dotnet@8
+```
+
+**Verify**:
+```bash
+dotnet --version   # Expected: 8.0.x
+```
+
+### 1.6 jq (Linux / WSL only — JSON processor)
+
+The bash deployment scripts use `jq` for JSON parsing:
+
+```bash
+sudo apt install -y jq
+```
+
+### 1.7 VS Code
+
+Download from [code.visualstudio.com](https://code.visualstudio.com/) or:
+
+**Windows**:
+```powershell
+winget install Microsoft.VisualStudioCode
+```
+
+**Linux / WSL (Debian/Ubuntu)**:
+```bash
+sudo apt install -y wget gpg
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+rm -f packages.microsoft.gpg
+sudo apt update
+sudo apt install -y code
+```
+
+> **WSL Tip**: Install VS Code on Windows and use the **Remote - WSL** extension to develop inside WSL. Run `code .` from a WSL terminal to open VS Code connected to WSL.
+
+---
+
+## Step 2: Install VS Code Extensions
+
+Open VS Code and install these extensions (Ctrl+Shift+X):
+
+| Extension | ID | Purpose |
+|-----------|----|---------|
+| Python | `ms-python.python` | Python IntelliSense, debugging |
+| Pylance | `ms-python.vscode-pylance` | Python type checking |
+| Azure Account | `ms-vscode.azure-account` | Azure sign-in |
+| Azure Resources | `ms-azuretools.vscode-azureresourcegroups` | Browse Azure resources |
+| Docker | `ms-azuretools.vscode-docker` | Dockerfile support |
+| Bicep | `ms-azuretools.vscode-bicep` | Bicep template support |
+| REST Client | `humao.rest-client` | Test API endpoints |
+
+Quick install via terminal:
+
+```powershell
+code --install-extension ms-python.python
+code --install-extension ms-python.vscode-pylance
+code --install-extension ms-vscode.azure-account
+code --install-extension ms-azuretools.vscode-azureresourcegroups
+code --install-extension ms-azuretools.vscode-docker
+code --install-extension ms-azuretools.vscode-bicep
+code --install-extension humao.rest-client
+```
+
+---
+
+## Step 3: Azure Subscription Setup
+
+### 3.1 Sign In
+
+```powershell
+az login
+az account show --query "{name:name, id:id, state:state}" -o table
+```
+
+### 3.2 Set Default Subscription
+
+```powershell
+az account set --subscription "<YOUR_SUBSCRIPTION_ID>"
+```
+
+### 3.3 Verify Permissions
+
+```bash
+# Must show "Contributor" or "Owner"
+# Windows PowerShell:
+az role assignment list --assignee $(az ad signed-in-user show --query id -o tsv) --query "[].roleDefinitionName" -o tsv
+
+# Linux / WSL / macOS (Bash):
+az role assignment list --assignee "$(az ad signed-in-user show --query id -o tsv)" --query "[].roleDefinitionName" -o tsv
+```
+
+### 3.4 Register Required Providers
+
+```powershell
+az provider register --namespace Microsoft.CognitiveServices
+az provider register --namespace Microsoft.ContainerRegistry
+az provider register --namespace Microsoft.App
+az provider register --namespace Microsoft.OperationalInsights
+az provider register --namespace Microsoft.Insights
+```
+
+> **Enterprise users**: If your subscription requires IT approval, do this 3–5 business days before the workshop.
+
+---
+
+## Step 4: Clone the Workshop Repository
+
+```powershell
+git clone https://github.com/<ORG>/a365-workshop.git
+cd a365-workshop
+```
+
+### Repository Structure
+
+```
+a365-workshop/
+├── prereq/              # Infrastructure templates (Bicep) & provisioning scripts
+├── lesson-1-declarative/ # Declarative agent (azure-ai-agents SDK)
+├── lesson-2-hosted-maf/  # Hosted agent with Microsoft Agent Framework
+├── lesson-3-hosted-langgraph/ # Hosted agent with LangGraph on Foundry
+├── lesson-4-aca-langgraph/    # Connected agent on Azure Container Apps
+├── lesson-5-a365-langgraph/  # Full A365 SDK (LangGraph + Bot Framework + OTel)
+├── lesson-6-a365-setup/      # Complete A365 setup, publish & instances
+├── test/                     # Test client (chat.py)
+```
+
+---
+
+## Step 5: Provision Azure Infrastructure
+
+### 5.1 Deploy Workshop Resources
+
+**Edit main.bicepparam**
+Open bicep parameters file and ajust the resourceGroupName, location, etc as needed 
+
+**Windows (PowerShell)**:
+```powershell
+cd prereq
+./deploy.ps1
+```
+
+**Linux / WSL (pwsh)**:
+```bash
+cd prereq
+pswh ./deploy.ps1
+```
+
+This provisions:
+- **Azure AI Foundry** (Hub + Project) — agent hosting
+- **Azure Container Registry (ACR)** — Docker images
+- **Log Analytics Workspace** — monitoring
+- **Application Insights** — telemetry
+- **GPT-4o-mini deployment** — LLM model
+
+### 5.2 Validate Deployment
+
+**Windows (PowerShell)**:
+```powershell
+./validate-deployment.ps1
+```
+
+**Linux / WSL (Bash)**:
+```bash
+./validate-deployment.sh
+```
+
+Expected output — all resources showing `✅`:
+```
+✅ Resource Group: rg-ai-agents-workshop
+✅ Azure AI Hub: aihub-workshop
+✅ Azure AI Project: aiproj-workshop
+✅ Container Registry: acrworkshop
+✅ Log Analytics: log-workshop
+✅ Application Insights: appi-workshop
+✅ Model Deployment: gpt-4o-mini
+```
+
+---
+
+## Step 6: Python Environment Setup
+
+### 6.1 Create Virtual Environment
+
+```bash
+# From repository root
+python3 -m venv .venv
+
+# Activate — Windows PowerShell:
+.\.venv\Scripts\Activate.ps1
+
+# Activate — Linux / WSL / macOS:
+source .venv/bin/activate
+```
+
+### 6.2 Install Base Dependencies
+
+```powershell
+pip install --upgrade pip
+pip install azure-ai-agents azure-identity python-dotenv
+```
+
+### 6.3 Verify SDK Installation
+
+```powershell
+python -c "import azure.ai.agents; print('✅ azure-ai-agents installed:', azure.ai.agents.__version__)"
+```
+
+---
+
+## Step 7: Install A365 CLI (Days 3–5)
+
+```powershell
+dotnet tool install --global Microsoft.Agents.A365.DevTools.Cli --prerelease
+
+# Verify
+a365 --version
+```
+
+---
+
+## Step 8: Microsoft 365 Developer Tenant Setup (Days 3–5)
+
+> [!IMPORTANT]
+> **Required for Lessons 5–8 (Agent 365 integration)**
+>
+> You **MUST** have a Microsoft 365 Developer tenant to complete the Agent 365 lessons (Days 3–5). This is **separate** from your Azure subscription and provides a free M365 environment for development and testing.
+
+### 8.1 Join the Microsoft 365 Developer Program
+
+The Microsoft 365 Developer Program provides a free, renewable Microsoft 365 E5 developer subscription for building and testing M365 solutions.
+
+**Benefits:**
+- Free Microsoft 365 E5 subscription (renewable every 90 days with active usage)
+- 25 user licenses
+- Pre-configured sample data packs (optional)
+- Access to all Microsoft 365 services (Teams, SharePoint, Exchange, etc.)
+- Global Administrator access to your tenant
+
+**Step-by-step registration:**
+
+1. **Navigate to the Developer Program portal**
+   - Go to [https://developer.microsoft.com/microsoft-365/dev-program](https://developer.microsoft.com/microsoft-365/dev-program)
+   - Click **"Join now"** (or **"Sign in"** if you already have a Microsoft account)
+
+2. **Sign in with a Microsoft account**
+   - Use your **personal Microsoft account** (e.g., @outlook.com, @hotmail.com, @live.com)
+   - **Important**: Do NOT use your work/school account if you want full control. Work/school accounts may have:
+     - IT policies that restrict tenant creation or Global Administrator privileges
+     - Corporate ownership of the tenant (not fully yours)
+     - Limitations on API access or external integrations
+   - If you don't have a personal Microsoft account, create one at [https://signup.live.com](https://signup.live.com)
+
+3. **Complete the registration form**
+   - **Country/Region**: Select your country
+   - **Company**: Enter your company name or "Individual Developer"
+   - **Language preference**: Select your preferred language
+   - **Accept terms**: Review and accept the terms and conditions
+   - Click **"Next"**
+
+4. **Set up your developer subscription**
+   You'll be presented with two options:
+   
+   **Option A: Instant sandbox (Recommended for this workshop)**
+   - Click **"Set up E5 subscription"**
+   - The system will automatically provision a tenant with:
+     - Domain: `<random-name>.onmicrosoft.com`
+     - Admin username: `admin@<random-name>.onmicrosoft.com`
+     - A temporary password (you'll be prompted to change it on first sign-in)
+   - **Advantages**: Instant setup (< 1 minute), no configuration needed
+   - **Note**: Write down your admin credentials immediately — you cannot retrieve them later
+
+   **Option B: Configurable sandbox (Advanced)**
+   - Choose **"Set up E5 subscription"** and then select **"Configurable"**
+   - You can customize:
+     - Username (admin@...)
+     - Domain prefix (e.g., `mycompany.onmicrosoft.com`)
+     - Password
+   - Sample data packs (optional — adds sample users, emails, SharePoint sites)
+   - Takes 2–5 minutes to provision
+   
+   > **Workshop Recommendation**: Use **Option A (Instant sandbox)** for faster setup. You can always add sample data later.
+
+5. **Save your credentials**
+   
+   After provisioning completes, you'll see:
+   ```
+   Your Microsoft 365 Developer subscription is ready!
+   
+   Domain: dev123456.onmicrosoft.com
+   Username: admin@dev123456.onmicrosoft.com
+   Password: [temporary password shown once]
+   ```
+   
+   **🚨 CRITICAL**: Save these credentials in a secure location (password manager recommended). You'll need them to:
+   - Sign in to Microsoft 365 Admin Center
+   - Verify Copilot Frontier is enabled in your tenant (see Step 8.4 below)
+   - Configure A365 CLI authentication
+   - Publish and test agents in Teams
+
+### 8.2 First Sign-In and Password Change
+
+1. Go to [https://admin.microsoft.com](https://admin.microsoft.com)
+2. Sign in with `admin@<your-tenant>.onmicrosoft.com` and the temporary password
+3. You'll be prompted to change your password immediately
+4. Set up multi-factor authentication (MFA) if prompted — **recommended** for security
+5. Complete the Microsoft 365 setup wizard (optional — you can skip this)
+
+### 8.3 Verify Your Tenant
+
+After signing in to the Admin Center, verify your subscription:
+
+1. In the left navigation, go to **Billing** → **Your products**
+2. You should see:
+   - **Microsoft 365 E5 Developer (without Windows and Audio Conferencing)**
+   - Status: **Active**
+   - Subscription expires: **[90 days from creation]**
+3. Note your **Tenant ID** (you'll need this for A365 CLI):
+   - Go to **Settings** → **Org settings** → **Organization profile**
+   - Copy the **Tenant ID** (a GUID like `12345678-1234-1234-1234-123456789012`)
+
+### 8.4 Enable Copilot Frontier (Required for Agent 365 Lessons)
+
+> [!IMPORTANT]
+> **🟡 Required for Agent 365 Lessons (Lessons 5–6)**
+>
+> Copilot Frontier must be **enabled in your M365 tenant** before running Agent 365 CLI commands. No program enrollment is required — but your tenant must have **at least one active Microsoft 365 Copilot license** for the Frontier toggle to be available in the Admin Center.
+>
+> If your tenant has no M365 Copilot licenses, the Frontier settings will not appear. The M365 Developer program subscription (E5 Developer) does **not** include a Copilot license by default.
+
+**Steps:**
+
+1. **Verify you have at least one active Microsoft 365 Copilot license**
+   - Go to [https://admin.microsoft.com](https://admin.microsoft.com)
+   - Navigate to **Billing** → **Your products**
+   - Confirm **Microsoft 365 Copilot** is listed and **Active**
+   - If missing, add a trial or paid license before proceeding
+
+2. **Enable Copilot Frontier in your tenant**
+   - Go to [https://admin.microsoft.com](https://admin.microsoft.com)
+   - Sign in as Global Administrator (your admin account)
+   - Navigate to **Copilot** → **Settings** (or **Settings** → **Copilot**)
+   - Go to **User access** → **Copilot Frontier**
+   - Toggle **Enable Copilot Frontier** to **On**
+   - Click **"Save"**
+
+3. **Wait for propagation**
+   - Allow **up to 24 hours** for the changes to propagate across Microsoft 365 services
+   - **Recommendation**: Complete this step **at least 1 day before Day 3** of the workshop
+
+4. **Verify Frontier access (after propagation)**
+   ```bash
+   # Test A365 CLI authentication (after Day 3 setup)
+   a365 auth login --tenant-id <YOUR_M365_TENANT_ID>
+   a365 blueprint list
+   ```
+   If successful, you should see an empty list or existing blueprints (not a "Forbidden" error).
+
+### 8.5 Subscription Renewal
+
+Your Microsoft 365 E5 Developer subscription is **free for 90 days** and **automatically renewable** if you show active development usage.
+
+**Renewal criteria:**
+- Active usage includes: API calls, user sign-ins, agent development, Teams app installations
+- Microsoft evaluates usage automatically ~2 weeks before expiration
+- If active, the subscription renews for another 90 days
+- If inactive, you'll receive an email warning 30 days before expiration
+
+**Best practices to ensure renewal:**
+- Use your tenant regularly (sign in, send emails, test agents)
+- Build and test agents throughout the workshop
+- Keep your developer program profile up to date
+
+**What happens if it expires?**
+- You'll receive multiple email warnings before expiration
+- If expired, your tenant data is retained for 30 days
+- You can join the program again with a new tenant (different domain)
+
+### 8.6 Important Notes
+
+- **Azure ≠ Microsoft 365**: Your Azure subscription and M365 tenant are **separate** and likely in **different Entra ID tenants**. This is the "cross-tenant scenario" covered in Lesson 5.
+- **Personal vs. Work Account**: For full control, use a **personal Microsoft account** (not your company email) when joining the Developer Program.
+- **Multiple Tenants**: You can have multiple M365 developer tenants, but only **one per Microsoft account**.
+- **Data Persistence**: Treat the developer tenant as ephemeral for workshops. Do not store critical production data.
+- **Licensing**: The E5 license includes all M365 services, but some features (like advanced compliance) may require additional configuration.
+
+### 8.7 Troubleshooting
+
+**Issue: "You already have a developer subscription"**
+- You previously joined the program with this Microsoft account
+- Go to [https://developer.microsoft.com/microsoft-365/profile](https://developer.microsoft.com/microsoft-365/profile) to view your existing subscription
+- Check the **Subscriptions** tab for your tenant details
+- If you forgot credentials, you may need to wait for expiration or contact support
+
+**Issue: "Cannot sign up with work/school account"**
+- The program requires a personal Microsoft account for the initial registration
+- Create a new personal Microsoft account at [https://signup.live.com](https://signup.live.com)
+- Use that account to join the Developer Program
+
+**Issue: "Subscription not renewing"**
+- Ensure you're actively using the tenant (API calls, user sign-ins)
+- Check your Developer Program dashboard for usage metrics
+- Consider adding sample data packs or test users to increase activity
+
+**Issue: "Cannot enable Copilot Frontier"**
+- Verify you're signed in as Global Administrator
+- Ensure your tenant is enrolled in the Frontier Program first
+- Try in a different browser (Edge or Chrome recommended)
+- Clear browser cache and cookies
+- Wait 1 hour after Frontier enrollment before enabling in Admin Center
+
+**Issue: "Tenant ID not found"**
+- Go to [https://admin.microsoft.com](https://admin.microsoft.com) → **Settings** → **Org settings** → **Organization profile**
+- Look for **Directory ID** or **Tenant ID** (same thing)
+- Alternatively, use Azure CLI: `az login --tenant <your-tenant>.onmicrosoft.com --allow-no-subscriptions && az account show --query tenantId -o tsv`
+
+---
+
+## Step 9: Environment Validation Script
+
+Run this comprehensive check to verify your setup.
+
+**Windows (PowerShell)**:
+```powershell
+Write-Host "=== Workshop Environment Validation ===" -ForegroundColor Cyan
+
+# 1. Python
+$py = python --version 2>&1; Write-Host "Python: $py" -ForegroundColor $(if($py -match '3\.(1[1-9]|[2-9]\d)') {"Green"} else {"Red"})
+
+# 2. Azure CLI
+$az = az version --query '"azure-cli"' -o tsv 2>&1; Write-Host "Azure CLI: $az" -ForegroundColor $(if($az) {"Green"} else {"Red"})
+
+# 3. Docker
+$dk = docker --version 2>&1; Write-Host "Docker: $dk" -ForegroundColor $(if($dk -match 'Docker') {"Green"} else {"Red"})
+
+# 4. Git
+$gt = git --version 2>&1; Write-Host "Git: $gt" -ForegroundColor $(if($gt -match 'git') {"Green"} else {"Red"})
+
+# 5. .NET SDK
+$dn = dotnet --version 2>&1; Write-Host ".NET SDK: $dn" -ForegroundColor $(if($dn -match '8\.') {"Green"} else {"Yellow"})
+
+# 6. Azure login
+$acct = az account show --query name -o tsv 2>&1; Write-Host "Azure Account: $acct" -ForegroundColor $(if($acct -notmatch 'ERROR') {"Green"} else {"Red"})
+
+# 7. azure-ai-agents SDK
+$sdk = python -c "import azure.ai.agents; print(azure.ai.agents.__version__)" 2>&1; Write-Host "azure-ai-agents: $sdk" -ForegroundColor $(if($sdk -notmatch 'Error|No module') {"Green"} else {"Red"})
+
+Write-Host "`n=== Validation Complete ===" -ForegroundColor Cyan
+```
+
+**Linux / WSL (Bash)**:
+```bash
+#!/bin/bash
+echo "=== Workshop Environment Validation ==="
+
+# Colors
+GREEN='\033[0;32m'; RED='\033[0;31m'; YELLOW='\033[1;33m'; NC='\033[0m'
+check() { if [ $? -eq 0 ]; then echo -e "${GREEN}✅ $1${NC}"; else echo -e "${RED}❌ $1${NC}"; fi }
+
+# 1. Python
+python3 --version 2>/dev/null && check "Python" || check "Python NOT FOUND"
+
+# 2. Azure CLI
+az version --query '"azure-cli"' -o tsv 2>/dev/null && check "Azure CLI" || check "Azure CLI NOT FOUND"
+
+# 3. Docker
+docker --version 2>/dev/null && check "Docker" || check "Docker NOT FOUND"
+
+# 4. Git
+git --version 2>/dev/null && check "Git" || check "Git NOT FOUND"
+
+# 5. .NET SDK
+dotnet --version 2>/dev/null && check ".NET SDK" || echo -e "${YELLOW}⚠️  .NET SDK not found (needed for Days 3-5)${NC}"
+
+# 6. Azure login
+az account show --query name -o tsv 2>/dev/null && check "Azure Account" || check "Azure login FAILED (run: az login)"
+
+# 7. azure-ai-agents SDK
+python3 -c "import azure.ai.agents; print(azure.ai.agents.__version__)" 2>/dev/null && check "azure-ai-agents" || check "azure-ai-agents NOT INSTALLED"
+
+# 8. jq (needed for bash scripts)
+jq --version 2>/dev/null && check "jq" || echo -e "${YELLOW}⚠️  jq not found (run: sudo apt install -y jq)${NC}"
+
+echo "=== Validation Complete ==="
+```
+
+Save as `validate-setup.ps1` (Windows) or `validate-setup.sh` (Linux). All items should show **green/✅**.
+
+---
+
+## Troubleshooting
+
+### "az login" fails with SSO/MFA
+
+```bash
+az login --use-device-code
+```
+
+### Docker daemon not started
+
+- **Windows**: Open Docker Desktop from Start Menu, wait for "Docker Desktop is running"
+- **macOS**: `open -a Docker`
+- **Linux**: `sudo systemctl start docker`
+- **WSL**: If using Docker Desktop, ensure WSL integration is enabled. If using Docker Engine in WSL: `sudo service docker start`
+
+### Python version mismatch
+
+```bash
+# Windows:
+where.exe python
+
+# Linux / WSL / macOS:
+which -a python3
+python3 --version
+```
+
+> **Linux/WSL Tip**: Use `python3` instead of `python`. If you need the `python` alias: `sudo apt install python-is-python3`
+
+### Azure subscription quota errors
+
+```bash
+az cognitiveservices usage list --location eastus2 -o table
+```
+
+### "Permission denied" on .ps1 scripts (Windows)
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+### "Permission denied" on .sh scripts (Linux / WSL)
+
+```bash
+chmod +x deploy.sh validate-deployment.sh
+```
+
+### pip install fails behind corporate proxy
+
+```bash
+pip install --proxy http://proxy.company.com:8080 azure-ai-agents
+```
+
+### WSL-specific issues
+
+**WSL not installed**:
+```powershell
+# From elevated PowerShell on Windows
+wsl --install -d Ubuntu
+# Restart required after installation
+```
+
+**WSL 1 vs WSL 2**:
+```bash
+# Check version
+wsl --list --verbose
+
+# Convert to WSL 2 if needed (from Windows PowerShell):
+wsl --set-version Ubuntu 2
+```
+
+**DNS resolution issues in WSL**:
+```bash
+# If apt or pip fail with network errors
+echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
+```
+
+**Disk space in WSL**: WSL has a default virtual disk limit. If you run out of space building Docker images:
+```bash
+df -h   # Check available space
+docker system prune -a   # Clean unused Docker data
+```
+
+---
+
+## Need Help?
+
+- **Workshop Slack/Teams channel**: #ai-agents-workshop
+- **Office hours**: Day -3 and Day -1 (see welcome email)
+- **Known issues**: See `context.md` in the repository root
+- **Email**: [instructor email — to be provided]

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/vdevPreview/MicrosoftTeams.schema.json",
+  "id": "809bce64-ea7f-4f64-94b1-6f0c582b2f21",
+  "name": {
+    "short": "FinMktAgent",
+    "full": "Financial Market Agent"
+  },
+  "description": {
+    "short": "A financial services agent for market analysis.",
+    "full": "This is an agent built with langgraph... in python... by \u0022PT\u0022 (so you believe me when see this description), that also has compatibility with M365, can be published to teams also and it\u0027s using the Agent 365 SDK"
+  },
+  "icons": {
+    "outline": "outline.png",
+    "color": "color.png"
+  },
+  "accentColor": "#9ec9d9",
+  "version": "1.1.6.2",
+  "manifestVersion": "devPreview",
+  "developer": {
+    "name": "Microsoft Corporation",
+    "mpnId": "",
+    "websiteUrl": "https://go.microsoft.com/fwlink/?LinkId=518028",
+    "privacyUrl": "https://go.microsoft.com/fwlink/?LinkId=518028",
+    "termsOfUseUrl": "https://shares.datatransfer.microsoft.com/assets/Microsoft_Terms_of_Use.html"
+  },
+  "agenticUserTemplates": [
+    {
+      "id": "7b0926a6-c4ee-445a-a913-bd054594bd09",
+      "file": "agenticUserTemplateManifest.json"
+    }
+  ]
+}
