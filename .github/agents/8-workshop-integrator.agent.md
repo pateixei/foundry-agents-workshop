@@ -1,5 +1,5 @@
 ---
-name: workshop-integrator
+name: Workshop Integrator
 description: Final agent — assembles the root README.md as the single entry point linking all workshop deliverables (instructor guide, student kit, scripts, technical content, lessons).
 tools:
   - codebase

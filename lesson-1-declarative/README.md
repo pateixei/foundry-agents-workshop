@@ -57,10 +57,10 @@ Unlike **hosted** agents (lessons 2 and 3), declarative agents don't require Doc
 | No container build/deploy needed | No custom Python tools (local functions) |
 | Instructions, model, and tools editable in the portal | Tools limited to Foundry catalog |
 | Instant deployment (<10 seconds) | Less control over execution flow |
-| Foundry manages scaling automatically | Not ideal for complex multi-step workflows |
+| Foundry manages scaling automatically | complex multi-step workflows requires **Foundry Workflows** |
 | Great for prototypes and rapid iteration | |
 
-> **Quick rule of thumb:** If your agent needs Bing search, Azure AI Search, or Code Interpreter — declarative is perfect. You'll hit limits when you need custom API calls, database queries, or multi-step orchestration — that's when you go hosted (lessons 2 & 3).
+> **Quick rule of thumb:** If your agent needs Bing search, Azure AI Search, or Code Interpreter — declarative is perfect. You'll hit limits when you would like to create agents in custom code using Microsoft Agent Framework or other 3rd party framework (such as LangGraph) — that's when you go hosted (lessons 2 & 3).
 
 ## Structure
 
@@ -229,7 +229,7 @@ START: I need an AI agent
 | Deploy time | <10 seconds | ~5 minutes (container build) | ~5 minutes (container build) |
 | Cost model | Pay per token (no compute) | Container compute + tokens | Container compute + tokens |
 | Maintenance | Low (managed) | Medium (update containers) | Medium (update containers) |
-| Best for | Prototypes, simple workflows | Production, complex logic | Existing LangGraph expertise |
+| Best for | Fast Prototyping, Simple Workflows | Production, complex logic | Production, Existing LangGraph expertise |
 
 > **Strategy:** Start with declarative. Migrate to hosted when you hit limitations. That's the journey from Lesson 1 → Lessons 2 & 3.
 
@@ -240,7 +240,7 @@ One of the biggest advantages of the declarative agent is the ability to use **t
 ### How does it work?
 
 - **Declarative Agent** (`PromptAgentDefinition`): runs **server-side** in Foundry. The tools (Bing, Azure AI Search, OpenAPI, Code Interpreter, etc.) are executed by Foundry's own runtime. You define the tools in the SDK and they appear in the portal (and vice versa).
-- **Hosted Agent** (MAF/LangGraph): runs inside a **container**. The container manages its own tools via Python code. Foundry's runtime only forwards the request to the container — it doesn't inject tools from the portal.
+- **Hosted Agent** (MAF/LangGraph): runs inside a **container**. The container manages its own tools via Python code. Foundry's runtime only forwards the request to the container — ***it doesn't inject tools from the portal***.
 
 ### Example: agent with Bing Grounding Search
 

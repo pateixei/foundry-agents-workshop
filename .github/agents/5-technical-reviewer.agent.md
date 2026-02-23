@@ -1,5 +1,5 @@
 ---
-name: technical-reviewer
+name: Workshop Technical Reviewer
 description: Reviews content and labs to ensure technical quality, consistency, executability, and audience-level appropriateness.
 tools:
   - codebase

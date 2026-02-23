@@ -1,5 +1,5 @@
 ---
-name: technical-instructor-sme
+name: Workshop Technical Instructor / SME
 description: Creates and validates technical content (e.g., Python, LangGraph, Bicep, Azure AI SDK), examples, and practical exercises with depth and precision for Azure AI Foundry workshops.
 tools:
   - codebase

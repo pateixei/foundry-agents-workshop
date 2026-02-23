@@ -1,5 +1,5 @@
 ---
-name: learning-architect
+name: Workshop Learning Architect
 description: Designs the workshop structure (modules, sequence, timing) balancing theory, practice, and learning objectives.
 tools:
   - codebase

@@ -1,5 +1,5 @@
 ---
-name: localization-specialist
+name: Workshop Localization Specialist
 description: Generates a Brazilian Portuguese (pt-BR) translation of all workshop documentation files, preserving technical accuracy and pedagogical tone.
 tools:
   - codebase

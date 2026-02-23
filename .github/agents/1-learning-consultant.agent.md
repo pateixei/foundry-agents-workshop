@@ -1,5 +1,5 @@
 ---
-name: learning-consultant
+name: Workshop Learning Consultant
 description: Diagnoses needs and translates business objectives into learning outcomes for corporate technology workshops.
 tools:
   - codebase

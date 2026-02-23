@@ -1,5 +1,5 @@
 ---
-name: instructional-designer
+name: Workshop Instructional Designer
 description: Transforms architecture into active learning experience (activities, labs, assessments, dynamics).
 tools:
   - codebase

@@ -1,5 +1,5 @@
 ---
-name: content-producer
+name: Workshop Content Producer
 description: Organizes, standardizes, and packages materials and environment (setup) so the workshop runs without friction.
 tools:
   - codebase
