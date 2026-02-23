@@ -130,13 +130,12 @@ You: quit
 ## File Structure
 
 ```
-demo-1-declarative-agent/
+lesson-1-declarative/demos/
 ├── README.md                  # This file
 ├── create_agent.py            # Agent creation script
 ├── test_agent.py              # Console test client
 ├── requirements.txt           # Python dependencies
-├── .env.example               # Environment template
-└── architecture-diagram.png   # Visual architecture
+└── .env.example               # Environment template
 ```
 
 ## Code Walkthrough

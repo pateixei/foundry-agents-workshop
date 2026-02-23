@@ -109,7 +109,7 @@ pip install -r requirements.txt
 
 **Verifique a instalação:**
 ```bash
-python -c "import azure.ai.agents; print('✅ SDK installed')"
+python -c "import azure.ai.projects; print('✅ SDK installed')"
 ```
 
 ### 2. Configure as Variáveis de Ambiente
@@ -134,12 +134,13 @@ export AZURE_AI_PROJECT_ENDPOINT="https://<your-foundry-account>.cognitiveservic
 Os componentes principais do SDK:
 
 ```python
-from azure.ai.agents import AgentsClient
-from azure.ai.agents.models import PromptAgentDefinition
+from azure.ai.projects import AIProjectClient
+from azure.ai.projects.models import PromptAgentDefinition
 from azure.identity import DefaultAzureCredential
 ```
 
 - **`DefaultAzureCredential`** — Cadeia de autenticação: tenta credenciais CLI → managed identity → variáveis de ambiente
+- **`AIProjectClient`** — Client principal do Azure AI Foundry; fornece acesso a agentes, conexões e ao endpoint compatível com OpenAI
 - **`PromptAgentDefinition`** — O núcleo dos agentes declarativos. Defina instruções, modelo e ferramentas aqui
 - **`agent_name`** — Identificador único dentro do seu projeto Foundry
 - **`instructions`** — System prompt: a "personalidade" do seu agente (injetado em cada requisição)

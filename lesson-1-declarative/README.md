@@ -107,7 +107,7 @@ pip install -r requirements.txt
 
 **Verify installation:**
 ```bash
-python -c "import azure.ai.agents; print('✅ SDK installed')"
+python -c "import azure.ai.projects; print('✅ SDK installed')"
 ```
 
 ### 2. Configure Environment Variables
@@ -132,16 +132,16 @@ export AZURE_AI_PROJECT_ENDPOINT="https://<your-foundry-account>.cognitiveservic
 The key SDK components:
 
 ```python
-from azure.ai.agents import AgentsClient
-from azure.ai.agents.models import PromptAgentDefinition
+from azure.ai.projects import AIProjectClient
+from azure.ai.projects.models import PromptAgentDefinition
 from azure.identity import DefaultAzureCredential
 ```
 
 - **`DefaultAzureCredential`** — Authentication chain: tries CLI credentials → managed identity → environment variables
+- **`AIProjectClient`** — Main client for Azure AI Foundry; provides access to agents, connections, and the OpenAI-compatible endpoint
 - **`PromptAgentDefinition`** — The core of declarative agents. Define instructions, model, and tools here
 - **`agent_name`** — Unique identifier within your Foundry project
 - **`instructions`** — System prompt: the "personality" of your agent (injected on every request)
-- **`temperature`** — Controls creativity: 0 = deterministic, 1 = creative. For finance, 0.3–0.7 is a good range
 
 ### 4. Create and Test the Agent
 
