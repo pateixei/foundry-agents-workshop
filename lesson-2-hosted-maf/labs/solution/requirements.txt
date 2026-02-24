@@ -10,15 +10,15 @@ azure-ai-agentserver-agentframework==1.0.0b10
 azure-ai-agentserver-core==1.0.0b10
 
 # Azure Identity (Managed Identity / DefaultAzureCredential)
-azure-identity>=1.19.0
+azure-identity==1.19.0
 
 # OpenTelemetry + Azure Monitor
-azure-monitor-opentelemetry>=1.6.0
-opentelemetry-api>=1.25.0
-opentelemetry-sdk>=1.25.0
+azure-monitor-opentelemetry==1.6.4
+opentelemetry-api==1.25.0
+opentelemetry-sdk==1.25.0
 
 # HTTP client (para test_agent.py - console client)
-requests>=2.31.0
+requests==2.32.3
 
 # Utilitarios
-python-dotenv>=1.0.0
+python-dotenv==1.0.1
