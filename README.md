@@ -4,6 +4,9 @@
 
 Practical workshop to build, deploy, and manage AI agents using **Microsoft Foundry** with different approaches: declarative agents, hosted agents (MAF and LangGraph), agents on Azure Container Apps, and integration with Microsoft Agent 365.
 
+## Contributors
+- Marcio Uehara (security fixes)
+
 ![Architecture Overview](prereq/media/architecture-diagram.png)
 
 ## Contents
