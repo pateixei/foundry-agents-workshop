@@ -6,6 +6,7 @@ Practical workshop to build, deploy, and manage AI agents using **Microsoft Foun
 
 ## Contributors
 - Marcio Uehara (security fixes)
+- 
 
 ![Architecture Overview](prereq/media/architecture-diagram.png)
 
