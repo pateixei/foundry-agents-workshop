@@ -428,7 +428,7 @@ async def messages(request: Request):
             
         except Exception as e:
             logger.error(f"Error processing activity: {e}", exc_info=True)
-            raise HTTPException(status_code=500, detail=str(e))
+            raise HTTPException(status_code=500, detail="Internal error processing message.")
 
 
 # =============================================================
